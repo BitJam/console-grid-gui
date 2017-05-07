@@ -49,7 +49,7 @@ CLI Menus Outline
 
     Office
         wordgrinder - text witer
-        calcurse    - calandar/scheduling
+        calcurse    - calendar/scheduling
 
     Text Editors
         vim-tiny
