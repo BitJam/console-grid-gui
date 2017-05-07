@@ -1,21 +1,10 @@
-Is there an existing cli wrapper around apt-get and friends?  Google is not
-very useful since so many programs include "apt-get" in their install
-instructions.
+Test cli menu system:
 
-There are other programs that also may need a wrapper to be usefully called
-from a menu.  I might want to punt on this (put it off) for now.
-
-May require some work:
-    apt-get!!    (may need work to make useful)
-    apt-search!!
-    antiX-paste (will require work/wrappper)
-
-Additions, Corrections welcome.  Please mark with "@" so I can
-find them easily.
+    bin/cli-antix-cc
 
 
-Current List
-------------
+CLI Menus Outline
+-----------------
 
     Audio/Video
         moc Audio player
