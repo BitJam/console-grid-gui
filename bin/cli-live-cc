@@ -1,0 +1,79 @@
+#!/bin/bash
+
+lib_dir=/usr/lib/shell
+loc_lib=./lib
+test -e $loc_lib/lib-screen.sh && lib_dir=$loc_lib
+. $lib_dir/lib-screen.sh
+. $lib_dir/lib-grid.sh
+
+
+main() {
+    LIVE_MENU="$(make_live_menu)"
+
+    #grid_color_scheme light
+
+    screen_set title1=$"antiX Live Control Centre"
+    screen_set title2=$"Press: <Enter> to select an option, <q> to quit, <h> for help"
+    screen_set box=-s border=1
+
+    init
+
+    hide_tty
+    clear
+    redraw
+    main_loop
+}
+
+init() {
+    screen_init
+    grid_read_new antix_live "$LIVE_MENU"
+    grid_narrow y=3 title=$"antiX Live Actions"
+    grid_center_x
+    grid_fill_y 50
+    grid_finalize
+}
+
+redraw() {
+    screen_draw
+    grid_activate
+}
+
+restart() {
+    local save_sel=$GRID_SEL
+    local save_def=$GRID_DEFAULT_SEL
+    init
+    GRID_SEL=$save_sel
+    GRID_DEFAULT_SEL=$save_def
+    clear
+    redraw
+}
+
+antix_live_on_enter() {
+    local name=$1 sel=$3
+    GRID_DEFAULT_SEL=$sel
+    grid_activate
+
+    exit_to_main "$1"
+
+    db_msg "Would do action %s" "$white$name"
+    return
+}
+
+make_live_menu() {
+    echo "Make a live-usb"
+    echo "Update live kernel"
+    echo "Remaster live system"
+    echo "Save dynamic root persistence"
+    echo "Configure dyanmic root persistece"
+    echo "Create live persistence files"
+    return_to_main_entry
+}
+
+HELP_PAGE=$ME
+
+[ "$DEBUG" ] || log_file=/dev/null
+
+main "$@" 2>> $log_file
+
+
+
