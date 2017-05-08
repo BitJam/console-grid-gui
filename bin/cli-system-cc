@@ -1,0 +1,75 @@
+#!/bin/bash
+
+LIB_DIR=/usr/lib/shell
+loc_lib=./lib
+test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
+. $LIB_DIR/lib-menu.sh
+
+main() {
+    #grid_color_scheme light
+
+    screen_set title1=$"antiX System Control Centre"
+    screen_set box=-s border=1
+    set_title_2
+
+    init
+
+    hide_tty
+    clear
+    redraw
+    main_loop
+}
+
+init() {
+    screen_init
+    grid_read_new antix_av "$(make_menu)"
+    grid_narrow y=3 title=$"antiX System Commands"
+    grid_set xgap=3
+    grid_center_x
+    grid_fill_y 15
+    grid_finalize
+}
+
+antix_av_on_enter() {
+    local name=$1 sel=$3
+    cmd=$(echo "$name" | cut -d: -f1)
+
+    exit_to_main "$cmd"
+
+    case $cmd in
+         sysv-rc-conf) run_cmd -s  $cmd                     ;;    
+               tzdata) run_cmd -s  dpkg-reconfigure  $cmd   ;;    
+        guess-hwclock) run_cmd -s  $cmd                     ;;    
+                 htop) run_cmd     $cmd                     ;;
+                 inxi) run_cmd -p  $cmd -F                  ;;
+             env-info) run_cmd -p  $cmd                     ;;    
+            ps_mem.py) run_cmd -p  $cmd                     ;;
+                   df) run_cmd -p  $cmd -hTP                ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+    return
+}
+
+make_menu() {
+    add_cmd "" ""
+    add_cmd "sysv-rc-conf"   "Choose Startup Services"
+    add_cmd "tzdata"         "Set Date and Time" dpkg-reconfigure
+    add_cmd "guess-hwclock"  "Be prompted to setup the time correctly" 
+    add_cmd "htop"           "Show real-time system status"
+    add_cmd "inxi"           "Hardware and OS formation"
+    add_cmd "env-info"       "Other system Information"
+    add_cmd "ps_mem.py"      "Show memory usage"
+    add_cmd "df"             "Information about mounted partitions"
+
+    show_cmds
+    return_to_main_entry
+}
+
+DEBUG=true
+[ "$DEBUG" = "true" ] || log_file=/dev/null
+
+main "$@" 2>> $log_file
+
+
+

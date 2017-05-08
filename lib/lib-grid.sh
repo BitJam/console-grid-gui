@@ -316,7 +316,7 @@ grid_try_() {
 
     local gwidth=$(( GRID_COLS * (cell_width + x_gap) - x_gap))
     local gheight=$((GRID_ROWS * (1          + y_gap) - y_gap))
-    GRID_WIDTH=$((gwidth  + 2 * GRID_XBORDER))
+    GRID_WIDTH=$((gwidth  + 2 * GRID_XBORDER + 2))
     GRID_HEIGHT=$((gheight + 2 * GRID_YBORDER))
 
     log1 grid-cols   $GRID_COLS
@@ -775,6 +775,8 @@ grid_large() {
 
 on_enter_() {
     grid_grab_data
-    eval ${GRID_NAME}_on_enter \"\$GRID_VALUE\" \"\$GRID_DATA\" \"\$GRID_SEL\"
+    local val=$(printf "%s" "$GRID_VALUE" |sed -r 's/\x1B\[[0-9;]+[mKC]//g')
+
+    eval ${GRID_NAME}_on_enter \"\$val\" \"\$GRID_DATA\" \"\$GRID_SEL\"
 }
 

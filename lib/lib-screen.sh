@@ -3,8 +3,6 @@ TAB=$(printf "\t")
 
 ME=$(basename $0)
 
-PARENT_NAME=$(basename $(ps -o comm= $PPID))
-
 DEBUG_KEYS=0
 
 #FIXME:
@@ -461,17 +459,4 @@ need_root() {
     [ $UID -eq 0 ] && return
     #echo "The $ME program needs to be run as root"
     exec sudo -p "$ME: Enter password for user %u: " "$0" "$@"
-}
-
-under_main_cc() {
-    [ "$PARENT_NAME" = "cli-antix-cc" ]
-    return $?
-}
-
-return_to_main_entry() {
-    under_main_cc && echo "Return to main menu"
-}
-
-exit_to_main() {
-    [ "$1" = "Return to main menu" ] && exit 0
 }

@@ -1,0 +1,79 @@
+#!/bin/bash
+
+LIB_DIR=/usr/lib/shell
+loc_lib=./lib
+test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
+. $LIB_DIR/lib-menu.sh
+
+PATH=./bin:$PATH
+
+main() {
+    #grid_color_scheme light
+
+    screen_set title1=$"antiX Command-Line Control Centre"
+    screen_set title2=$"Press: <Enter> to select an option, <q> to quit, <h> for help"
+    screen_set box=-s border=1
+
+    init
+
+    hide_tty
+    clear
+    redraw
+    main_loop
+}
+
+init() {
+    screen_init
+    grid_read_new antix_cc "$(make_menu)"
+    grid_narrow y=3 title=$"Main Menu"
+    grid_center_x
+    grid_fill_y 15
+    grid_finalize
+}
+
+antix_cc_on_enter() {
+    local name=$1 sel=$3
+
+    case $name in
+        "Live System") cli-live-cc                 ;;
+             "System") cli-system-cc               ;;
+        "System Info") cli-sysinfo-cc              ;;
+       "Audio/Visual") cli-av-cc                   ;;
+           "Internet") cli-net-cc                  ;;
+             "Office") cli-office-cc               ;;
+          "Utilities") cli-util-cc                 ;;
+
+            Installer) run_cmd -spc cli-installer  ;;
+               reboot) run_cmd -spce reboot        ;;
+             poweroff) run_cmd -spce poweroff      ;;
+
+        *) db_msg "Would do action %s" "$white$name" ; return ;;
+    esac
+
+    clear
+    printf $cursor_off
+    redraw
+    return
+}
+
+make_menu() {
+    entry "Audio/Visual"           cli-av-cc
+    entry "Internet"               cli-net-cc
+    entry "System"                 cli-system-cc
+    #entry "System Info"            cli-sysinfo-cc
+    entry "Installer"              cli-installer
+    entry "Live System"            cli-live-cc
+    entry "Utilities"              cli-util-cc
+    entry "Office"                 cli-office-cc
+    entry "reboot"                 reboot
+    entry "poweroff"               poweroff
+}
+
+HELP_PAGE=$ME
+
+[ "$DEBUG" ] || log_file=/dev/null
+
+main "$@" 2>> $log_file
+
+
+
