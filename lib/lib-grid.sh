@@ -744,9 +744,10 @@ grid_clear() {
 grid_narrow() {
     grid_set "$@"
     grid_set shape=narrow dmark="***,***"
-    grid_set border=1,1 gap=1,0 mark="▶▶,◀◀"
+    grid_set border=1,1 gap=1,1 mark="▶▶,◀◀"
     while true; do
         grid_try               && break
+        grid_try ygap=0        && break
         grid_try mark="▶,◀"    && break
 
         log_err "Truncating grid $GRID_NAME ..."

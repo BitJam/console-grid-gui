@@ -24,7 +24,7 @@ init() {
     screen_init
     grid_read_new antix_av "$(make_menu)"
     grid_narrow y=3 title=$"antiX Audio Visual Commands"
-    grid_set xgap=3
+    grid_set ygap=3
     grid_center_x
     grid_fill_y 15
     grid_finalize

@@ -26,6 +26,7 @@ init() {
     screen_init
     grid_read_new antix_cc "$(make_menu)"
     grid_narrow y=3 title=$"Main Menu"
+    grid_set ygap=3
     grid_center_x
     grid_fill_y 15
     grid_finalize
