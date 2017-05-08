@@ -1,6 +1,6 @@
 Test cli menu system:
 
-    bin/cli-antix-cc
+    bin/cli--cc
 
 
 CLI Menus Outline
