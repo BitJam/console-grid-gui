@@ -242,6 +242,16 @@ cruler() {
     done
 }
 
+lab_len() {
+    local len=$(str_len "$1")
+    if echo "$1" | grep -P -q "\e\[[0-9]+C"; then
+        local jump=$(echo "$1" | sed -r "s/.*\x1B\[([0-9]+)C.*/\1/")
+        echo $((len + jump - 4))
+    else
+        echo $len
+    fi
+}
+
 # Note, the 2nd regex helps shells that don't know about unicode
 # as long as sed is unicode-aware then you are okay.  Unfortunately
 # BusyBox sed doesn't work here.

@@ -118,7 +118,7 @@ grid_read_new() {
         fi
         [ -z "$label" ] && continue
         eval ${GRID_NAME}_GRID_LAB_$cnt=\$label
-        lab_width=$(str_len "$label")
+        lab_width=$(lab_len "$label")
         [ $width -lt $lab_width ] && width=$lab_width
         GRID_VALUE_LIST="$GRID_VALUE_LIST$cnt:$label\n"
         cnt=$((cnt + 1))
@@ -316,7 +316,7 @@ grid_try_() {
 
     local gwidth=$(( GRID_COLS * (cell_width + x_gap) - x_gap))
     local gheight=$((GRID_ROWS * (1          + y_gap) - y_gap))
-    GRID_WIDTH=$((gwidth  + 2 * GRID_XBORDER + 2))
+    GRID_WIDTH=$((gwidth  + 2 * GRID_XBORDER))
     GRID_HEIGHT=$((gheight + 2 * GRID_YBORDER))
 
     log1 grid-cols   $GRID_COLS
