@@ -3,7 +3,7 @@ ROOT        := .
 
 SHELL       := /bin/bash
 
-SCRIPTS     := bin/* 
+SCRIPTS     := bin/*
 LIB_DIR     := $(ROOT)/usr/lib/shell
 BIN_DIR     := $(ROOT)/usr/local/bin
 LOCALE_DIR  := $(ROOT)/usr/share/
@@ -12,7 +12,7 @@ MAN_DIR     := $(ROOT)/usr/share/man/man1
 
 ALL_DIRS   := $(LIB_DIR) $(BIN_DIR) $(LOCALE_DIR) $(MAN_DIR)
 
-.PHONY: $(SCRIPTS) help all lib 
+.PHONY: scripts help all lib
 
 help:
 	@echo "make help                show this help"
@@ -25,13 +25,13 @@ help:
 	@#echo ""
 	@#echo ""
 
-all: $(SCRIPTS) lib
+all: scripts lib
 
 lib: | $(LIB_DIR) $(LOCALE_DIR)
 	cp -r lib/* $(LIB_DIR)
 	@#cp -r locale $(LOCALE_DIR)
 
-$(SCRIPTS): | $(BIN_DIR)
+scripts: | $(BIN_DIR)
 	cp bin/* $(BIN_DIR)
 
 $(ALL_DIRS):
