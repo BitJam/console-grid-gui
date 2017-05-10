@@ -18,11 +18,11 @@ TITLE
 VALUE_LIST
 VX0
 VY0
-LDMARK 
+LDMARK
 LMARK
 LPAD
 MARGIN
-RDMARK 
+RDMARK
 RMARK
 RPAD
 STITLE_1
@@ -132,7 +132,7 @@ While_Read
     log1 grid-lab-width $GRID_LAB_WIDTH
 
     return
-    
+
     for cnt in $(seq 0 $GRID_MAX); do
         eval label=\$${GRID_NAME}_GRID_LAB_$cnt
         while [ ${#label} -lt $width ]; do
@@ -228,7 +228,7 @@ grid_truncate() {
     grid_defaults
     local cols=$(( (GRID_MAX_WIDTH  - 2 * GRID_XBORDER) / GRID_CELL_WIDTH ))
     local rows=$(( (GRID_MAX_HEIGHT - 2 * GRID_YBORDER) / (1 + GRID_YGAP) ))
-    local max=$((rows * cols - 1)) 
+    local max=$((rows * cols - 1))
     log1 rows $rows
     log1 cols $cols
     log "Truncate GRID_MAX from %d to %d" $GRID_MAX $max
@@ -249,8 +249,8 @@ grid_try_() {
     local m_len=$(str_len "$GRID_MARGIN")
     local lpad=$(printf "%${l_len}s" "")
     local rpad=$(printf "%${r_len}s" "")
-    GRID_LPAD=$lpad 
-    GRID_RPAD=$rpad 
+    GRID_LPAD=$lpad
+    GRID_RPAD=$rpad
     GRID_CELL_WIDTH=$((GRID_LAB_WIDTH + l_len + r_len + 2 * m_len))
 
     log1 grid-pad "$GRID_MARGIN"
@@ -328,9 +328,9 @@ grid_try_() {
 grid_fill_y() {
     local top=$1  extra=$((GRID_MAX_HEIGHT - GRID_HEIGHT))
     log1 extra $extra
-    log1 grid-vy0 $GRID_VY0 
+    log1 grid-vy0 $GRID_VY0
     GRID_VY0=$((GRID_VY0 + (top * extra) / 100))
-    log1 grid-vy0 $GRID_VY0 
+    log1 grid-vy0 $GRID_VY0
 }
 
 grid_center_x() {
@@ -403,7 +403,7 @@ grid_finalize() {
 
         local gx=$((gx0 + col * xoff))
         local gy=$((gy0 + row * yoff))
-        
+
         eval ${GRID_NAME}_GRID_XY_$i="'\e[$gy;${gx}H'"
         #eval ${GRID_NAME}_GRID_XY_$i="'\e[${y}B\e[${x}C'"
 
@@ -487,7 +487,7 @@ str_adjust_width_l() {
     if [ $slen -eq $len ]; then
         echo "$str"
     elif [ $slen -gt $len ]; then
-        str_ltrunc "$str" $len 
+        str_ltrunc "$str" $len
     else
         printf "%${len}s" "$str"
     fi
@@ -499,7 +499,7 @@ str_adjust_width_r() {
     if [ $slen -eq $len ]; then
         echo "$str"
     elif [ $slen -gt $len ]; then
-        str_rtrunc "$str" $len 
+        str_rtrunc "$str" $len
     else
         log1 pfout "$(printf "%${len}s" "$str")"
         #printf "%-${len}s" "$str"
@@ -539,7 +539,7 @@ grid_restore() {
 }
 
 grid_show() {
-    local var val 
+    local var val
     for var in $GRID__SAVE; do
         eval val=\$GRID_$var
         [ -z "${var##*_LIST}" ] && continue
@@ -595,7 +595,7 @@ grid_goto() {
 
     [ "$GRID_ON_GOTO" ] && eval ${GRID_NAME}_on_goto \"\$lab\" \"\$GRID_SEL\"
 
-    #grid_select 
+    #grid_select
     #grid_grab_data
 
     return 0
