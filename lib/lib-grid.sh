@@ -778,6 +778,17 @@ on_enter_() {
     grid_grab_data
     local val=$(printf "%s" "$GRID_VALUE" |sed -r 's/\x1B\[[0-9;]+[mKC]//g')
 
-    eval ${GRID_NAME}_on_enter \"\$val\" \"\$GRID_DATA\" \"\$GRID_SEL\"
+    if type ${GRID_NAME}_cmd &>/dev/null ; then
+        local cmd=$(echo "$val" | cut -d: -f1)
+
+        exit_to_main "$cmd" && return
+        eval ${GRID_NAME}_cmd \"\$cmd\"
+
+    elif type ${GRID_NAME}_on_enter &>/dev/null; then
+        eval ${GRID_NAME}_on_enter \"\$val\" \"\$GRID_DATA\" \"\$GRID_SEL\"
+
+    else
+        db_msg "Would do action %s" "$white$val" ;
+    fi
 }
 
