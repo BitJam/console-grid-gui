@@ -10,6 +10,8 @@ PATH=./bin:$PATH
 main() {
     #grid_color_scheme light
 
+    echo  -n "${cyan}Please wait while $ME examines you system ..."
+
     local start_t=$(get_time)
 
     screen_set title1=$"antiX Command-Line Control Centre"
