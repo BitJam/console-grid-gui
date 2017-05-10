@@ -3,7 +3,7 @@ ROOT        := .
 
 SHELL       := /bin/bash
 
-SCRIPTS     := bin/*
+SCRIPTS     := bin/cli* bin/*-select
 LIB_DIR     := $(ROOT)/usr/lib/shell
 BIN_DIR     := $(ROOT)/usr/local/bin
 LOCALE_DIR  := $(ROOT)/usr/share/
@@ -32,7 +32,7 @@ lib: | $(LIB_DIR) $(LOCALE_DIR)
 	@#cp -r locale $(LOCALE_DIR)
 
 scripts: | $(BIN_DIR)
-	cp bin/* $(BIN_DIR)
+	cp $(SCRIPTS) $(BIN_DIR)
 
 $(ALL_DIRS):
 	test -d $(ROOT)/
