@@ -1,0 +1,284 @@
+#!/bin/bash
+
+LIB_DIR=/usr/lib/shell
+loc_lib=./lib
+test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
+. $LIB_DIR/lib-menu.sh
+
+PATH=./bin:$PATH
+
+main() {
+    #grid_color_scheme light
+
+    local start_t=$(get_time)
+
+    screen_set title1=$"antiX Command-Line Control Centre"
+    screen_set title2=$"Press: <Enter> to select an option, <b> back to main, <q> to quit, <h> for help"
+    screen_set box=-s border=1
+
+    start_menu_list
+
+    init
+
+    select_menu main_cc
+    local start_str="init took: $(delta_time $start_t) seconds"
+    log "$start_str"
+
+    hide_tty
+    clear
+    redraw
+    db_msg "$start_str"
+    main_loop
+}
+
+init() {
+    screen_init
+    new_menu main_cc  $"Main Menu"                "$(make_main_menu)"
+    new_menu live_cc  $"antiX Live Commands"      "$(make_live_menu)"
+    new_menu   av_cc  $"Audio/Visual Commands"    "$(make_av_menu)"
+    new_menu  sys_cc  $"System Commands"          "$(make_sys_menu)"
+    new_menu util_cc  $"Utility Commands"         "$(make_util_menu)"
+    new_menu  net_cc  $"Internet Applications"    "$(make_net_menu)"
+    new_menu  off_cc  $"Office Applications"      "$(make_off_menu)"
+
+}
+
+key_callback() {
+    local key=$1
+    case $key in
+
+        [bB]) under_main_cc && select_menu $PARENT_MENU ;;
+
+           q) in_main_cc && clear && exit
+              select_menu $PARENT_MENU ;;
+
+           *) return 1;;
+    esac
+    return 0
+}
+
+main_cc_on_enter() {
+    local name=$1 sel=$3
+
+    case $name in
+        "Live System") select_menu live_cc         ;;
+       "Audio/Visual") select_menu av_cc           ;;
+             "System") select_menu sys_cc          ;;
+        #"System Info") cli-sysinfo-cc              ;;
+           "Internet") select_menu net_cc          ;;
+             "Office") select_menu off_cc          ;;
+          "Utilities") select_menu util_cc         ;;
+
+            Installer) run_cmd -spc cli-installer  ;;
+               reboot) run_cmd -spce reboot        ;;
+             poweroff) run_cmd -spce poweroff      ;;
+
+        *) db_msg "Would do action %s" "$white$name" ; return ;;
+    esac
+
+    clear
+    printf $cursor_off
+    redraw
+    return
+}
+
+av_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+                 speaker-test) run_cmd     $cmd -c 2 -t wav -l 2 ;;
+        alsa-set-default-card) run_cmd  -p $cmd --cli   ;;
+                    alsamixer) run_cmd     $cmd         ;;
+                         mocp) run_cmd     $cmd         ;;
+                          mpv) run_cmd     $cmd         ;;
+                         pmrp) run_cmd     $cmd         ;;
+                      burniso) run_cmd     $cmd         ;;
+                          cdw) run_cmd     $cmd         ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+    return
+}
+
+sys_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+         sysv-rc-conf) run_cmd -s  $cmd                     ;;
+               tzdata) run_cmd -s  dpkg-reconfigure  $cmd   ;;
+        guess-hwclock) run_cmd -s  $cmd                     ;;
+                 htop) run_cmd     $cmd                     ;;
+                 inxi) run_cmd -p  $cmd -F                  ;;
+             env-info) run_cmd -p  $cmd                     ;;
+            ps_mem.py) run_cmd -p  $cmd                     ;;
+                   df) run_cmd -p  $cmd -hTP                ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+    return
+}
+
+live_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+             live-usb-maker) run_cmd -s  $cmd --pause ;;
+        live-kernel-updater) run_cmd -s  $cmd --pause ;;
+              live-remaster) run_cmd -sp $cmd --cli   ;;
+               persist_save) run_cmd -sp $cmd --cli   ;;
+             persist-makefs) run_cmd -sp $cmd --cli   ;;
+             persist-config) run_cmd -sp $cmd --cli   ;;
+                          *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
+
+util_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+                         mc) run_cmd     $cmd         ;;
+              splash-select) run_cmd     $cmd         ;;
+        console-font-select) run_cmd     $cmd         ;;
+                          X) run_cmd     $cmd         ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
+
+net_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+               ceni) run_cmd -s  $cmd         ;;
+        wicd-curses) run_cmd -s  $cmd         ;;
+             netpro) run_cmd -s  $cmd         ;;
+             elinks) run_cmd     $cmd         ;;
+             links2) run_cmd     $cmd         ;;
+              irrsi) run_cmd     $cmd         ;;
+         newsbeuter) run_cmd     $cmd         ;;
+           rtorrent) run_cmd     $cmd         ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
+
+off_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+            wordgrinder) run_cmd  $cmd    ;;
+               calcurse) run_cmd  $cmd    ;;
+                   nano) run_cmd  $cmd    ;;
+                    vim) run_cmd  $cmd    ;;
+               X) run_cmd -sp $cmd        ;;
+               X) run_cmd -sp $cmd        ;;
+               *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
+
+
+make_main_menu() {
+    entry "Audio/Visual"
+    entry "Internet"
+    entry "System"
+    #entry "System Info"
+    entry "Live System"
+    entry "Utilities"
+    entry "Office"
+    entry "installer"              cli-installer
+    entry "reboot"                 reboot
+    entry "poweroff"               poweroff
+}
+
+make_sys_menu() {
+    start_menu_list
+    add_cmd "sysv-rc-conf"   "Choose Startup Services"
+    add_cmd "tzdata"         "Set Date and Time"  dpkg-reconfigure
+    add_cmd "guess-hwclock"  "Be prompted to setup the time correctly"
+    add_cmd "htop"           "Show real-time system status"
+    add_cmd "inxi"           "Hardware and OS formation"
+    add_cmd "env-info"       "Other system Information"
+    add_cmd "ps_mem.py"      "Show memory usage"
+    add_cmd "df"             "Information about mounted partitions"
+
+    end_menu_list
+    back_to_main_entry
+}
+
+make_av_menu() {
+    start_menu_list
+
+    add_cmd "speaker-test"             "See if sound is working"
+    add_cmd "alsa-set-default-card"    "Select which sound card to use"
+    add_cmd "alsamixer"                "simple sound mixer"
+    add_cmd "mocp"                     "Audio Player"
+    # add_cmd "mpv"                      "Video Player"
+    add_cmd "pmrp"                     "Poor Man's Radio Player"
+    # add_cmd "burniso"                  "cd/dvd burner"
+    add_cmd "cdw"                      "cd/dvd/burner"
+
+    end_menu_list
+    back_to_main_entry
+}
+
+make_live_menu() {
+    start_menu_list
+    add_cmd "live-usb-maker"       "Make a live-usb"
+    add_cmd "live-kernel-updater"  "Update live kernel"
+    add_cmd "live-remaster"        "Remaster live system"
+    add_cmd "persist_save"         "Save dynamic root persistence"
+    add_cmd "persist-makefs"       "Configure dynamic root persistence"
+    add_cmd "persist-config"       "Create live persistence files"
+    end_menu_list
+    back_to_main_entry
+}
+
+make_util_menu() {
+    start_menu_list
+
+    add_cmd ""             ""
+    add_cmd "mc"                    "Nidnight commander file manager"
+    add_cmd "splash-select"         "Choose the console background"
+    add_cmd "console-font-select"   "Choose the console font"
+
+    end_menu_list
+    back_to_main_entry
+}
+
+make_net_menu() {
+    start_menu_list
+
+    add_cmd "ceni"         "Setup wireless"
+    add_cmd "wicd-curses"  "Setup wireless (alternative)"
+    add_cmd "netpro"       "Manage network profiles"
+    add_cmd "elinks"       "Web browser"
+    add_cmd "links2"       "Web browser"
+    add_cmd "irrsi"        "Chat client"
+    add_cmd "newsbeuter"   "RSS/Atom feed reader"
+    add_cmd "rtorrent"     "Bittorrent client"
+    add_cmd ""             ""
+    add_cmd ""             ""
+    add_cmd ""             ""
+    add_cmd ""             ""
+    add_cmd ""             ""
+
+    end_menu_list
+    back_to_main_entry
+}
+
+make_off_menu() {
+    start_menu_list
+
+    add_cmd "wordgrinder"   "Word Processor"
+    add_cmd "calcurse"      "Calendar/Schedule"
+    add_cmd "nano"          "Simple text editor"
+    add_cmd "vim"           "Advanced text editor"
+    add_cmd ""           ""
+
+    end_menu_list
+    back_to_main_entry
+}
+
+
+HELP_PAGE=$ME
+
+[ "$DEBUG" ] || log_file=/dev/null
+
+main "$@" 2>> $log_file
+
+
+

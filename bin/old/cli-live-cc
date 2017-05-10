@@ -50,13 +50,14 @@ antix_live_on_enter() {
 }
 
 make_menu() {
+    start_menu_list
     add_cmd "live-usb-maker"       "Make a live-usb"
     add_cmd "live-kernel-updater"  "Update live kernel"
     add_cmd "live-remaster"        "Remaster live system"
     add_cmd "persist_save"         "Save dynamic root persistence"
     add_cmd "persist-makefs"       "Configure dynamic root persistence"
     add_cmd "persist-config"       "Create live persistence files"
-    show_cmds
+    end_menu_list
     return_to_main_entry
 }
 

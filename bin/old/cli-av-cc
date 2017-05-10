@@ -24,7 +24,6 @@ init() {
     screen_init
     grid_read_new antix_av "$(make_menu)"
     grid_narrow y=3 title=$"antiX Audio Visual Commands"
-    grid_set ygap=3
     grid_center_x
     grid_fill_y 15
     grid_finalize
@@ -52,6 +51,7 @@ antix_av_on_enter() {
 }
 
 make_menu() {
+    start_menu_list
     add_cmd "speaker-test"             "See if sound is working"
     add_cmd "alsa-set-default-card"    "Select which sound card to use"
     add_cmd "alsamixer"                "simple sound mixer"
@@ -61,7 +61,7 @@ make_menu() {
     # add_cmd "burniso"                  "cd/dvd burner"
     add_cmd "cdw"                      "cd/dvd/burner"
 
-    show_cmds
+    end_menu_list
     return_to_main_entry
 }
 
