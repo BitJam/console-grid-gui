@@ -2,7 +2,6 @@
 . $LIB_DIR/lib-grid.sh
 
 PARENT_NAME=$(basename $(ps -o comm= $PPID))
-echo "PPID: $PPID"
 HELP_PAGE=$ME
 
 SUDO=sudo
@@ -49,7 +48,12 @@ entry() {
 #
 #------------------------------------------------------------------------------
 under_main_cc() {
-    [ "$PARENT_NAME" = "cli-cc" ]
+    [ "$PARENT_MENU" = "main_cc" ]
+    return $?
+}
+
+in_main_cc() {
+    [ "$THIS_MENU" = "main_cc" ]
     return $?
 }
 
@@ -60,11 +64,23 @@ return_to_main_entry() {
     under_main_cc && echo "${cyan}Return to main menu"
 }
 
+back_to_main_entry() {
+    centered_lab "${cyan}Return to main menu"
+}
+
+centered_lab() {
+    local lab=$1
+    local len=$(str_len "$lab")
+    local pad=$(((MENU_WIDTH - len) / 2))
+    printf "\e[${pad}C$lab"
+}
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 exit_to_main() {
-    [ "$1" = "Return to main menu" ] && exit 0
+    [ "$1" = "Return to main menu" ] || return 1
+    select_menu $PARENT_MENU
+    return 0
 }
 
 #------------------------------------------------------------------------------
@@ -92,8 +108,7 @@ lpad_word() {
 #------------------------------------------------------------------------------
 add_cmd() {
     local cmd=$1  blurb=$2  real_cmd=${3:-$1}
-    
-    : ${CWIDTH:=0}
+    [ -z "$cmd" ] && return
 
     if ! which $real_cmd &>/dev/null; then
         echo "command not found: $real_cmd" >> $log_file
@@ -101,19 +116,26 @@ add_cmd() {
     fi
 
     local cwidth=${#cmd}
-    [ $CWIDTH -lt $cwidth ] && CWIDTH=$cwidth
-    CMD_LIST="$CMD_LIST$cmd $blurb\n"
+    [ $CMD_WIDTH -lt $cwidth ] && CMD_WIDTH=$cwidth
+    local mwidth=$((cwidth + $(str_len "$blurb") + 2))
+
+    [ $MENU_WIDTH -lt $mwidth ] && MENU_WIDTH=$mwidth
+    MENU_LIST="${MENU_LIST}cmd $cmd $blurb\n"
 }
 
+start_menu_list() {
+    MENU_WIDTH=0
+    CMD_WIDTH=0
+}
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
-show_cmds() {
+end_menu_list() {
     local cmd  blurb
-    while read cmd blurb; do
-        printf "%s: %s\n" "$(lpad_word $((CWIDTH + 1)) "$cmd")" "$blurb"
+    while read type cmd blurb; do
+        printf "%s: %s\n" "$(lpad_word $((CMD_WIDTH + 1)) "$cmd")" "$blurb"
     done <<Show_cmds
-$(echo -e "$CMD_LIST")
+$(echo -e "$MENU_LIST")
 Show_cmds
 }
 
@@ -128,7 +150,7 @@ run_cmd() {
         opts=$1 ; shift
         [ -z "${opts##-*p*}" ] && pause=true
         [ -z "${opts##-*s*}" ] && sudo=$SUDO
-        [ -z "${opts##-*c*}" ] && check=true 
+        [ -z "${opts##-*c*}" ] && check=true
         [ -z "${opts##-*e*}" ] && exec="exec "
     fi
 
@@ -169,10 +191,55 @@ run_cmd() {
    redraw
 }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 is_cmd() { which "$1" &>/dev/null ; return $? ; }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 pause() {
     local xxx
     echo -n "${cyan}Press <Enter> to continue$nc"
     read -s xxx
 }
+
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+new_menu() {
+    local name=$1  title=$2  menu=$3
+    grid_read_new $name "$menu"
+    grid_narrow y=3 title="$title"
+    grid_center_x
+    grid_fill_y 15
+    grid_finalize
+}
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+select_menu() {
+    local name=$1
+
+    PARENT_MENU=$THIS_MENU
+    THIS_MENU=$name
+
+    grid_activate $name
+    clear
+    redraw
+}
+
+get_time() { cut -d" " -f22 /proc/self/stat ;}
+
+delta_time() {
+    get_seconds $(($(get_time) - $1))
+}
+
+get_seconds() {
+    local dt=${1:-$(get_time)}
+    printf "%03d" $dt | sed -r 's/(..)$/.\1/'
+}
+
