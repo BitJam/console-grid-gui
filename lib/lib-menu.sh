@@ -124,6 +124,7 @@ add_cmd() {
         return
     fi
 
+    cmd=$(basename $cmd)
     local cwidth=${#cmd}
     [ $CMD_WIDTH -lt $cwidth ] && CMD_WIDTH=$cwidth
     local mwidth=$((cwidth + $(str_len "$blurb") + 2))
