@@ -304,12 +304,12 @@ pause() {
 #------------------------------------------------------------------------------
 new_menu() {
     local name=$1  title=$2  menu=$3
-    grid_read_new $name "$menu"
-    grid_narrow y=3 title="$title"
-    grid_center_x
-    grid_fill_y 15
-    grid_finalize
+    eval MENU_TITLE_$name=\$name
+    eval MENU_MENU_$name=\$menu
+    eval MENU_NEW_$name=true
 }
+
+
 
 #------------------------------------------------------------------------------
 #
@@ -319,6 +319,17 @@ select_menu() {
 
     PARENT_MENU=$THIS_MENU
     THIS_MENU=$name
+
+    local new title
+    eval new=\$MENU_NEW_$name
+    if [ "$new" ]; then
+        eval title=\$MENU_TITLE_$name
+        grid_read_new $name "$(eval \$MENU_MENU_$name)"
+        grid_narrow y=3 title="$title"
+        grid_center_x
+        grid_fill_y 15
+        grid_finalize
+    fi
 
     grid_activate $name
     clear
