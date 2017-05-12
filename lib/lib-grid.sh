@@ -780,7 +780,7 @@ on_enter_() {
     if type ${GRID_NAME}_cmd &>/dev/null ; then
         local cmd=$(echo "$val" | cut -d: -f1)
 
-        exit_to_main "$cmd" && return
+        return_to_main "$cmd" && return
         eval ${GRID_NAME}_cmd \"\$cmd\"
 
     elif type ${GRID_NAME}_on_enter &>/dev/null; then
