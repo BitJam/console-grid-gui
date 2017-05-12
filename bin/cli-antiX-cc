@@ -282,18 +282,18 @@ off_cc_cmd() {
 
 make_config_menu() {
     start_menu_list
-    add_file "File system table"               /etc/fstab
-    add_file "X Windows Configuration"         /etc/X11/xorg.conf
-    add_file "SLiM Graphical login manager"    /etc/slim.conf
-    add_file "Installed bootloader"            /boot/grub.menu.lst
-    add_file "Live usb BIOS bootloader"        /live/boot-dev/boot/syslinux/syslinux.cfg
-    add_file "Live usb UEFI bootloader"        /live/boot-dev/boot/grub/grub.cfg
-    add_file "Remaster Exclude List"           /usr/local/share/excludes/general-remaster-exclude.list
-    add_file "Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
-    add_file "Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
-    add_file "Persist Save Exclude List"        /usr/local/share/excludes/persist-save-exclude.list
-    add_file "X Server Log File"               /var/log/Xorg.0.log
-    add_file "Live Boot Log File"              /var/log/live/initrd.log.color
+    add_edit "File system table"               /etc/fstab
+    add_edit "X Windows Configuration"         /etc/X11/xorg.conf
+    add_edit "SLiM Graphical login manager"    /etc/slim.conf
+    add_edit "Installed bootloader"            /boot/grub.menu.lst
+    add_edit "Live usb BIOS bootloader"        /live/boot-dev/boot/syslinux/syslinux.cfg
+    add_edit "Live usb UEFI bootloader"        /live/boot-dev/boot/grub/grub.cfg
+    add_edit "Remaster Exclude List"           /usr/local/share/excludes/general-remaster-exclude.list
+    add_edit "Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
+    add_edit "Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
+    add_edit "Persist Save Exclude List"       /usr/local/share/excludes/persist-save-exclude.list
+    add_view "X Server Log File"               /var/log/Xorg.0.log
+    add_view "Live Boot Log File"              /var/log/live/initrd.log.color
 
     end_menu_list
     back_to_main_entry

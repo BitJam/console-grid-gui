@@ -133,8 +133,12 @@ add_cmd() {
     MENU_LIST="${MENU_LIST}cmd $cmd $blurb\n"
 }
 
-add_file() {
-    local blurb=$1 file=$2
+add_view() { _add_file "${yellow}View$white" "$@"; }
+add_edit() { _add_file "${cyan}Edit$white"   "$@"; }
+add_file() { _add_file ""     "$@"; }
+
+_add_file() {
+    local type=$1  blurb=$2  file=$3
     [ -z "$file" ] && return
 
     if ! test -e $file; then
@@ -145,6 +149,7 @@ add_file() {
     base=$(basename $file)
     local cwidth=${#base}
     [ $CMD_WIDTH -lt $cwidth ] && CMD_WIDTH=$cwidth
+    [ -n "$type" ] && blurb="$type $blurb"
     local mwidth=$((cwidth + $(str_len "$blurb") + 2))
 
     [ $MENU_WIDTH -lt $mwidth ] && MENU_WIDTH=$mwidth
@@ -204,7 +209,7 @@ run_cmd() {
         esac
     fi
 
-    printf "\e[0;0H$cyan$exec$sudo $*$nc\n"
+    printf "\e[0;0H$cyan$exec$sudo $*$nc\n" | tee -a $log_file
 
     if [ "$exec" ]; then
         exec $sudo "$@" 2>&1
@@ -246,7 +251,7 @@ edit_file() {
     restore_tty
 
     local cmd="$EDITOR $file"
-    printf "\e[0;0H$cyan$exec$cmd$nc\n"
+    printf "\e[0;0H$cyan$exec$cmd$nc\n" | tee -a $log_file
 
     ($sudo bash -c "$cmd" 2>&1)&
     local pid=$!
@@ -271,7 +276,7 @@ view_file() {
     restore_tty
 
     local cmd="less -R $file"
-    printf "\e[0;0H$cyan$exec$cmd$nc\n"
+    printf "\e[0;0H$cyan$exec$cmd$nc\n"  | tee -a $log_file
 
     (bash -c "$cmd" 2>&1)&
     local pid=$!
