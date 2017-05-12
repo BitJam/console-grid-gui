@@ -8,6 +8,8 @@ DEBUG_KEYS=0
 #FIXME:
 log_file=$ME.log
 
+trap on_exit EXIT
+
 case $(tty) in
     */pts/*) SCREEN_IN_VT=     ; TTY_OFF=0 ;;
           *) SCREEN_IN_VT=true ; TTY_OFF=1 ;;
@@ -447,9 +449,9 @@ restore_tty() {
 
 hide_tty() {
     [ "$ORIG_STTY" ] || ORIG_STTY=$(stty -g)
-    trap restore_tty EXIT
     [ "$SCREEN_IN_VT" ] || trap restart WINCH
     stty cbreak -echo
+    TTY_HID=true
     printf $cursor_off
 }
 
@@ -470,3 +472,9 @@ need_root() {
     #echo "The $ME program needs to be run as root"
     exec sudo -p "$ME: Enter password for user %u: " "$0" "$@"
 }
+
+on_exit() {
+    restore_tty
+    #tput rmcup
+}
+
