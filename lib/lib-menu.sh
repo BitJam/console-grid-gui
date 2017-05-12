@@ -199,6 +199,11 @@ run_cmd() {
     # echo "check $check"
 
     if [ "$check" ]; then
+        local xxx
+        read     -t .01 xxx
+        read -N1 -t .01 xxx
+        read -N1 -t .01 xxx
+        read -N1 -t .01 xxx
         printf "Are you SURE you want to %s (y/N) " "$1"
         local ans
         read ans
@@ -227,7 +232,7 @@ run_cmd() {
 }
 
 edit_file() {
-    local pause sudo exec check opts
+    local sudo opts
     clear
     if [ -z "${1##-*}" ]; then
         opts=$1 ; shift
@@ -263,7 +268,7 @@ edit_file() {
 }
 
 view_file() {
-    local pause sudo exec check opts
+    local opts
     clear
     if [ -z "${1##-*}" ]; then
         opts=$1 ; shift
@@ -299,6 +304,10 @@ is_cmd() { which "$1" &>/dev/null ; return $? ; }
 #------------------------------------------------------------------------------
 pause() {
     local xxx
+    read     -t .01 xxx
+    read -N1 -t .01 xxx
+    read -N1 -t .01 xxx
+    read -N1 -t .01 xxx
     echo -n "${cyan}Press <Enter> to continue$nc"
     read -s xxx
 }
