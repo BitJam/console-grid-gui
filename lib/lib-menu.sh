@@ -1,6 +1,15 @@
 . $LIB_DIR/lib-screen.sh
 . $LIB_DIR/lib-grid.sh
 
+: ${EDITOR:=nano}
+
+for ed in nano; do
+    which $ed &>/dev/null && continue
+    EDITOR=$ed
+    break
+done
+
+
 PARENT_NAME=$(basename $(ps -o comm= $PPID))
 HELP_PAGE=$ME
 
@@ -123,10 +132,30 @@ add_cmd() {
     MENU_LIST="${MENU_LIST}cmd $cmd $blurb\n"
 }
 
+add_file() {
+    local blurb=$1 file=$2
+    [ -z "$file" ] && return
+
+    if ! test -e $file; then
+        echo "File not found: $file" >> $log_file
+        return
+    fi
+
+    base=$(basename $file)
+    local cwidth=${#base}
+    [ $CMD_WIDTH -lt $cwidth ] && CMD_WIDTH=$cwidth
+    local mwidth=$((cwidth + $(str_len "$blurb") + 2))
+
+    [ $MENU_WIDTH -lt $mwidth ] && MENU_WIDTH=$mwidth
+    MENU_LIST="${MENU_LIST}file $base $blurb\n"
+}
+
+
 start_menu_list() {
     MENU_WIDTH=0
     CMD_WIDTH=0
 }
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -190,6 +219,69 @@ run_cmd() {
    hide_tty
    redraw
 }
+
+edit_file() {
+    local pause sudo exec check opts
+    clear
+    if [ -z "${1##-*}" ]; then
+        opts=$1 ; shift
+        [ -z "${opts##-*s*}" ] && sudo=$SUDO
+    fi
+
+    local file=$1
+
+    if ! sudo test -e $file; then
+        db_msg "File not file:$white $file"
+        return
+    fi
+
+    if ! sudo test -w $file; then
+        db_msg "Cannot write to file:$white $file"
+        return
+    fi
+
+
+    clear
+    restore_tty
+
+    local cmd="$EDITOR $file"
+    printf "\e[0;0H$cyan$exec$cmd$nc\n"
+
+    ($sudo bash -c "$cmd" 2>&1)&
+    local pid=$!
+    wait $pid
+
+   clear
+   hide_tty
+   redraw
+}
+
+view_file() {
+    local pause sudo exec check opts
+    clear
+    if [ -z "${1##-*}" ]; then
+        opts=$1 ; shift
+        [ -z "${opts##-*s*}" ] && sudo=$SUDO
+    fi
+
+    local file=$1
+
+    clear
+    restore_tty
+
+    local cmd="less -R $file"
+    printf "\e[0;0H$cyan$exec$cmd$nc\n"
+
+    (bash -c "$cmd" 2>&1)&
+    local pid=$!
+    wait $pid
+
+   clear
+   hide_tty
+   redraw
+}
+
+
 
 #------------------------------------------------------------------------------
 #
