@@ -23,7 +23,6 @@ main() {
 
     init
 
-    select_menu main_cc
     local start_str="init took: $(delta_time $start_t) seconds"
     log "$start_str"
 
@@ -36,14 +35,16 @@ main() {
 
 init() {
     screen_init
-    new_menu main_cc  $"Main Menu"                "$(make_main_menu)"
-    new_menu live_cc  $"antiX Live Commands"      "$(make_live_menu)"
-    new_menu   av_cc  $"Audio/Visual Commands"    "$(make_av_menu)"
-    new_menu  sys_cc  $"System Commands"          "$(make_sys_menu)"
-    new_menu util_cc  $"Utility Commands"         "$(make_util_menu)"
-    new_menu  net_cc  $"Internet Applications"    "$(make_net_menu)"
-    new_menu  off_cc  $"Office Applications"      "$(make_off_menu)"
+    new_menu   main_cc  $"Main Menu"                make_main_menu
+    new_menu   live_cc  $"antiX Live Commands"      make_live_menu
+    new_menu     av_cc  $"Audio/Visual Commands"    make_av_menu
+    new_menu    sys_cc  $"System Commands"          make_sys_menu
+    new_menu   util_cc  $"Utility Commands"         make_util_menu
+    new_menu    net_cc  $"Internet Applications"    make_net_menu
+    new_menu    off_cc  $"Office Applications"      make_off_menu
+    new_menu config_cc  $"Configuration Files"      make_config_menu
 
+    select_menu main_cc
 }
 
 key_callback() {
