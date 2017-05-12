@@ -113,8 +113,8 @@ screen_draw_titles() {
 
 screen_draw_box() {
     SCREEN_DID_BOX=
-    log1 box-style $SCREEN_BOX_STYLE
-    log1 box       "$SCREEN_BOX"
+    #log1 box-style $SCREEN_BOX_STYLE
+    #log1 box       "$SCREEN_BOX"
     [ -n "$SCREEN_BOX_STYLE" -a -n "$SCREEN_BOX" ] || return
     SCREEN_DID_BOX=true
     box $SCREEN_BOX_STYLE $SCREEN_BOX $SCREEN_BORDER_COLOR
@@ -282,7 +282,7 @@ ctext() {
 }
 
 cline() {
-    log "cline(\"$1\", \"$2$nc\")"
+    #log "cline(\"$1\", \"$2$nc\")"
     local y=$1 msg=$2 color=$3
     [ "$msg" ] || return
     msg=$(echo "$msg" | sed "s/<color>/$color/g")
@@ -316,7 +316,7 @@ box() {
 
     #return
     local x0=$1 y0=$2 width=$3 height=$4 color=$5
-    log "box($flag $x0 $y0 $width $height ${color}XX$nc)"
+    #log "box($flag $x0 $y0 $width $height ${color}XX$nc)"
 
     [ "$color" ] && printf "$nc$color"
 
