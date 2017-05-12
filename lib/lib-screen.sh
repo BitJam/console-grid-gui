@@ -352,8 +352,8 @@ get_key() {
     read -s -N1
     k1=$REPLY
     read -s -N2 -t 0.001 k2
-    read -s -N1 -t 0.001 k3
-    read -s -N1 -t 0.001 k4
+    read -s -N1 -t 0.001 k3 2>/dev/null
+    read -s -N1 -t 0.001 k4 2>/dev/null
     key=$k1$k2$k3$k4
 
     case $key in
