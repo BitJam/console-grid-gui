@@ -61,21 +61,34 @@ key_callback() {
     return 0
 }
 
+make_main_menu() {
+    entry "Audio/Visual menu"
+    entry "Internet menu"
+    entry "System menu"
+    entry "Configuration Files"
+    entry "Live System menu"
+    entry "Utilities menu"
+    entry "Office menu"
+    entry "installer"              cli-installer
+    entry "reboot"                 reboot
+    entry "poweroff"               poweroff
+}
+
 main_cc_on_enter() {
     local name=$1 sel=$3
 
     case $name in
-        "Live System menu") select_menu live_cc         ;;
-       "Audio/Visual menu") select_menu av_cc           ;;
-             "System menu") select_menu sys_cc          ;;
-        #"System Info") cli-sysinfo-cc              ;;
-           "Internet menu") select_menu net_cc          ;;
-             "Office menu") select_menu off_cc          ;;
-          "Utilities menu") select_menu util_cc         ;;
+            "Live System menu") select_menu live_cc         ;;
+           "Audio/Visual menu") select_menu av_cc           ;;
+                 "System menu") select_menu sys_cc          ;;
+         "Configuration Files") select_menu config_cc    ;;
+               "Internet menu") select_menu net_cc          ;;
+                 "Office menu") select_menu off_cc          ;;
+              "Utilities menu") select_menu util_cc         ;;
 
-            installer) run_cmd -spc cli-installer  ;;
-               reboot) run_cmd -spce reboot        ;;
-             poweroff) run_cmd -spce poweroff      ;;
+                installer) run_cmd -spc cli-installer  ;;
+                   reboot) run_cmd -spce reboot        ;;
+                 poweroff) run_cmd -spce poweroff      ;;
 
         *) db_msg "Would do action %s" "$white$name" ; return ;;
     esac
@@ -84,6 +97,22 @@ main_cc_on_enter() {
     printf $cursor_off
     redraw
     return
+}
+
+make_av_menu() {
+    start_menu_list
+
+    add_cmd "speaker-test"             "See if sound is working"
+    add_cmd "alsa-set-default-card"    "Select which sound card to use"
+    add_cmd "alsamixer"                "simple sound mixer"
+    add_cmd "mocp"                     "Audio Player"
+    # add_cmd "mpv"                      "Video Player"
+    add_cmd "pmrp"                     "Poor Man's Radio Player"
+    # add_cmd "burniso"                  "cd/dvd burner"
+    add_cmd "cdw"                      "cd/dvd/burner"
+
+    end_menu_list
+    back_to_main_entry
 }
 
 av_cc_cmd() {
@@ -103,6 +132,21 @@ av_cc_cmd() {
     return
 }
 
+make_sys_menu() {
+    start_menu_list
+    add_cmd "sysv-rc-conf"   "Choose Startup Services"
+    add_cmd "tzdata"         "Set Date and Time"  dpkg-reconfigure
+    add_cmd "guess-hwclock"  "Be prompted to setup the time correctly"
+    add_cmd "htop"           "Show real-time system status"
+    add_cmd "inxi"           "Hardware and OS formation"
+    add_cmd "env-info"       "Other system Information"
+    add_cmd "ps_mem.py"      "Show memory usage"
+    add_cmd "df"             "Information about mounted partitions"
+
+    end_menu_list
+    back_to_main_entry
+}
+
 sys_cc_cmd() {
     local cmd=$1
     case $cmd in
@@ -120,6 +164,18 @@ sys_cc_cmd() {
     return
 }
 
+make_live_menu() {
+    start_menu_list
+    add_cmd "live-usb-maker"       "Make a live-usb"
+    add_cmd "live-kernel-updater"  "Update live kernel"
+    add_cmd "live-remaster"        "Remaster live system"
+    add_cmd "persist_save"         "Save dynamic root persistence"
+    add_cmd "persist-makefs"       "Configure dynamic root persistence"
+    add_cmd "persist-config"       "Create live persistence files"
+    end_menu_list
+    back_to_main_entry
+}
+
 live_cc_cmd() {
     local cmd=$1
     case $cmd in
@@ -133,113 +189,30 @@ live_cc_cmd() {
     esac
 }
 
-util_cc_cmd() {
-    local cmd=$1
-    case $cmd in
-                         mc) run_cmd     $cmd         ;;
-              splash-select) run_cmd     $cmd         ;;
-        console-font-select) run_cmd     $cmd         ;;
-                          X) run_cmd     $cmd         ;;
-
-        *)  db_msg "Would do action %s" "$white$cmd"
-    esac
-}
-
-net_cc_cmd() {
-    local cmd=$1
-    case $cmd in
-               ceni) run_cmd -s  $cmd         ;;
-        wicd-curses) run_cmd -s  $cmd         ;;
-             netpro) run_cmd -s  $cmd         ;;
-             elinks) run_cmd     $cmd         ;;
-             links2) run_cmd     $cmd         ;;
-              irrsi) run_cmd     $cmd         ;;
-         newsbeuter) run_cmd     $cmd         ;;
-           rtorrent) run_cmd     $cmd         ;;
-
-        *)  db_msg "Would do action %s" "$white$cmd"
-    esac
-}
-
-off_cc_cmd() {
-    local cmd=$1
-    case $cmd in
-            wordgrinder) run_cmd  $cmd    ;;
-               calcurse) run_cmd  $cmd    ;;
-                   nano) run_cmd  $cmd    ;;
-                    vim) run_cmd  $cmd    ;;
-               X) run_cmd -sp $cmd        ;;
-               X) run_cmd -sp $cmd        ;;
-               *)  db_msg "Would do action %s" "$white$cmd"
-    esac
-}
-
-make_main_menu() {
-    entry "Audio/Visual menu"
-    entry "Internet menu"
-    entry "System menu"
-    #entry "System Info"
-    entry "Live System menu"
-    entry "Utilities menu"
-    entry "Office menu"
-    entry "installer"              cli-installer
-    entry "reboot"                 reboot
-    entry "poweroff"               poweroff
-}
-
-make_sys_menu() {
-    start_menu_list
-    add_cmd "sysv-rc-conf"   "Choose Startup Services"
-    add_cmd "tzdata"         "Set Date and Time"  dpkg-reconfigure
-    add_cmd "guess-hwclock"  "Be prompted to setup the time correctly"
-    add_cmd "htop"           "Show real-time system status"
-    add_cmd "inxi"           "Hardware and OS formation"
-    add_cmd "env-info"       "Other system Information"
-    add_cmd "ps_mem.py"      "Show memory usage"
-    add_cmd "df"             "Information about mounted partitions"
-
-    end_menu_list
-    back_to_main_entry
-}
-
-make_av_menu() {
-    start_menu_list
-
-    add_cmd "speaker-test"             "See if sound is working"
-    add_cmd "alsa-set-default-card"    "Select which sound card to use"
-    add_cmd "alsamixer"                "simple sound mixer"
-    add_cmd "mocp"                     "Audio Player"
-    # add_cmd "mpv"                      "Video Player"
-    add_cmd "pmrp"                     "Poor Man's Radio Player"
-    # add_cmd "burniso"                  "cd/dvd burner"
-    add_cmd "cdw"                      "cd/dvd/burner"
-
-    end_menu_list
-    back_to_main_entry
-}
-
-make_live_menu() {
-    start_menu_list
-    add_cmd "live-usb-maker"       "Make a live-usb"
-    add_cmd "live-kernel-updater"  "Update live kernel"
-    add_cmd "live-remaster"        "Remaster live system"
-    add_cmd "persist_save"         "Save dynamic root persistence"
-    add_cmd "persist-makefs"       "Configure dynamic root persistence"
-    add_cmd "persist-config"       "Create live persistence files"
-    end_menu_list
-    back_to_main_entry
-}
-
 make_util_menu() {
     start_menu_list
 
     add_cmd ""             ""
-    add_cmd "mc"                    "Nidnight commander file manager"
+    add_cmd "mc"                    "Midnight commander file manager"
     add_cmd "splash-select"         "Choose the console background"
     add_cmd "console-font-select"   "Choose the console font"
+    add_cmd "/etc/live/bin/space-evaders" "Arcade type game"
 
     end_menu_list
     back_to_main_entry
+}
+
+util_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+                         mc) run_cmd     $cmd                        ;;
+              splash-select) run_cmd     $cmd                        ;;
+        console-font-select) run_cmd     $cmd                        ;;
+              space-evaders) run_cmd -p  /etc/live/bin/space-evaders ;;
+                          X) run_cmd     $cmd                        ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
 }
 
 make_net_menu() {
@@ -247,6 +220,8 @@ make_net_menu() {
 
     add_cmd "ceni"         "Setup wireless"
     add_cmd "wicd-curses"  "Setup wireless (alternative)"
+    add_cmd "ifconfig"     "Show network status"
+    add_cmd "ping"         "Test if network is connected"
     add_cmd "netpro"       "Manage network profiles"
     add_cmd "elinks"       "Web browser"
     add_cmd "links2"       "Web browser"
@@ -263,6 +238,24 @@ make_net_menu() {
     back_to_main_entry
 }
 
+net_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+               ping) run_cmd -p  $cmd -c4 -W2 8.8.8.8 ;;
+           ifconfig) run_cmd -p  $cmd                 ;;
+               ceni) run_cmd -s  $cmd                 ;;
+        wicd-curses) run_cmd -s  $cmd                 ;;
+             netpro) run_cmd -s  $cmd                 ;;
+             elinks) run_cmd     $cmd                 ;;
+             links2) run_cmd     $cmd                 ;;
+              irrsi) run_cmd     $cmd                 ;;
+         newsbeuter) run_cmd     $cmd                 ;;
+           rtorrent) run_cmd     $cmd                 ;;
+
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
+
 make_off_menu() {
     start_menu_list
 
@@ -276,6 +269,58 @@ make_off_menu() {
     back_to_main_entry
 }
 
+off_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+            wordgrinder) run_cmd  $cmd    ;;
+               calcurse) run_cmd  $cmd    ;;
+                   nano) run_cmd  $cmd    ;;
+                    vim) run_cmd  $cmd    ;;
+               *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
+
+make_config_menu() {
+    start_menu_list
+    add_file "File system table"               /etc/fstab
+    add_file "X Windows Configuration"         /etc/X11/xorg.conf
+    add_file "SLiM Graphical login manager"    /etc/slim.conf
+    add_file "Installed bootloader"            /boot/grub.menu.lst
+    add_file "Live usb BIOS bootloader"        /live/boot-dev/boot/syslinux/syslinux.cfg
+    add_file "Live usb UEFI bootloader"        /live/boot-dev/boot/grub/grub.cfg
+    add_file "Remaster Exclude List"           /usr/local/share/excludes/general-remaster-exclude.list
+    add_file "Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
+    add_file "Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
+    add_file "Persist Save Exclude List"        /usr/local/share/excludes/persist-save-exclude.list
+    add_file "X Server Log File"               /var/log/Xorg.0.log
+    add_file "Live Boot Log File"              /var/log/live/initrd.log.color
+
+    end_menu_list
+    back_to_main_entry
+}
+
+config_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+
+        general-remaster-exclude.list) edit_file -s /usr/local/share/excludes/general-remaster-exclude.list  ;;
+            iso-snapshot-exclude.list) edit_file -s /usr/local/share/excludes/iso-snapshot-exclude.list      ;;
+           live-remaster-exclude.list) edit_file -s /usr/local/share/excludes/live-remaster-exclude.list     ;;
+            persist-save-exclude.list) edit_file -s /usr/local/share/excludes/persist-save-exclude.list      ;;
+
+               fstab) edit_file -s /etc/fstab ;;
+           xorg.conf) edit_file -s /etc/xorg.conf ;;
+           slim.conf) edit_file -s /etc/slim.conf ;;
+           menu.list) edit_file -s /boot/grub/menu.lst ;;
+        syslinux.cfg) edit_file -s /live/boot-dev/boot/syslinux/syslinux.cfg ;;
+            grub.cfg) edit_file -s /live/boot-dev/boot/grub/grub.cfg ;;
+
+                  Xorg.0.log) view_file /var/log/Xorg.0.log ;;
+            initrd.log.color) view_file /var/log/live/initrd.log.color ;;
+
+               *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+}
 
 HELP_PAGE=$ME
 
