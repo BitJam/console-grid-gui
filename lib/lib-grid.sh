@@ -128,8 +128,8 @@ While_Read
 
     GRID_MAX=$((cnt - 1))
     GRID_LAB_WIDTH=$width
-    log1 grid-max       $GRID_MAX
-    log1 grid-lab-width $GRID_LAB_WIDTH
+    #log1 grid-max       $GRID_MAX
+    #log1 grid-lab-width $GRID_LAB_WIDTH
 
     return
 
@@ -229,9 +229,9 @@ grid_truncate() {
     local cols=$(( (GRID_MAX_WIDTH  - 2 * GRID_XBORDER) / GRID_CELL_WIDTH ))
     local rows=$(( (GRID_MAX_HEIGHT - 2 * GRID_YBORDER) / (1 + GRID_YGAP) ))
     local max=$((rows * cols - 1))
-    log1 rows $rows
-    log1 cols $cols
-    log "Truncate GRID_MAX from %d to %d" $GRID_MAX $max
+    #log1 rows $rows
+    #log1 cols $cols
+    #log "Truncate GRID_MAX from %d to %d" $GRID_MAX $max
     #db_msg "Truncate GRID_MAX from %d to %d" $GRID_MAX $max
     [ $GRID_MAX -gt $max ] && GRID_MAX=$max
     grid_try_
@@ -253,9 +253,9 @@ grid_try_() {
     GRID_RPAD=$rpad
     GRID_CELL_WIDTH=$((GRID_LAB_WIDTH + l_len + r_len + 2 * m_len))
 
-    log1 grid-pad "$GRID_MARGIN"
-    log1 grid-lpad "$GRID_LPAD"
-    log1 grid-rpad "$GRID_RPAD"
+    #log1 grid-pad "$GRID_MARGIN"
+    #log1 grid-lpad "$GRID_LPAD"
+    #log1 grid-rpad "$GRID_RPAD"
 
     local total=$((GRID_MAX + 1))
     local cell_width=$GRID_CELL_WIDTH
@@ -266,9 +266,9 @@ grid_try_() {
     max_height=$((max_height - 2 * GRID_YBORDER))
     max_width=$((max_width   - 2 * GRID_XBORDER))
 
-    log1 max-width  $max_width
-    log1 max-height $max_height
-    log1 cell-width $cell_width
+    #log1 max-width  $max_width
+    #log1 max-height $max_height
+    #log1 cell-width $cell_width
 
     case $GRID_SHAPE in
         narrow|wide|"") ;;
@@ -291,7 +291,7 @@ grid_try_() {
 
         height=$(( rows * (1 + y_gap) - y_gap))
 
-        log "cols=%2d  rows=%2d  width=%3d  height=%3d" $cols $rows $width $height
+        #log "cols=%2d  rows=%2d  width=%3d  height=%3d" $cols $rows $width $height
 
         [ $height -gt $max_height ] && continue
         [ $width  -gt $max_width  ] && break
@@ -319,18 +319,18 @@ grid_try_() {
     GRID_WIDTH=$((gwidth  + 2 * GRID_XBORDER))
     GRID_HEIGHT=$((gheight + 2 * GRID_YBORDER))
 
-    log1 grid-cols   $GRID_COLS
-    log1 grid-rows   $GRID_ROWS
-    log1 grid-width  $GRID_WIDTH
-    log1 grid-height $GRID_HEIGHT
+    #log1 grid-cols   $GRID_COLS
+    #log1 grid-rows   $GRID_ROWS
+    #log1 grid-width  $GRID_WIDTH
+    #log1 grid-height $GRID_HEIGHT
 }
 
 grid_fill_y() {
     local top=$1  extra=$((GRID_MAX_HEIGHT - GRID_HEIGHT))
-    log1 extra $extra
-    log1 grid-vy0 $GRID_VY0
+    #log1 extra $extra
+    #log1 grid-vy0 $GRID_VY0
     GRID_VY0=$((GRID_VY0 + (top * extra) / 100))
-    log1 grid-vy0 $GRID_VY0
+    #log1 grid-vy0 $GRID_VY0
 }
 
 grid_center_x() {
@@ -359,13 +359,12 @@ grid_finalize() {
     local rows=$GRID_ROWS  max_row=$((GRID_ROWS -1))
     local cols=$GRID_COLS  max_col=$((GRID_COLS -1))
 
-    log1 bx0 $GRID_X0
-    log1 by0 $GRID_Y0
-    log1 gx0 $gx0
-    log1 gy0 $gy0
-    log1 xoff $xoff
-    log1 yoff $yoff
-
+    #log1 bx0 $GRID_X0
+    #log1 by0 $GRID_Y0
+    #log1 gx0 $gx0
+    #log1 gy0 $gy0
+    #log1 xoff $xoff
+    #log1 yoff $yoff
 
     local mid_row=$((max_row/2))
     local mid_col=$((max_col/2))
@@ -449,10 +448,10 @@ grid_finalize() {
     grid_set_markers
 
     GRID_CLEAR="$(printf "%${GRID_CELL_WIDTH}s" "")"
-    log1 grid-clear "$GRID_CLEAR"
+    #log1 grid-clear "$GRID_CLEAR"
     #grid_grab_data
     grid_save
-    log1 grid-lab-color "$cyan${GRID_LABEL_COLOR}XXX$nc"
+    #log1 grid-lab-color "$cyan${GRID_LABEL_COLOR}XXX$nc"
 
     [ $GRID_SEL -gt $GRID_MAX ] && GRID_SEL=$GRID_MAX
     [ $GRID_SEL -lt 0         ] && GRID_SEL=0
@@ -476,10 +475,10 @@ grid_set_markers() {
     GRID_RIGHT_DEFAULT="$grd$nc$GRID_MARGIN"
 
 
-    log1 left-d-in "$GRID_LDMARK"
-    log1 right-d-in "$GRID_RDMARK"
-    log1 left-default  "$GRID_LEFT_DEFAULT"
-    log1 right-default "$GRID_RIGHT_DEFAULT"
+    #log1 left-d-in "$GRID_LDMARK"
+    #log1 right-d-in "$GRID_RDMARK"
+    #log1 left-default  "$GRID_LEFT_DEFAULT"
+    #log1 right-default "$GRID_RIGHT_DEFAULT"
 }
 
 str_adjust_width_l() {
@@ -495,15 +494,15 @@ str_adjust_width_l() {
 
 str_adjust_width_r() {
     local str=$1 len=$(str_len "$2") slen=$(str_len "$1")
-    log "len=$len  slen=$slen"
+    #log "len=$len  slen=$slen"
     if [ $slen -eq $len ]; then
         echo "$str"
     elif [ $slen -gt $len ]; then
         str_rtrunc "$str" $len
     else
-        log1 pfout "$(printf "%${len}s" "$str")"
+        #log1 pfout "$(printf "%${len}s" "$str")"
         #printf "%-${len}s" "$str"
-        log "printf \"%-${len}s\" \"$str\""
+        #log "printf \"%-${len}s\" \"$str\""
         printf "%-${len}s" "$str"
     fi
 }
@@ -533,7 +532,7 @@ grid_restore() {
         eval val=\$${name}_GRID_$var
         eval GRID_$var=\$val
         [ -z "${var##*_LIST}" ] && continue
-        log1 GRID_$var "$val"
+        #log1 GRID_$var "$val"
     done
     grid_set_markers
 }
@@ -543,7 +542,7 @@ grid_show() {
     for var in $GRID__SAVE; do
         eval val=\$GRID_$var
         [ -z "${var##*_LIST}" ] && continue
-        log1 GRID_$var "$val"
+        #log1 GRID_$var "$val"
     done
 }
 
@@ -606,12 +605,12 @@ grid_grab_data() {
     GRID_VALUE=$(echo -e "$GRID_VALUE_LIST" | grep ^$GRID_SEL: | sed -r 's/^[0-9]+://' \
         | sed -r -e 's/^ +//' -e 's/ +$//')
 
-    log1 grid-value "$GRID_VALUE"
+    #log1 grid-value "$GRID_VALUE"
 
     [ "$GRID_DATA_LIST" ] || return
 
     GRID_DATA=$(echo -e "$GRID_DATA_LIST" | grep ^$GRID_SEL: | sed -r 's/^[0-9]+://')
-    log1 grid-data "$GRID_DATA"
+    #log1 grid-data "$GRID_DATA"
 }
 
 grid_select() {
@@ -673,14 +672,14 @@ grid_deactivate() {
 
 grid_list() {
     local name=$1; shift
-    log "max=$GRID_MAX"
-    log "cell_width=$GRID_CELL_WIDTH"
+    #log "max=$GRID_MAX"
+    #log "cell_width=$GRID_CELL_WIDTH"
     for i in $(seq 0 $max); do
         eval local nav=\$${GRID_NAME}_GRID_NAV_$i
         eval local lab=\$${GRID_NAME}_GRID_LAB_$i
         eval local col=\$${GRID_NAME}_GRID_COL_$i
         eval local row=\$${GRID_NAME}_GRID_ROW_$i
-        log "%2d: x:%02d y:%02d  nav:%-12s  lab:%s" "$i" "$col" "$row" "$nav" "$lab"
+        #log "%2d: x:%02d y:%02d  nav:%-12s  lab:%s" "$i" "$col" "$row" "$nav" "$lab"
     done
 }
 
