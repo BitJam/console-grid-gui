@@ -361,3 +361,24 @@ get_seconds() {
     printf "%03d" $dt | sed -r 's/(..)$/.\1/'
 }
 
+
+#------------------------------------------------------------------------------
+# Returns true on a live antiX/MX system, returns false otherwise.  May work
+# correctly on other live systems but has not been tested.
+#------------------------------------------------------------------------------
+its_alive() {
+    return 0
+    local root_fstype=$(df -PT / | tail -n1 | awk '{print $2}')
+    case $root_fstype in
+        aufs|overlay) return 0 ;;
+                   *) return 1 ;;
+    esac
+}
+
+distro_version() {
+    local version  file=/etc/antix-version
+    test -r $file && read version 2>/dev/null <$file
+    version=$(echo "$version" | cut -d" " -f1,2)
+    its_alive && version="$version Live"
+    echo "$version"
+}

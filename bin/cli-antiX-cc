@@ -17,6 +17,8 @@ main() {
 
     screen_set title1=$"antiX Command-Line Control Centre"
     screen_set title2=$"Press: <Enter> to select an option, <b> back to main, <q> to quit, <h> for help"
+    screen_set title3=$"$(distro_version)"
+
     screen_set box=-s border=1
 
     start_menu_list
