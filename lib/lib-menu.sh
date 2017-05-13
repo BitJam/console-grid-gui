@@ -219,16 +219,16 @@ run_cmd() {
     if [ "$exec" ]; then
         exec $sudo "$@" 2>&1
     else
-        ($sudo bash -c "$*" 2>&1)&
-        local pid=$!
-        wait $pid
+        local tty=$(tty)
+        $sudo bash -c "$*" 2>&1 <$tty
+        #local pid=$!
+        #wait $pid
     fi
 
     [ "$pause" ] && pause
-
-   clear
-   hide_tty
-   redraw
+    reset
+    hide_tty
+    redraw
 }
 
 edit_file() {

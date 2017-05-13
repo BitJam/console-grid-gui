@@ -210,7 +210,7 @@ util_cc_cmd() {
                          mc) run_cmd     $cmd                        ;;
               splash-select) run_cmd     $cmd                        ;;
         console-font-select) run_cmd     $cmd                        ;;
-              space-evaders) run_cmd -p  /etc/live/bin/space-evaders ;;
+              space-evaders) run_cmd     /etc/live/bin/space-evaders ;;
                           X) run_cmd     $cmd                        ;;
 
         *)  db_msg "Would do action %s" "$white$cmd"
