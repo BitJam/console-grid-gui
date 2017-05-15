@@ -349,7 +349,7 @@ select_menu() {
     if [ "$new" ]; then
         eval title=\$MENU_TITLE_$name
         grid_read_new $name "$(eval \$MENU_MENU_$name)"
-        grid_narrow y=3 title="$title"
+        grid_narrow y=5 title="$title"
         grid_center_x
         grid_fill_y 15
         grid_finalize
