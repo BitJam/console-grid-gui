@@ -178,7 +178,7 @@ Show_cmds
 #
 #------------------------------------------------------------------------------
 run_cmd() {
-    local pause sudo exec check opts
+    local pause sudo exec check opts reset
 
     clear
     if [ -z "${1##-*}" ]; then
@@ -186,6 +186,7 @@ run_cmd() {
         [ -z "${opts##-*p*}" ] && pause=true
         [ -z "${opts##-*s*}" ] && sudo=$SUDO
         [ -z "${opts##-*c*}" ] && check=true
+        [ -z "${opts##-*r*}" ] && reset=true
         [ -z "${opts##-*e*}" ] && exec="exec "
     fi
 
@@ -219,14 +220,23 @@ run_cmd() {
     if [ "$exec" ]; then
         exec $sudo "$@" 2>&1
     else
-        local tty=$(tty)
-        $sudo bash -c "$*" 2>&1 <$tty
-        #local pid=$!
-        #wait $pid
+
+        # This fixes space-evaders but it needs root on Debian
+        # works fine on Gentoo
+        #
+        #local tty=$(tty)
+        #sudo bash -c "$*" 2>&1 <$tty
+
+        $sudo bash -c "$*" 2>&1
+        local ret=$?
     fi
 
+    [ $ret -eq 0 ] || pause=true
     [ "$pause" ] && pause
-    reset
+
+    [ "$reset" ] && re_init
+
+    clear
     hide_tty
     redraw
 }
