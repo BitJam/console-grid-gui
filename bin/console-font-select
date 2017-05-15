@@ -12,32 +12,13 @@ test -e $loc_lib/lib-screen.sh && lib_dir=$loc_lib
 . $lib_dir/lib-screen.sh
 . $lib_dir/lib-grid.sh
 
-key_callback() {
-    local key=$1
-    [ "$key" = "t" ] || return 1
-    clear
-
-    echo -n $cyan
-    showconsolefont -i
-    echo -n $nc
-    showconsolefont
-    echo
-
-    echo "$cyan Press any key to continue$nc"
-
-    read -s -n1 xxx
-    clear
-    redraw
-    return 0
-}
-
 main() {
 
     [ ${#CODESET} -eq 0 ] && CODESET=$(lang_to_codeset $LANG)
     FONT_MENU="$(read_console_fonts)"
     [ ${#FONT_MENU} -eq 0 ] && fatal "No fonts found"
 
-    grid_color_scheme light
+    set_color_scheme light
 
     screen_set title1="Select a Console Font"
     screen_set title2="Press: <Enter> to select a font <q> to quit, <h> for help"
@@ -75,6 +56,26 @@ restart() {
     clear
     redraw
 }
+
+key_callback() {
+    local key=$1
+    [ "$key" = "t" ] || return 1
+    clear
+
+    echo -n $cyan
+    showconsolefont -i
+    echo -n $nc
+    showconsolefont
+    echo
+
+    echo "$cyan Press any key to continue$nc"
+
+    read -s -n1 xxx
+    clear
+    redraw
+    return 0
+}
+
 
 console_font_on_enter() {
     local font=$1  sel=$3
