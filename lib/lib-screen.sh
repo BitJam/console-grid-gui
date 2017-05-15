@@ -439,7 +439,7 @@ do_command() {
 }
 
 restore_tty() {
-    stty $ORIG_STTY
+    [ -n "$ORIG_TTY" ] && stty $ORIG_STTY
     local y height=$(stty size | cut -d" " -f1)
     y=$((height - 4))
 
