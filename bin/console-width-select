@@ -1,0 +1,239 @@
+#!/bin/bash
+
+# Codesets on Debian
+#
+#  CyrAsia    Greek    Lat7
+#  CyrKoi     Lat15    Uni2
+#  CyrSlav    Lat2     Uni3
+
+lib_dir=/usr/lib/shell
+loc_lib=./lib
+test -e $loc_lib/lib-screen.sh && lib_dir=$loc_lib
+. $lib_dir/lib-screen.sh
+. $lib_dir/lib-grid.sh
+
+    FONT_DIR="/usr/share/consolefonts"
+   FONT_EXTS=".psf.gz"
+  FONT_SIZES="16 14 12 11 10 8 6"
+   DUMMY_TTY="tty2"
+
+main() {
+
+    local tty_arg
+    [ "$SCREEN_IN_VT" ] || tty_arg="-tty=${DUMMY_TTY#tty}"
+    local pixel_width=$(get_fbcondecor_width $tty_arg)
+
+    [ -z "$pixel_width" ] \
+        && fatal "Could not get console width. Is the framebuffer enabled?"
+
+    local cur_width=$(get_current_width)
+
+    [ ${#CODESET} -eq 0 ] && CODESET=$(lang_to_codeset $LANG)
+    WIDTH_MENU="$(width_menu $pixel_width)"
+    [ ${#WIDTH_MENU} -eq 0 ] && fatal "No fonts found"
+
+    set_color_scheme light
+
+    screen_set title1="Select a Console Font"
+    screen_set title2="Press: <Enter> to select a font <q> to quit, <h> for help"
+    screen_set title3="Current width is $cur_width"
+    screen_set border=0
+
+    init
+
+    #grid_center_labels
+
+    hide_tty
+    clear
+    redraw
+    main_loop
+}
+
+init() {
+    screen_init
+    grid_read_new console_width "$WIDTH_MENU"
+    grid_narrow y=5 title="Select Console Width"
+    grid_center_x
+    grid_fill_y 15
+    grid_finalize
+}
+
+redraw() {
+    screen_draw
+    grid_activate
+}
+
+restart() {
+    local save_sel=$GRID_SEL
+    local save_def=$GRID_DEFAULT_SEL
+    init
+    GRID_SEL=$save_sel
+    GRID_DEFAULT_SEL=$save_def
+    clear
+    redraw
+}
+
+key_callback() {
+    local key=$1
+    [ "$key" = "t" ] || return 1
+    clear
+
+    echo -n $cyan
+    showconsolefont -i
+    echo -n $nc
+    showconsolefont
+    echo
+
+    echo "$cyan Press any key to continue$nc"
+
+    read -s -n1 xxx
+    clear
+    redraw
+    return 0
+}
+
+console_width_on_enter() {
+    local lab=$1  sel=$3
+
+    local size=$(echo "$lab" | sed -nr "s/^.*\s+([1-9][0-9]?)\)?.*/\1/p")
+    local font=$(get_console_font $size)
+
+    GRID_DEFAULT_SEL=$sel
+    if [ -z "$SCREEN_IN_VT" ]; then
+        grid_activate
+        db_msg "Would set font to %s" "$white$font"
+        return
+    fi
+    local term=$(fgconsole)
+
+    setfont $font
+    local cur_width=$(get_current_width)
+    screen_set title3="Current width is $cur_width"
+
+    log "term=$term  font=$font"
+    clear
+
+    restart
+}
+
+get_console_font() {
+    local cmd_size=$1
+    local lang=${3:-$LANG}  fdir=${4:-$FONT_DIR}
+    local font_exts=${5:-$FONT_EXTS}
+    local name="Terminus"
+
+    local size
+    case $cmd_size in
+              [1-7]) size=12x6                ;;
+               [89]) size=16                  ;;
+                 10) size=20x10               ;;
+                 11) size=22x11               ;;
+              1[23]) size=24x12               ;;
+              1[45]) size=28x14               ;;
+            1[6789]) size=32x16               ;;
+       [23456][0-9]) size=32x16               ;;
+    esac
+
+    local code
+    case ${lang%%_*} in
+                     kk|ky|tj) code='CyrAsia'  ;;
+                        ru|uk) code='CyrKoi'   ;;
+                  bg|mk|ru|sr) code='CyrSlav'  ;;
+      bs|hr|cs|hu|pl|ro|sk|sl) code='Lat2'     ;;
+        af|sq|ast|da|nl|et|fr) code='Lat15'    ;;
+    'fi'|de|is|id|pt|es|sv|tr) code='Lat15'    ;;
+                        lt|lv) code='Lat7'     ;;
+                           el) code='Greek'    ;;
+                            *) code='Uni2'     ;;
+    esac
+
+    # Now try to find an existing font file that matches what we want
+
+    local try font face font_file ext
+    for face in ${name}Bold VGA $name; do
+        try=$code-$face$size
+        #echo $try
+        for ext in $font_exts; do
+            font_file=$fdir/$try$ext
+            #echo $font_file
+            test -e $font_file || continue
+            font=$try
+            break
+        done
+        [ -n "$font" ] && break
+    done
+    echo $font
+}
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+width_menu() {
+    local pixel_width=$1  font_width  num_cols
+
+    local fmt="%3s columns  (font width %2s)\n"
+    for font_width in $FONT_SIZES; do
+        num_cols=$((pixel_width / font_width + 1))
+        [ $num_cols -lt 80 ] && continue
+        printf "$fmt" "$num_cols" "$font_width"
+    done
+}
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+get_fbcondecor_width() {
+    local tty_arg=$1  res
+    local fbsize_file=/sys/class/graphics/fb0/virtual_size
+    read res 2>/dev/null <$fbsize_file
+    [ -z "$res" ] && return
+    local width
+    local name=fbcondecor_ctl p prog
+    for p in $name $name.static; do
+        which $p &>/dev/null || continue
+        prog=$p
+        break
+    done
+    [ "$prog" ] && width=$($prog $tty_arg -c getcfg 2>/dev/null | sed -nr "s/^twidth:\s+//p")
+
+    : ${width:=$(echo "$res" | cut -d, -f1)}
+    printf "%s\n" "$width"
+}
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+get_current_width() {
+    stty size | cut -d" " -f2
+}
+
+fatal() {
+    local fmt=$1 ; shift
+    printf "Error: $fmt\n" "$@"
+    exit 7
+}
+
+lang_to_codeset() {
+    local lang=$1
+    case ${lang%%_*} in
+                     kk|ky|tj) echo CyrAsia  ;;
+                        ru|uk) echo CyrKoi   ;;
+                  bg|mk|ru|sr) echo CyrSlav  ;;
+      bs|hr|cs|hu|pl|ro|sk|sl) echo Lat2     ;;
+        af|sq|ast|da|nl|et|fr) echo Lat15    ;;
+    "fi"|de|is|id|pt|es|sv|tr) echo Lat15    ;;
+                        lt|lv) echo Lat7     ;;
+                           el) echo Greek    ;;
+                            *) echo Uni2     ;;
+    esac
+}
+
+my_dir=$(readlink -f "$(dirname "$0")")
+
+HELP_PAGE=console-font-select
+
+[ "$DEBUG" ] || log_file=/dev/null
+
+main "$@" 2>> $log_file
+
+
+
