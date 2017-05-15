@@ -8,7 +8,7 @@ test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
 PATH=./bin:$PATH
 
 main() {
-    #grid_color_scheme light
+    set_color_scheme light
 
     clear
     #echo  -n "${cyan}Please wait while $ME examines your system ..."
