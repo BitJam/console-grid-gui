@@ -37,6 +37,11 @@ main() {
 
 init() {
     screen_init
+    re_init
+    select_menu main_cc
+}
+
+re_init() {
     new_menu   main_cc  $"Main Menu"                make_main_menu
     new_menu   live_cc  $"antiX Live Commands"      make_live_menu
     new_menu     av_cc  $"Audio/Visual Commands"    make_av_menu
@@ -45,8 +50,6 @@ init() {
     new_menu    net_cc  $"Internet Applications"    make_net_menu
     new_menu    off_cc  $"Office Applications"      make_off_menu
     new_menu config_cc  $"Configuration Files"      make_config_menu
-
-    select_menu main_cc
 }
 
 key_callback() {
