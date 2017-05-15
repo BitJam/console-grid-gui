@@ -159,7 +159,7 @@ sys_cc_cmd() {
                tzdata) run_cmd -s  dpkg-reconfigure  $cmd   ;;
         guess-hwclock) run_cmd -s  $cmd                     ;;
                  htop) run_cmd     $cmd                     ;;
-                 inxi) run_cmd -p  $cmd -F                  ;;
+                 inxi) run_cmd -p  $cmd -Fx -c24            ;;
              env-info) run_cmd -p  $cmd                     ;;
             ps_mem.py) run_cmd -p  $cmd                     ;;
                    df) run_cmd -p  $cmd -hTP                ;;
@@ -201,7 +201,9 @@ make_util_menu() {
     add_cmd "mc"                    "Midnight commander file manager"
     add_cmd "splash-select"         "Choose the console background"
     add_cmd "console-font-select"   "Choose the console font"
-    add_cmd "/etc/live/bin/space-evaders" "Arcade type game"
+    add_cmd "console-width-select"  "Choose the console font"
+    add_cmd "choose-console-width"  "Choose the console font"
+    add_cmd "/etc/live/bin/space-evaders"  "Arcade type game"
 
     end_menu_list
     back_to_main_entry
@@ -212,7 +214,9 @@ util_cc_cmd() {
     case $cmd in
                          mc) run_cmd     $cmd                        ;;
               splash-select) run_cmd     $cmd                        ;;
-        console-font-select) run_cmd     $cmd                        ;;
+        console-font-select) run_cmd -r  $cmd                        ;;
+       console-width-select) run_cmd -sr $cmd                        ;;
+       choose-console-width) run_cmd -sr $cmd                        ;;
               space-evaders) run_cmd     /etc/live/bin/space-evaders ;;
                           X) run_cmd     $cmd                        ;;
 
