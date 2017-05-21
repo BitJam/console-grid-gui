@@ -228,9 +228,10 @@ make_net_menu() {
     start_menu_list
 
     add_cmd "ceni"         "Setup wireless"
-    add_cmd "wicd-curses"  "Setup wireless (alternative)"
+    #add_cmd "wicd-curses"  "Setup wireless (alternative)"
     add_cmd "ifconfig"     "Show network status"
     add_cmd "ping"         "Test if network is connected"
+    add_cmd "netstat"      "Show all network connections and ports"
     add_cmd "netpro"       "Manage network profiles"
     add_cmd "elinks"       "Web browser"
     add_cmd "links2"       "Web browser"
@@ -252,6 +253,7 @@ net_cc_cmd() {
     case $cmd in
                ping) run_cmd -p  $cmd -c4 -W2 8.8.8.8 ;;
            ifconfig) run_cmd -p  $cmd                 ;;
+             nestat) run_cmd -ps $cmd -autp           ;;
                ceni) run_cmd -s  $cmd                 ;;
         wicd-curses) run_cmd -s  $cmd                 ;;
              netpro) run_cmd -s  $cmd                 ;;
