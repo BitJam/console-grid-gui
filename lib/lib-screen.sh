@@ -475,6 +475,7 @@ need_root() {
 
 on_exit() {
     restore_tty
+    reset
     #tput rmcup
 }
 
