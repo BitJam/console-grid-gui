@@ -9,10 +9,11 @@ BIN_DIR     := $(ROOT)/usr/local/bin
 LOCALE_DIR  := $(ROOT)/usr/share/
 DESK_DIR    := $(ROOT)/usr/share/applications/antix
 MAN_DIR     := $(ROOT)/usr/share/man/man1
+RULES_DIR   := $(ROOT)/etc/udev/rules.d/
 
-ALL_DIRS   := $(LIB_DIR) $(BIN_DIR) $(LOCALE_DIR) $(MAN_DIR)
+ALL_DIRS   := $(LIB_DIR) $(BIN_DIR) $(LOCALE_DIR) $(MAN_DIR) $(RULES_DIR)
 
-.PHONY: scripts help all lib
+.PHONY: scripts help all lib rules
 
 help:
 	@echo "make help                show this help"
@@ -25,7 +26,7 @@ help:
 	@#echo ""
 	@#echo ""
 
-all: scripts lib
+all: scripts lib rules
 
 lib: | $(LIB_DIR) $(LOCALE_DIR)
 	cp -r lib/* $(LIB_DIR)
@@ -33,6 +34,9 @@ lib: | $(LIB_DIR) $(LOCALE_DIR)
 
 scripts: | $(BIN_DIR)
 	cp $(SCRIPTS) $(BIN_DIR)
+
+rules: | $(RULES_DIR)
+	cp udev-rules/*.rules $(RULES_DIR)
 
 $(ALL_DIRS):
 	test -d $(ROOT)/
