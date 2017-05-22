@@ -46,10 +46,12 @@ re_init() {
     new_menu   live_cc  $"antiX Live Commands"      make_live_menu
     new_menu     av_cc  $"Audio/Visual Commands"    make_av_menu
     new_menu    sys_cc  $"System Commands"          make_sys_menu
-    new_menu   util_cc  $"Utility Commands"         make_util_menu
+    new_menu   util_cc  $"Console Utilities"        make_util_menu
     new_menu    net_cc  $"Internet Applications"    make_net_menu
     new_menu    off_cc  $"Office Applications"      make_off_menu
     new_menu config_cc  $"Configuration Files"      make_config_menu
+    new_menu logout_cc  $"Logout and Installer"     make_logout_menu
+
 }
 
 key_callback() {
@@ -68,40 +70,59 @@ key_callback() {
 
 make_main_menu() {
     entry "Audio/Visual menu"
-    entry "Internet menu"
-    entry "System menu"
+    entry "Internet Tools & Apps"
+    entry "System Tools"
     entry "Configuration Files"
-    entry "Live System menu"
-    entry "Utilities menu"
-    entry "Office menu"
-    entry "installer"              cli-installer
-    entry "reboot"                 reboot
-    entry "poweroff"               poweroff
+    entry "Live System Centre"
+    entry "Console Utilities"
+    entry "Office and Other"
+    entry "Logout / Install"
 }
 
 main_cc_on_enter() {
     local name=$1 sel=$3
 
     case $name in
-            "Live System menu") select_menu live_cc         ;;
            "Audio/Visual menu") select_menu av_cc           ;;
-                 "System menu") select_menu sys_cc          ;;
-         "Configuration Files") select_menu config_cc    ;;
-               "Internet menu") select_menu net_cc          ;;
-                 "Office menu") select_menu off_cc          ;;
-              "Utilities menu") select_menu util_cc         ;;
+       "Internet Tools & Apps") select_menu net_cc          ;;
+                "System Tools") select_menu sys_cc          ;;
+         "Configuration Files") select_menu config_cc       ;;
+          "Live System Centre") select_menu live_cc         ;;
+           "Console Utilities") select_menu util_cc         ;;
+            "Office and Other") select_menu off_cc          ;;
+            "Logout / Install") select_menu logout_cc       ;;
 
-                installer) run_cmd -spc cli-installer  ;;
-                   reboot) run_cmd -spce reboot        ;;
-                 poweroff) run_cmd -spce poweroff      ;;
-
-        *) db_msg "Would do action %s" "$white$name" ; return ;;
+      *) db_msg "Would do action %s" "$white$name" ; return ;;
     esac
 
     clear
     printf $cursor_off
     redraw
     return
+}
+
+
+make_logout_menu() {
+    start_menu_list
+
+    add_cmd "cli-installer"     "Install this distro on a hard drive"
+    add_cmd "reboot"            "Reboot the system"
+    add_cmd "poweroff"          "Powerdown the system"
+
+    end_menu_list
+    back_to_main_entry
+}
+
+logout_cc_on_enter() {
+    local name=$1 sel=$3
+
+    case $name in
+                installer) run_cmd -spc cli-installer  ;;
+                   reboot) run_cmd -spce reboot        ;;
+                 poweroff) run_cmd -spce poweroff      ;;
+
+        *) db_msg "Would do action %s" "$white$name" ; return ;;
+    esac
 }
 
 make_av_menu() {
@@ -139,6 +160,8 @@ av_cc_cmd() {
 
 make_sys_menu() {
     start_menu_list
+    add_cmd "cli-package-installer" "Install new packages (like Synaptic)"
+    add_cmd "testdisk"       "Check and undelete disk partitions"
     add_cmd "sysv-rc-conf"   "Choose Startup Services"
     add_cmd "tzdata"         "Set Date and Time"  dpkg-reconfigure
     add_cmd "guess-hwclock"  "Be prompted to setup the time correctly"
@@ -147,7 +170,7 @@ make_sys_menu() {
     add_cmd "env-info"       "Other system Information"
     add_cmd "ps_mem.py"      "Show memory usage"
     add_cmd "df"             "Information about mounted partitions"
-
+    add_cmd "lsblk"          "List all block (disk) partitions"
     end_menu_list
     back_to_main_entry
 }
@@ -155,14 +178,17 @@ make_sys_menu() {
 sys_cc_cmd() {
     local cmd=$1
     case $cmd in
+cli-package-installer) run_cmd -s  $cmd                     ;;
+             testdisk) run_cmd -s  $cmd                     ;;
          sysv-rc-conf) run_cmd -s  $cmd                     ;;
                tzdata) run_cmd -s  dpkg-reconfigure  $cmd   ;;
         guess-hwclock) run_cmd -s  $cmd                     ;;
                  htop) run_cmd     $cmd                     ;;
                  inxi) run_cmd -p  $cmd -Fx -c24            ;;
              env-info) run_cmd -p  $cmd                     ;;
-            ps_mem.py) run_cmd -p  $cmd                     ;;
+            ps_mem.py) run_cmd -ps $cmd                     ;;
                    df) run_cmd -p  $cmd -hTP                ;;
+                lsblk) run_cmd -ps $cmd -o name,size,fstype,label,uuid ;;
 
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
@@ -197,8 +223,9 @@ live_cc_cmd() {
 make_util_menu() {
     start_menu_list
 
-    add_cmd ""             ""
-    add_cmd "mc"                    "Midnight commander file manager"
+    have_backlight \
+        && add_cmd "backlight-brightness"  "Adjust the brightness of the backlight"
+
     add_cmd "splash-select"         "Choose the console background"
     add_cmd "console-font-select"   "Choose the console font"
     add_cmd "console-width-select"  "Choose the console font"
@@ -212,7 +239,7 @@ make_util_menu() {
 util_cc_cmd() {
     local cmd=$1
     case $cmd in
-                         mc) run_cmd     $cmd                        ;;
+       backlight-brightness) run_cmd     $cmd                        ;;
               splash-select) run_cmd     $cmd                        ;;
         console-font-select) run_cmd -r  $cmd                        ;;
        console-width-select) run_cmd -sr $cmd                        ;;
@@ -228,7 +255,6 @@ make_net_menu() {
     start_menu_list
 
     add_cmd "ceni"         "Setup wireless"
-    #add_cmd "wicd-curses"  "Setup wireless (alternative)"
     add_cmd "ifconfig"     "Show network status"
     add_cmd "ping"         "Test if network is connected"
     add_cmd "netstat"      "Show all network connections and ports"
@@ -238,11 +264,6 @@ make_net_menu() {
     add_cmd "irrsi"        "Chat client"
     add_cmd "newsbeuter"   "RSS/Atom feed reader"
     add_cmd "rtorrent"     "Bittorrent client"
-    add_cmd ""             ""
-    add_cmd ""             ""
-    add_cmd ""             ""
-    add_cmd ""             ""
-    add_cmd ""             ""
 
     end_menu_list
     back_to_main_entry
@@ -270,6 +291,7 @@ net_cc_cmd() {
 make_off_menu() {
     start_menu_list
 
+    add_cmd "mc"            "Midnight commander file manager"
     add_cmd "wordgrinder"   "Word Processor"
     add_cmd "calcurse"      "Calendar/Schedule"
     add_cmd "nano"          "Simple text editor"
@@ -283,6 +305,7 @@ make_off_menu() {
 off_cc_cmd() {
     local cmd=$1
     case $cmd in
+                     mc) run_cmd  $cmd    ;;
             wordgrinder) run_cmd  $cmd    ;;
                calcurse) run_cmd  $cmd    ;;
                    nano) run_cmd  $cmd    ;;
@@ -331,6 +354,14 @@ config_cc_cmd() {
 
                *)  db_msg "Would do action %s" "$white$cmd"
     esac
+}
+
+have_backlight() {
+    local f
+    for f in /sys/class/backlight/*/brightness; do
+        test -e $f && return 0
+    done
+    return 1
 }
 
 HELP_PAGE=$ME
