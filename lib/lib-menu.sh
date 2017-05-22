@@ -328,12 +328,10 @@ pause() {
 #------------------------------------------------------------------------------
 new_menu() {
     local name=$1  title=$2  menu=$3
-    eval MENU_TITLE_$name=\$name
+    eval MENU_TITLE_$name=\$title
     eval MENU_MENU_$name=\$menu
     eval MENU_NEW_$name=true
 }
-
-
 
 #------------------------------------------------------------------------------
 #
