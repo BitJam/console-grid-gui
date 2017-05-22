@@ -9,10 +9,10 @@ main() {
 
     local CONTROLLER  CONTROLLER_MAX  CONTROLLER_CUR
     find_controller CONTROLLER
-    local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
  
     [ -n "$CONTROLLER" ]           || fatal "No controller found"
     test -w $CONTROLLER/brightness || fatal "You need to be root to run this script"
+    local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
 
     trap on_exit EXIT
 
@@ -256,7 +256,7 @@ str_len() {
 #------------------------------------------------------------------------------
 fatal() {
     local fmt=$1 ; shift
-    printf "${err_co}error:$bold_co$fmt$nc_co\n" "$@" >&2
+    printf "$bold_co$ME:$hi_co $fmt$nc_co\n" "$@" >&2
     exit 3
 }
 
