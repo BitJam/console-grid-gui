@@ -88,7 +88,7 @@ centered_lab() {
 #------------------------------------------------------------------------------
 return_to_main() {
     [ "$1" = "Return to main menu" ] || return 1
-    select_menu $PARENT_MENU
+    select_menu "$PARENT_MENU" "$MAIN_CC_$SEL"
     return 0
 }
 
@@ -337,7 +337,7 @@ new_menu() {
 #
 #------------------------------------------------------------------------------
 select_menu() {
-    local name=$1
+    local name=$1  sel=$2
 
     PARENT_MENU=$THIS_MENU
     THIS_MENU=$name
@@ -354,6 +354,7 @@ select_menu() {
     fi
 
     grid_activate $name
+    [ "$sel" ] && grid_goto $sel
     clear
     redraw
 }

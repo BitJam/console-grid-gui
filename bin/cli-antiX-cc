@@ -58,10 +58,11 @@ key_callback() {
     local key=$1
     case $key in
 
+        [mM]) db_msg "Main selection: $MAIN_CC_SEL"     ;;
         [bB]) under_main_cc && select_menu $PARENT_MENU ;;
 
            q) in_main_cc && clear && exit
-              select_menu $PARENT_MENU ;;
+              select_menu $PARENT_MENU $MAIN_CC_SEL     ;;
 
            *) return 1;;
     esac
@@ -81,6 +82,8 @@ make_main_menu() {
 
 main_cc_on_enter() {
     local name=$1 sel=$3
+
+    MAIN_CC_SEL=$sel
 
     case $name in
            "Audio/Visual menu") select_menu av_cc           ;;
