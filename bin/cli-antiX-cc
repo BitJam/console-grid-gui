@@ -174,6 +174,11 @@ make_sys_menu() {
     add_cmd "ps_mem.py"      "Show memory usage"
     add_cmd "df"             "Information about mounted partitions"
     add_cmd "lsblk"          "List all block (disk) partitions"
+    add_cmd "lsmod"          "List currently installed kernel modules"
+    add_cmd "lspci"          "List major system components"
+    add_cmd "lsusb"          "List attached USB devices"
+    add_cmd "dmesg"          "Display messages from the kernel"
+
     end_menu_list
     back_to_main_entry
 }
@@ -181,18 +186,21 @@ make_sys_menu() {
 sys_cc_cmd() {
     local cmd=$1
     case $cmd in
-cli-package-installer) run_cmd -s  $cmd                     ;;
-             testdisk) run_cmd -s  $cmd                     ;;
-         sysv-rc-conf) run_cmd -s  $cmd                     ;;
-               tzdata) run_cmd -s  dpkg-reconfigure  $cmd   ;;
-        guess-hwclock) run_cmd -s  $cmd                     ;;
-                 htop) run_cmd     $cmd                     ;;
-                 inxi) run_cmd -p  $cmd -Fx -c24            ;;
-             env-info) run_cmd -p  $cmd                     ;;
-            ps_mem.py) run_cmd -ps $cmd                     ;;
-                   df) run_cmd -p  $cmd -hTP                ;;
-                lsblk) run_cmd -ps $cmd -o name,size,fstype,label,uuid ;;
-
+    cli-package-installer)  run_cmd -s  $cmd                     ;;
+                 testdisk)  run_cmd -s  $cmd                     ;;
+             sysv-rc-conf)  run_cmd -s  $cmd                     ;;
+                   tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
+            guess-hwclock)  run_cmd -s  $cmd                     ;;
+                     htop)  run_cmd     $cmd                     ;;
+                     inxi)  run_cmd -p  $cmd -Fx -c24            ;;
+                 env-info)  run_cmd -p  $cmd                     ;;
+                ps_mem.py)  run_cmd -ps $cmd                     ;;
+                       df)  run_cmd -p  $cmd -hTP                ;;
+                    lsblk) view_cmd -s  $cmd -o name,size,fstype,label,uuid ;;
+                    lsmod) view_cmd     $cmd                     ;;
+                    lspci) view_cmd     $cmd                     ;;
+                    lsusb) view_cmd     $cmd                     ;;
+                    dmesg) view_cmd     $cmd  --color=always --ctime  ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
