@@ -241,6 +241,9 @@ run_cmd() {
     redraw
 }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 edit_file() {
     local sudo opts
     clear
@@ -277,9 +280,61 @@ edit_file() {
    redraw
 }
 
-view_file() {
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+view_cmd() {
+
     local opts
     clear
+    if [ -z "${1##-*}" ]; then
+        opts=$1 ; shift
+        [ -z "${opts##-*s*}" ] && sudo=$SUDO
+    fi
+
+    clear
+    restore_tty
+
+    printf "\e[0;0H$yellow$exec$sudo $*$nc\n" | tee -a $log_file
+
+    local lines=$($sudo "$@" | wc -l | cut -d" " -f1)
+    local height=$(screen_height)
+    if [ $lines -lt $((height - 5)) ]; then
+        $SUDO "$@"
+        pause
+
+    else
+        echo
+        msg "There are too many output lines to fit on the screen all at once."
+        msg "Therefore the output will be sent to the 'less' program."
+        msg "You can scroll the output with the arrow keys, <page-up>, and <page-down>."
+        msg "Use <Home> to go to the beginning and <End> to go to the end"
+        msg "Press 'q' when you are done.  Use 'h' for help and many more commands."
+        echo
+        pause
+
+        $sudo "$@" | less -RS
+    fi
+
+    clear
+    hide_tty
+    redraw
+}
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+msg() {
+    local fmt=$1 ; shift
+    printf "$cyan$fmt$nc_co\n" "$@"
+}
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+view_file() {
+    local opts sudo
+
     if [ -z "${1##-*}" ]; then
         opts=$1 ; shift
         [ -z "${opts##-*s*}" ] && sudo=$SUDO
@@ -301,8 +356,6 @@ view_file() {
    hide_tty
    redraw
 }
-
-
 
 #------------------------------------------------------------------------------
 #
@@ -384,6 +437,9 @@ its_alive() {
     esac
 }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 distro_version() {
     local version  file=/etc/antix-version
     test -r $file && read version 2>/dev/null <$file
@@ -391,3 +447,6 @@ distro_version() {
     its_alive && version="$version Live"
     echo "$version"
 }
+
+screen_height() { stty size | cut -d" " -f1; }
+screen_width()  { stty size | cut -d" " -f2; }
