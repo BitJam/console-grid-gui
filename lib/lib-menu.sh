@@ -57,12 +57,12 @@ entry() {
 #
 #------------------------------------------------------------------------------
 under_main_cc() {
-    [ "$PARENT_MENU" = "main_cc" ]
+    [ "$PARENT_MENU" = 'main_cc' ]
     return $?
 }
 
 in_main_cc() {
-    [ "$THIS_MENU" = "main_cc" ]
+    [ "$THIS_MENU" = 'main_cc' ]
     return $?
 }
 
@@ -87,7 +87,7 @@ centered_lab() {
 #
 #------------------------------------------------------------------------------
 return_to_main() {
-    [ "$1" = "Return to main menu" ] || return 1
+    [ "$1" = $"Return to main menu" ] || return 1
     select_menu "$PARENT_MENU" "$MAIN_CC_$SEL"
     return 0
 }
@@ -187,17 +187,11 @@ run_cmd() {
         [ -z "${opts##-*s*}" ] && sudo=$SUDO
         [ -z "${opts##-*c*}" ] && check=true
         [ -z "${opts##-*r*}" ] && reset=true
-        [ -z "${opts##-*e*}" ] && exec="exec "
+        [ -z "${opts##-*e*}" ] && exec='exec '
     fi
 
     clear
     restore_tty
-
-    # echo "opts  $opts"
-    # echo "pause $pause"
-    # echo "exec  $exec"
-    # echo "sudo  $sudo"
-    # echo "check $check"
 
     if [ "$check" ]; then
         local xxx
@@ -205,7 +199,7 @@ run_cmd() {
         read -N1 -t .01 xxx
         read -N1 -t .01 xxx
         read -N1 -t .01 xxx
-        printf "Are you SURE you want to %s (y/N) " "$1"
+        printf $"Are you SURE you want to %s (y/N) " "$1"
         local ans
         read ans
         echo
@@ -220,12 +214,6 @@ run_cmd() {
     if [ "$exec" ]; then
         exec $sudo "$@" 2>&1
     else
-
-        # This fixes space-evaders but it needs root on Debian
-        # works fine on Gentoo
-        #
-        #local tty=$(tty)
-        #sudo bash -c "$*" 2>&1 <$tty
 
         $sudo bash -c "$*" 2>&1
         local ret=$?
@@ -255,12 +243,12 @@ edit_file() {
     local file=$1
 
     if ! sudo test -e $file; then
-        db_msg "File not file:$white $file"
+        db_msg $"File not file:$white $file"
         return
     fi
 
     if ! sudo test -w $file; then
-        db_msg "Cannot write to file:$white $file"
+        db_msg $"Cannot write to file:$white $file"
         return
     fi
 
@@ -269,11 +257,9 @@ edit_file() {
     restore_tty
 
     local cmd="$EDITOR $file"
-    printf "\e[0;0H$cyan$exec$cmd$nc\n" | tee -a $log_file
+    printf "\e[0;0H$yellow$exec$cmd$nc\n" | tee -a $log_file
 
-    ($sudo bash -c "$cmd" 2>&1)&
-    local pid=$!
-    wait $pid
+    $sudo bash -c "$cmd" 2>&1
 
    clear
    hide_tty
@@ -305,11 +291,11 @@ view_cmd() {
 
     else
         echo
-        msg "There are too many output lines to fit on the screen all at once."
-        msg "Therefore the output will be sent to the 'less' program."
-        msg "You can scroll the output with the arrow keys, <page-up>, and <page-down>."
-        msg "Use <Home> to go to the beginning and <End> to go to the end"
-        msg "Press 'q' when you are done.  Use 'h' for help and many more commands."
+        msg $"There are too many output lines to fit on the screen all at once."
+        msg $"Therefore the output will be sent to the 'less' program."
+        msg $"You can scroll the output with the arrow keys, <page-up>, and <page-down>."
+        msg $"Use <Home> to go to the beginning and <End> to go to the end"
+        msg $"Press 'q' when you are done.  Use 'h' for help and many more commands."
         echo
         pause
 
@@ -345,12 +331,10 @@ view_file() {
     clear
     restore_tty
 
-    local cmd="less -R $file"
+    local cmd="less -RS $file"
     printf "\e[0;0H$cyan$exec$cmd$nc\n"  | tee -a $log_file
 
-    (bash -c "$cmd" 2>&1)&
-    local pid=$!
-    wait $pid
+    bash -c "$cmd" 2>&1
 
    clear
    hide_tty

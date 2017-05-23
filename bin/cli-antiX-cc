@@ -70,14 +70,15 @@ key_callback() {
 }
 
 make_main_menu() {
-    entry "Audio/Visual menu"
-    entry "Internet Tools & Apps"
-    entry "System Tools"
-    entry "Configuration Files"
-    entry "Live System Centre"
-    entry "Console Utilities"
-    entry "Office and Other"
-    entry "Logout / Install"
+    entry $"Audio/Visual menu"
+    entry $"Internet Tools & Apps"
+    entry $"System Tools"
+    entry $"Configuration Files"
+    entry $"Live System Centre"
+    entry $"Console Utilities"
+    entry $"Office and Other"
+    entry $"Logout / Install"
+    entry "$(printf "$yellow%s$nc_co" $"Quit")"
 }
 
 main_cc_on_enter() {
@@ -86,16 +87,16 @@ main_cc_on_enter() {
     MAIN_CC_SEL=$sel
 
     case $name in
-           "Audio/Visual menu") select_menu av_cc           ;;
-       "Internet Tools & Apps") select_menu net_cc          ;;
-                "System Tools") select_menu sys_cc          ;;
-         "Configuration Files") select_menu config_cc       ;;
-          "Live System Centre") select_menu live_cc         ;;
-           "Console Utilities") select_menu util_cc         ;;
-            "Office and Other") select_menu off_cc          ;;
-            "Logout / Install") select_menu logout_cc       ;;
+           $"Audio/Visual menu") select_menu av_cc           ;;
+       $"Internet Tools & Apps") select_menu net_cc          ;;
+                $"System Tools") select_menu sys_cc          ;;
+         $"Configuration Files") select_menu config_cc       ;;
+          $"Live System Centre") select_menu live_cc         ;;
+           $"Console Utilities") select_menu util_cc         ;;
+            $"Office and Other") select_menu off_cc          ;;
+            $"Logout / Install") select_menu logout_cc       ;;
 
-      *) db_msg "Would do action %s" "$white$name" ; return ;;
+      *) db_msg $"Would do action %s" "$white$name" ; return ;;
     esac
 
     clear
@@ -108,9 +109,9 @@ main_cc_on_enter() {
 make_logout_menu() {
     start_menu_list
 
-    add_cmd "cli-installer"     "Install this distro on a hard drive"
-    add_cmd "reboot"            "Reboot the system"
-    add_cmd "poweroff"          "Powerdown the system"
+    add_cmd 'cli-installer'     $"Install this distro on a hard drive"
+    add_cmd 'reboot'            $"Reboot the system"
+    add_cmd 'poweroff'          $"Powerdown the system"
 
     end_menu_list
     back_to_main_entry
@@ -131,14 +132,14 @@ logout_cc_on_enter() {
 make_av_menu() {
     start_menu_list
 
-    add_cmd "speaker-test"             "See if sound is working"
-    add_cmd "alsa-set-default-card"    "Select which sound card to use"
-    add_cmd "alsamixer"                "simple sound mixer"
-    add_cmd "mocp"                     "Audio Player"
-    # add_cmd "mpv"                      "Video Player"
-    add_cmd "pmrp"                     "Poor Man's Radio Player"
-    # add_cmd "burniso"                  "cd/dvd burner"
-    add_cmd "cdw"                      "cd/dvd/burner"
+    add_cmd 'speaker-test'             $"See if sound is working"
+    add_cmd 'alsa-set-default-card'    $"Select which sound card to use"
+    add_cmd 'alsamixer'                $"simple sound mixer"
+    add_cmd 'mocp'                     $"Audio Player"
+    # add_cmd $"mpv"                      "Video Player"
+    add_cmd $"pmrp"                     "Poor Man's Radio Player"
+    # add_cmd $"burniso"                  "cd/dvd burner"
+    add_cmd 'cdw'                      $"cd/dvd/burner"
 
     end_menu_list
     back_to_main_entry
@@ -163,21 +164,21 @@ av_cc_cmd() {
 
 make_sys_menu() {
     start_menu_list
-    add_cmd "cli-package-installer" "Install new packages (like Synaptic)"
-    add_cmd "testdisk"       "Check and undelete disk partitions"
-    add_cmd "sysv-rc-conf"   "Choose Startup Services"
-    add_cmd "tzdata"         "Set Date and Time"  dpkg-reconfigure
-    add_cmd "guess-hwclock"  "Be prompted to setup the time correctly"
-    add_cmd "htop"           "Show real-time system status"
-    add_cmd "inxi"           "Hardware and OS formation"
-    add_cmd "env-info"       "Other system Information"
-    add_cmd "ps_mem.py"      "Show memory usage"
-    add_cmd "df"             "Information about mounted partitions"
-    add_cmd "lsblk"          "List all block (disk) partitions"
-    add_cmd "lsmod"          "List currently installed kernel modules"
-    add_cmd "lspci"          "List major system components"
-    add_cmd "lsusb"          "List attached USB devices"
-    add_cmd "dmesg"          "Display messages from the kernel"
+    add_cmd 'cli-package-installer' $"Install new packages (like Synaptic)"
+    add_cmd 'testdisk'       $"Check and undelete disk partitions"
+    add_cmd 'sysv-rc-conf'   $"Choose Startup Services"
+    add_cmd 'tzdata'         $"Set Date and Time"  dpkg-reconfigure
+    add_cmd 'guess-hwclock'  $"Be prompted to setup the time correctly"
+    add_cmd 'htop'           $"Show real-time system status"
+    add_cmd 'inxi'           $"Hardware and OS formation"
+    add_cmd 'env-info'       $"Other system Information"
+    add_cmd 'ps_mem.py'      $"Show memory usage"
+    add_cmd 'df'             $"Information about mounted partitions"
+    add_cmd 'lsblk'          $"List all block (disk) partitions"
+    add_cmd 'lsmod'          $"List currently installed kernel modules"
+    add_cmd 'lspci'          $"List major system components"
+    add_cmd 'lsusb'          $"List attached USB devices"
+    add_cmd 'dmesg'          $"Display messages from the kernel"
 
     end_menu_list
     back_to_main_entry
@@ -208,12 +209,12 @@ sys_cc_cmd() {
 
 make_live_menu() {
     start_menu_list
-    add_cmd "live-usb-maker"       "Make a live-usb"
-    add_cmd "live-kernel-updater"  "Update live kernel"
-    add_cmd "live-remaster"        "Remaster live system"
-    add_cmd "persist_save"         "Save dynamic root persistence"
-    add_cmd "persist-makefs"       "Configure dynamic root persistence"
-    add_cmd "persist-config"       "Create live persistence files"
+    add_cmd 'live-usb-maker'       $"Make a live-usb"
+    add_cmd 'live-kernel-updater'  $"Update live kernel"
+    add_cmd 'live-remaster'        $"Remaster live system"
+    add_cmd 'persist_save'         $"Save dynamic root persistence"
+    add_cmd 'persist-makefs'       $"Configure dynamic root persistence"
+    add_cmd 'persist-config'       $"Create live persistence files"
     end_menu_list
     back_to_main_entry
 }
@@ -237,11 +238,11 @@ make_util_menu() {
     have_backlight \
         && add_cmd "backlight-brightness"  "Adjust the brightness of the backlight"
 
-    add_cmd "splash-select"         "Choose the console background"
-    add_cmd "console-font-select"   "Choose the console font"
-    add_cmd "console-width-select"  "Choose the console font"
-    add_cmd "choose-console-width"  "Choose the console font"
-    add_cmd "/etc/live/bin/space-evaders"  "Arcade type game"
+    add_cmd 'splash-select'         $"Choose the console background"
+    add_cmd 'console-font-select'   $"Choose the console font"
+    add_cmd 'console-width-select'  $"Choose the console font"
+    add_cmd 'choose-console-width'  $"Choose the console font"
+    add_cmd '/etc/live/bin/space-evaders'  $"Arcade type game"
 
     end_menu_list
     back_to_main_entry
@@ -265,16 +266,16 @@ util_cc_cmd() {
 make_net_menu() {
     start_menu_list
 
-    add_cmd "ceni"         "Setup wireless"
-    add_cmd "ifconfig"     "Show network status"
-    add_cmd "ping"         "Test if network is connected"
-    add_cmd "netstat"      "Show all network connections and ports"
-    add_cmd "netpro"       "Manage network profiles"
-    add_cmd "elinks"       "Web browser"
-    add_cmd "links2"       "Web browser"
-    add_cmd "irrsi"        "Chat client"
-    add_cmd "newsbeuter"   "RSS/Atom feed reader"
-    add_cmd "rtorrent"     "Bittorrent client"
+    add_cmd 'ceni'         $"Setup wireless"
+    add_cmd 'ifconfig'     $"Show network status"
+    add_cmd 'ping'         $"Test if network is connected"
+    add_cmd 'netstat'      $"Show all network connections and ports"
+    add_cmd 'netpro'       $"Manage network profiles"
+    add_cmd 'elinks'       $"Web browser"
+    add_cmd 'links2'       $"Web browser"
+    add_cmd 'irrsi'        $"Chat client"
+    add_cmd 'newsbeuter'   $"RSS/Atom feed reader"
+    add_cmd 'rtorrent'     $"Bittorrent client"
 
     end_menu_list
     back_to_main_entry
@@ -302,12 +303,11 @@ net_cc_cmd() {
 make_off_menu() {
     start_menu_list
 
-    add_cmd "mc"            "Midnight commander file manager"
-    add_cmd "wordgrinder"   "Word Processor"
-    add_cmd "calcurse"      "Calendar/Schedule"
-    add_cmd "nano"          "Simple text editor"
-    add_cmd "vim"           "Advanced text editor"
-    add_cmd ""           ""
+    add_cmd 'mc'            $"Midnight commander file manager"
+    add_cmd 'wordgrinder'   $"Word Processor"
+    add_cmd 'calcurse'      $"Calendar/Schedule"
+    add_cmd 'nano'          $"Simple text editor"
+    add_cmd 'vim'           $"Advanced text editor"
 
     end_menu_list
     back_to_main_entry
@@ -327,18 +327,18 @@ off_cc_cmd() {
 
 make_config_menu() {
     start_menu_list
-    add_edit "File system table"               /etc/fstab
-    add_edit "X Windows Configuration"         /etc/X11/xorg.conf
-    add_edit "SLiM Graphical login manager"    /etc/slim.conf
-    add_edit "Installed bootloader"            /boot/grub.menu.lst
-    add_edit "Live usb BIOS bootloader"        /live/boot-dev/boot/syslinux/syslinux.cfg
-    add_edit "Live usb UEFI bootloader"        /live/boot-dev/boot/grub/grub.cfg
-    add_edit "Remaster Exclude List"           /usr/local/share/excludes/general-remaster-exclude.list
-    add_edit "Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
-    add_edit "Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
-    add_edit "Persist Save Exclude List"       /usr/local/share/excludes/persist-save-exclude.list
-    add_view "X Server Log File"               /var/log/Xorg.0.log
-    add_view "Live Boot Log File"              /var/log/live/initrd.log.color
+    add_edit $"File system table"               /etc/fstab
+    add_edit $"X Windows Configuration"         /etc/X11/xorg.conf
+    add_edit $"SLiM Graphical login manager"    /etc/slim.conf
+    add_edit $"Installed bootloader"            /boot/grub.menu.lst
+    add_edit $"Live usb BIOS bootloader"        /live/boot-dev/boot/syslinux/syslinux.cfg
+    add_edit $"Live usb UEFI bootloader"        /live/boot-dev/boot/grub/grub.cfg
+    add_edit $"Remaster Exclude List"           /usr/local/share/excludes/general-remaster-exclude.list
+    add_edit $"Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
+    add_edit $"Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
+    add_edit $"Persist Save Exclude List"       /usr/local/share/excludes/persist-save-exclude.list
+    add_view $"X Server Log File"               /var/log/Xorg.0.log
+    add_view $"Live Boot Log File"              /var/log/live/initrd.log.color
 
     end_menu_list
     back_to_main_entry
