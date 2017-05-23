@@ -95,6 +95,7 @@ main_cc_on_enter() {
            $"Console Utilities") select_menu util_cc         ;;
             $"Office and Other") select_menu off_cc          ;;
             $"Logout / Install") select_menu logout_cc       ;;
+                        $"Quit") exit 0                      ;;
 
       *) db_msg $"Would do action %s" "$white$name" ; return ;;
     esac
@@ -286,7 +287,7 @@ net_cc_cmd() {
     case $cmd in
                ping) run_cmd -p  $cmd -c4 -W2 8.8.8.8 ;;
            ifconfig) run_cmd -p  $cmd                 ;;
-             nestat) run_cmd -ps $cmd -autp           ;;
+            netstat) run_cmd -ps $cmd -autp           ;;
                ceni) run_cmd -s  $cmd                 ;;
         wicd-curses) run_cmd -s  $cmd                 ;;
              netpro) run_cmd -s  $cmd                 ;;
