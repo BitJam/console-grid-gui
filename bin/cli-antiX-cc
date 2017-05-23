@@ -122,7 +122,7 @@ logout_cc_on_enter() {
     local name=$1 sel=$3
 
     case $name in
-                installer) run_cmd -spc cli-installer  ;;
+            cli-installer) run_cmd -spc $cmd           ;;
                    reboot) run_cmd -spce reboot        ;;
                  poweroff) run_cmd -spce poweroff      ;;
 
