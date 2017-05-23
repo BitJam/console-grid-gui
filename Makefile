@@ -3,7 +3,7 @@ ROOT        := .
 
 SHELL       := /bin/bash
 
-SCRIPTS     := bin/cli* bin/*-select
+SCRIPTS     := bin/cli* bin/*-select bin/backlight-brightness
 LIB_DIR     := $(ROOT)/usr/lib/shell
 BIN_DIR     := $(ROOT)/usr/local/bin
 LOCALE_DIR  := $(ROOT)/usr/share/
