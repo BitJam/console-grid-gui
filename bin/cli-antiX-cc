@@ -95,7 +95,7 @@ main_cc_on_enter() {
            $"Console Utilities") select_menu util_cc         ;;
             $"Office and Other") select_menu off_cc          ;;
             $"Logout / Install") select_menu logout_cc       ;;
-                        $"Quit") exit 0                      ;;
+                        $"Quit") clear ; exit 0              ;;
 
       *) db_msg $"Would do action %s" "$white$name" ; return ;;
     esac
