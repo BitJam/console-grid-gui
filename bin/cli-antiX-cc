@@ -223,8 +223,8 @@ make_live_menu() {
 live_cc_cmd() {
     local cmd=$1
     case $cmd in
-             live-usb-maker) run_cmd -s  $cmd --pause ;;
-        live-kernel-updater) run_cmd -s  $cmd --pause ;;
+             live-usb-maker) run_cmd -sp $cmd         ;;
+        live-kernel-updater) run_cmd -sp $cmd         ;;
               live-remaster) run_cmd -sp $cmd --cli   ;;
                persist_save) run_cmd -sp $cmd --cli   ;;
              persist-makefs) run_cmd -sp $cmd --cli   ;;
