@@ -391,6 +391,8 @@ select_menu() {
         grid_center_x
         grid_fill_y 15
         grid_finalize
+
+        eval MENU_NEW_$name=
     fi
 
     grid_activate $name
