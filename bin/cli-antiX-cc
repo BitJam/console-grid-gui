@@ -10,6 +10,8 @@ PATH=./bin:$PATH
 main() {
     set_color_scheme light
 
+    test -d /etc/live/bin && PATH=$PATH:/etc/live/bin
+
     clear
     #echo  -n "${cyan}Please wait while $ME examines your system ..."
 
