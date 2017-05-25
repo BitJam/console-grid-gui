@@ -263,8 +263,6 @@ edit_file() {
         return
     fi
 
-
-    clear
     restore_tty
 
     local cmd="$EDITOR $file"
@@ -272,7 +270,6 @@ edit_file() {
 
     $sudo bash -c "$cmd" 2>&1
 
-   clear
    hide_tty
    redraw
 }
@@ -289,7 +286,6 @@ view_cmd() {
         [ -z "${opts##-*s*}" ] && sudo=$SUDO
     fi
 
-    clear
     restore_tty
 
     printf "\e[0;0H$yellow$exec$sudo $*$nc\n" | tee -a $log_file
@@ -313,7 +309,6 @@ view_cmd() {
         $sudo "$@" | less -RS
     fi
 
-    clear
     hide_tty
     redraw
 }
@@ -339,7 +334,6 @@ view_file() {
 
     local file=$1
 
-    clear
     restore_tty
 
     local cmd="less -RS $file"
@@ -347,7 +341,6 @@ view_file() {
 
     bash -c "$cmd" 2>&1
 
-   clear
    hide_tty
    redraw
 }
