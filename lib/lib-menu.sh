@@ -188,6 +188,8 @@ Show_cmds
 run_cmd() {
     local pause sudo exec check opts reset
 
+    local orig_size=$(stty size)
+
     clear
     if [ -z "${1##-*}" ]; then
         opts=$1 ; shift
@@ -198,8 +200,9 @@ run_cmd() {
         [ -z "${opts##-*e*}" ] && exec='exec '
     fi
 
-    clear
     restore_tty
+
+    printf "\e[0;0H$cyan$exec$sudo $*$nc\n" | tee -a $log_file
 
     if [ "$check" ]; then
         local xxx
@@ -213,27 +216,27 @@ run_cmd() {
         echo
         case $ans in
             [Yy]*) ;;
-                *) clear; hide_tty ; redraw; return ;;
+                *) hide_tty ; redraw; return ;;
         esac
     fi
 
-    printf "\e[0;0H$cyan$exec$sudo $*$nc\n" | tee -a $log_file
+    [ "$exec" ] && exec $sudo "$@" 2>&1
 
-    if [ "$exec" ]; then
-        exec $sudo "$@" 2>&1
-    else
+    $sudo "$@" 2>&1
 
-        $sudo bash -c "$*" 2>&1
-        local ret=$?
-    fi
+    local ret=$?
 
     [ $ret -eq 0 ] || pause=true
     [ "$pause" ] && pause
 
-    [ "$reset" ] && re_init
-
-    clear
     hide_tty
+    [ "$(stty size)" != "$orig_size" ] && reset=true
+
+    if [ "$reset" ]; then
+        re_init
+        reset_menu
+    fi
+
     redraw
 }
 
