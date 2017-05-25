@@ -101,11 +101,6 @@ main_cc_on_enter() {
 
       *) db_msg $"Would do action %s" "$white$name" ; return ;;
     esac
-
-    clear
-    printf $cursor_off
-    redraw
-    return
 }
 
 
