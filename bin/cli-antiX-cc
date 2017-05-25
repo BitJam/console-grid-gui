@@ -23,37 +23,35 @@ main() {
 
     screen_set box=-s border=1
 
-    start_menu_list
-
-    init
+    start_menu_list  # Just in case I forget elsewhere
 
     local start_str="init took: $(delta_time $start_t) seconds"
     log "$start_str"
 
     hide_tty
-    clear
-    redraw
-    db_msg "$start_str"
+    init
+
+    #db_msg "$start_str"
     main_loop
 }
 
 init() {
-    screen_init
     re_init
     select_menu main_cc
 }
 
 re_init() {
-    new_menu   main_cc  $"Main Menu"                make_main_menu
-    new_menu   live_cc  $"antiX Live Commands"      make_live_menu
-    new_menu     av_cc  $"Audio/Visual Commands"    make_av_menu
-    new_menu    sys_cc  $"System Commands"          make_sys_menu
-    new_menu   util_cc  $"Console Utilities"        make_util_menu
-    new_menu    net_cc  $"Internet Applications"    make_net_menu
-    new_menu    off_cc  $"Office Applications"      make_off_menu
-    new_menu config_cc  $"Configuration Files"      make_config_menu
-    new_menu logout_cc  $"Logout and Installer"     make_logout_menu
-
+    screen_init
+    new_menu     main_cc $"Main Menu"                make_main_menu
+    new_menu     live_cc $"antiX Live Commands"      make_live_menu
+    new_menu       av_cc $"Audio/Visual Commands"    make_av_menu
+    new_menu sys_tool_cc $"System Tools"             make_sys_tool_menu
+    new_menu sys_info_cc $"System Information"       make_sys_info_menu
+    new_menu  console_cc $"Console Utilities"        make_console_menu
+    new_menu      net_cc $"Internet Applications"    make_net_menu
+    new_menu      off_cc $"Office Applications"      make_off_menu
+    new_menu   config_cc $"Configuration Files"      make_config_menu
+    new_menu   logout_cc $"Logout and Installer"     make_logout_menu
 }
 
 key_callback() {
@@ -75,6 +73,7 @@ make_main_menu() {
     entry $"Audio/Visual menu"
     entry $"Internet Tools & Apps"
     entry $"System Tools"
+    entry $"System Information"
     entry $"Configuration Files"
     entry $"Live System Centre"
     entry $"Console Utilities"
@@ -91,10 +90,11 @@ main_cc_on_enter() {
     case $name in
            $"Audio/Visual menu") select_menu av_cc           ;;
        $"Internet Tools & Apps") select_menu net_cc          ;;
-                $"System Tools") select_menu sys_cc          ;;
+                $"System Tools") select_menu sys_tool_cc     ;;
+          $"System Information") select_menu sys_info_cc     ;;
          $"Configuration Files") select_menu config_cc       ;;
           $"Live System Centre") select_menu live_cc         ;;
-           $"Console Utilities") select_menu util_cc         ;;
+           $"Console Utilities") select_menu console_cc      ;;
             $"Office and Other") select_menu off_cc          ;;
             $"Logout / Install") select_menu logout_cc       ;;
                         $"Quit") clear ; exit 0              ;;
@@ -120,15 +120,15 @@ make_logout_menu() {
     back_to_main_entry
 }
 
-logout_cc_on_enter() {
+logout_cc_cmd() {
     local name=$1 sel=$3
 
     case $name in
-            cli-installer) run_cmd -spc $cmd           ;;
-                   reboot) run_cmd -spce reboot        ;;
-                 poweroff) run_cmd -spce poweroff      ;;
+            cli-installer) run_cmd -spc  $cmd      ;;
+                   reboot) run_cmd -spce $cmd      ;;
+                 poweroff) run_cmd -spce $cmd      ;;
 
-        *) db_msg "Would do action %s" "$white$name" ; return ;;
+        *) db_msg "Would do logout action %s" "$white$name" ; return ;;
     esac
 }
 
@@ -165,13 +165,20 @@ av_cc_cmd() {
     return
 }
 
-make_sys_menu() {
+make_sys_tool_menu() {
     start_menu_list
     add_cmd 'cli-package-installer' $"Install new packages (like Synaptic)"
     add_cmd 'testdisk'       $"Check and undelete disk partitions"
     add_cmd 'sysv-rc-conf'   $"Choose Startup Services"
     add_cmd 'tzdata'         $"Set Date and Time"  dpkg-reconfigure
-    add_cmd 'guess-hwclock'  $"Be prompted to setup the time correctly"
+    #add_cmd 'guess-hwclock'  $"Be prompted to setup the time correctly"
+    add_cmd 'htop'           $"Control processes"
+    end_menu_list
+    back_to_main_entry
+}
+
+make_sys_info_menu() {
+    start_menu_list
     add_cmd 'htop'           $"Show real-time system status"
     add_cmd 'inxi'           $"Hardware and OS formation"
     add_cmd 'env-info'       $"Other system Information"
@@ -187,7 +194,7 @@ make_sys_menu() {
     back_to_main_entry
 }
 
-sys_cc_cmd() {
+sys_tool_cc_cmd() {
     local cmd=$1
     case $cmd in
     cli-package-installer)  run_cmd -s  $cmd                     ;;
@@ -196,15 +203,24 @@ sys_cc_cmd() {
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
             guess-hwclock)  run_cmd -s  $cmd                     ;;
                      htop)  run_cmd     $cmd                     ;;
-                     inxi)  run_cmd -p  $cmd -Fx -c24            ;;
-                 env-info)  run_cmd -p  $cmd                     ;;
-                ps_mem.py)  run_cmd -ps $cmd                     ;;
-                       df)  run_cmd -p  $cmd -hTP                ;;
-                    lsblk) view_cmd -s  $cmd -o name,size,fstype,label,uuid ;;
-                    lsmod) view_cmd     $cmd                     ;;
-                    lspci) view_cmd     $cmd                     ;;
-                    lsusb) view_cmd     $cmd                     ;;
-                    dmesg) view_cmd     $cmd  --color=always --ctime  ;;
+        *)  db_msg "Would do action %s" "$white$cmd"
+    esac
+    return
+}
+
+sys_info_cc_cmd() {
+    local cmd=$1
+    case $cmd in
+             htop)  run_cmd     $cmd                     ;;
+             inxi)  run_cmd -p  $cmd -Fx -c24            ;;
+         env-info)  run_cmd -p  $cmd                     ;;
+        ps_mem.py)  run_cmd -ps $cmd                     ;;
+               df)  run_cmd -p  $cmd -hTP                ;;
+            lsblk) view_cmd -s  $cmd -o name,size,fstype,label,uuid ;;
+            lsmod) view_cmd     $cmd                     ;;
+            lspci) view_cmd     $cmd                     ;;
+            lsusb) view_cmd     $cmd                     ;;
+            dmesg) view_cmd     $cmd  --color=always --ctime  ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
@@ -235,32 +251,33 @@ live_cc_cmd() {
     esac
 }
 
-make_util_menu() {
+make_console_menu() {
     start_menu_list
 
     have_backlight \
         && add_cmd "backlight-brightness"  "Adjust the brightness of the backlight"
 
     add_cmd 'splash-select'         $"Choose the console background"
-    add_cmd 'console-font-select'   $"Choose the console font"
     add_cmd 'console-width-select'  $"Choose the console font"
+    add_cmd 'console-font-select'   $"Choose the console font"
     add_cmd 'choose-console-width'  $"Choose the console font"
-    add_cmd '/etc/live/bin/space-evaders'  $"Arcade type game"
+    add_cmd 'space-evaders'         $"Arcade type game"
+    add_cmd 'tao'                   $"Experts from the Tao of Programming"
 
     end_menu_list
     back_to_main_entry
 }
 
-util_cc_cmd() {
+console_cc_cmd() {
     local cmd=$1
     case $cmd in
-       backlight-brightness) run_cmd     $cmd                        ;;
-              splash-select) run_cmd     $cmd                        ;;
-        console-font-select) run_cmd -r  $cmd                        ;;
-       console-width-select) run_cmd -sr $cmd                        ;;
-       choose-console-width) run_cmd -sr $cmd                        ;;
-              space-evaders) run_cmd     /etc/live/bin/space-evaders ;;
-                          X) run_cmd     $cmd                        ;;
+       backlight-brightness) run_cmd     $cmd  ;;
+              splash-select) run_cmd     $cmd  ;;
+        console-font-select) run_cmd     $cmd  ;;
+       console-width-select) run_cmd -s  $cmd  ;;
+       choose-console-width) run_cmd -s  $cmd  ;;
+              space-evaders) run_cmd     $cmd  ;;
+                        tao) run_cmd -p  $cmd  ;;
 
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
