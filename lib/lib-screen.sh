@@ -416,10 +416,8 @@ log() {
 
 do_bash_shell() {
     restore_tty
-    clear
-    printf "Use \"exit\" or Ctrl-d to return to %s\n" $ME
-    PS1="Bash> " bash  --login
-    clear
+    printf "${cyan}Use 'exit' or Ctrl-d to return to %s$nc\n" $ME
+    PS1="Bash> " bash 2>&1
     hide_tty
     redraw
 }
@@ -434,27 +432,22 @@ do_help() {
 
 do_command() {
     restore_tty
-    clear
     "$@"
-    clear
     hide_tty
     redraw
 }
 
 restore_tty() {
-    [ -n "$ORIG_TTY" ] && stty $ORIG_STTY
-    local y height=$(stty size | cut -d" " -f1)
-    y=$((height - 4))
-
-    printf "\e[$y;1H"
-    printf "$nc$cursor_on"
+    [ -n "$ORIG_STTY" ] && stty $ORIG_STTY
+    printf "$nc$clear$cursor_on"
+    printf "\e[1;1H"
 }
 
 hide_tty() {
-    [ "$ORIG_STTY" ] || ORIG_STTY=$(stty -g)
+    [ "$ORIG_STTY" ]    || ORIG_STTY=$(stty -g)
     [ "$SCREEN_IN_VT" ] || trap restart WINCH
+    clear
     stty cbreak -echo
-    TTY_HID=true
     printf $cursor_off
 }
 
@@ -478,7 +471,7 @@ need_root() {
 
 on_exit() {
     restore_tty
-    reset
-    #tput rmcup
+    printf "\e[1;1H"
+    printf "$cyan%s exited$nc\n" $ME
 }
 
