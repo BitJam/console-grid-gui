@@ -136,7 +136,10 @@ screen_init() {
     SCREEN_BOX=
     [ $SCREEN_BORDER -gt 0 ] && SCREEN_BOX="1 1 $SCREEN_RAW_WIDTH $SCREEN_RAW_HEIGHT"
 
-    log "\n\n$bold$yellow>>>>>$cyan $ME started $(date) $yellow<<<<<$nc"
+    if [ -z "DID_INIT" ]; then
+        log "\n\n$bold$yellow>>>>>$cyan $ME started $(date) $yellow<<<<<$nc"
+        DID_INIT=true
+    fi
     log1 "v-height" $SCREEN_HEIGHT
     log1 "v-width" $SCREEN_WIDTH
 }
