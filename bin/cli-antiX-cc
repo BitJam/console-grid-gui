@@ -167,7 +167,7 @@ make_sys_tool_menu() {
     add_cmd 'sysv-rc-conf'   $"Choose Startup Services"
     add_cmd 'tzdata'         $"Set Date and Time"  dpkg-reconfigure
     #add_cmd 'guess-hwclock'  $"Be prompted to setup the time correctly"
-    add_cmd 'htop'           $"Control processes"
+    add_cmd 'htop'           $"Monitor and Control processes"
     end_menu_list
     back_to_main_entry
 }
@@ -188,7 +188,7 @@ sys_tool_cc_cmd() {
 
 make_sys_info_menu() {
     start_menu_list
-    add_cmd 'htop'                   $"Show real-time system status"
+    add_cmd 'htop'                   $"Monitor and Control Processes"
     add_cmd 'inxi'                   $"Hardware and OS formation"
     add_cmd 'env-info'               $"Other system Information"
     add_cmd 'ps_mem.py'              $"Show memory usage"
