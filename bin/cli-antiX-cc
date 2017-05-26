@@ -172,23 +172,6 @@ make_sys_tool_menu() {
     back_to_main_entry
 }
 
-make_sys_info_menu() {
-    start_menu_list
-    add_cmd 'htop'           $"Show real-time system status"
-    add_cmd 'inxi'           $"Hardware and OS formation"
-    add_cmd 'env-info'       $"Other system Information"
-    add_cmd 'ps_mem.py'      $"Show memory usage"
-    add_cmd 'df'             $"Information about mounted partitions"
-    add_cmd 'lsblk'          $"List all block (disk) partitions"
-    add_cmd 'lsmod'          $"List currently installed kernel modules"
-    add_cmd 'lspci'          $"List major system components"
-    add_cmd 'lsusb'          $"List attached USB devices"
-    add_cmd 'dmesg'          $"Display messages from the kernel"
-
-    end_menu_list
-    back_to_main_entry
-}
-
 sys_tool_cc_cmd() {
     local cmd=$1
     case $cmd in
@@ -203,6 +186,27 @@ sys_tool_cc_cmd() {
     return
 }
 
+make_sys_info_menu() {
+    start_menu_list
+    add_cmd 'htop'                   $"Show real-time system status"
+    add_cmd 'inxi'                   $"Hardware and OS formation"
+    add_cmd 'env-info'               $"Other system Information"
+    add_cmd 'ps_mem.py'              $"Show memory usage"
+    add_cmd 'df'                     $"Information about mounted partitions"
+    add_cmd 'lsblk'                  $"List all block (disk) partitions"
+    add_cmd 'lsmod'                  $"List currently installed kernel modules"
+    add_cmd 'lspci'                  $"List major system components"
+    add_cmd 'lsusb'                  $"List attached USB devices"
+    add_cmd 'dmesg'                  $"Display messages from the kernel"
+
+    add_view $"X Server Log File"    /var/log/Xorg.0.log
+    add_view $"Live Boot Log File"   /var/log/live/initrd.log.color
+
+    end_menu_list
+    back_to_main_entry
+}
+
+
 sys_info_cc_cmd() {
     local cmd=$1
     case $cmd in
@@ -216,6 +220,10 @@ sys_info_cc_cmd() {
             lspci) view_cmd     $cmd                     ;;
             lsusb) view_cmd     $cmd                     ;;
             dmesg) view_cmd     $cmd  --color=always --ctime  ;;
+
+            Xorg.0.log) view_file /var/log/Xorg.0.log ;;
+      initrd.log.color) view_file /var/log/live/initrd.log.color ;;
+
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
@@ -352,8 +360,6 @@ make_config_menu() {
     add_edit $"Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
     add_edit $"Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
     add_edit $"Persist Save Exclude List"       /usr/local/share/excludes/persist-save-exclude.list
-    add_view $"X Server Log File"               /var/log/Xorg.0.log
-    add_view $"Live Boot Log File"              /var/log/live/initrd.log.color
 
     end_menu_list
     back_to_main_entry
@@ -374,9 +380,6 @@ config_cc_cmd() {
            menu.list) edit_file -s /boot/grub/menu.lst ;;
         syslinux.cfg) edit_file -s /live/boot-dev/boot/syslinux/syslinux.cfg ;;
             grub.cfg) edit_file -s /live/boot-dev/boot/grub/grub.cfg ;;
-
-                  Xorg.0.log) view_file /var/log/Xorg.0.log ;;
-            initrd.log.color) view_file /var/log/live/initrd.log.color ;;
 
                *)  db_msg "Would do action %s" "$white$cmd"
     esac
