@@ -279,7 +279,7 @@ edit_file() {
 #------------------------------------------------------------------------------
 view_cmd() {
 
-    local opts
+    local opts sudo
     clear
     if [ -z "${1##-*}" ]; then
         opts=$1 ; shift
@@ -293,24 +293,29 @@ view_cmd() {
     local lines=$($sudo "$@" | wc -l | cut -d" " -f1)
     local height=$(screen_height)
     if [ $lines -lt $((height - 5)) ]; then
-        $SUDO "$@"
+        $sudo "$@"
         pause
 
     else
-        echo
-        msg $"There are too many output lines to fit on the screen all at once."
-        msg $"Therefore the output will be sent to the 'less' program."
-        msg $"You can scroll the output with the arrow keys, <page-up>, and <page-down>."
-        msg $"Use <Home> to go to the beginning and <End> to go to the end"
-        msg $"Press 'q' when you are done.  Use 'h' for help and many more commands."
-        echo
-        pause
+        warn_of_less 'output'
 
         $sudo "$@" | less -RS
     fi
 
     hide_tty
     redraw
+}
+
+warn_of_less() {
+    local type=$1
+    echo
+    msg $"There are too many %s lines to fit on the screen all at once."  "$type"
+    msg $"Therefore the %s will be sent to the 'less' program."           "$type"
+    msg $"You can scroll the %s with the arrow keys, <page-up>, and <page-down>." "$type"
+    msg $"Use <Home> to go to the beginning and <End> to go to the end"
+    msg $"Press 'q' when you are done.  Use 'h' for help and many more commands."
+    echo
+    pause
 }
 
 #------------------------------------------------------------------------------
@@ -336,10 +341,20 @@ view_file() {
 
     restore_tty
 
-    local cmd="less -RS $file"
-    printf "\e[0;0H$cyan$exec$cmd$nc\n"  | tee -a $log_file
+    local lines=$(wc -l "$file" | cut -d" " -f1)
+    local height=$(screen_height)
+    if [ $lines -lt $((height - 5)) ]; then
 
-    bash -c "$cmd" 2>&1
+        printf "\e[0;0H${yellow}less -RSE $file$nc\n"  | tee -a $log_file
+        less -RSE "$file"
+        pause
+
+    else
+
+        printf "\e[0;0H${yellow}less -RS $file$nc\n"  | tee -a $log_file
+        warn_of_less 'file'
+        less -RS "$file"
+    fi
 
    hide_tty
    redraw
