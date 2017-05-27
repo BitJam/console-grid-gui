@@ -3,6 +3,8 @@
 
 : ${EDITOR:=nano}
 
+: ${LIVE_MP:=/live/boot-dev}
+
 for ed in nano; do
     which $ed &>/dev/null && continue
     EDITOR=$ed
@@ -458,6 +460,21 @@ its_alive() {
                    *) return 1 ;;
     esac
 }
+
+#------------------------------------------------------------------------------
+# Return true if running live and we can write to $LIVE_MP (/live/boot-dev)
+# FIXME: Can this be easily fooled by "toram"?
+#------------------------------------------------------------------------------
+its_alive_usb() {
+    its_alive            || return 1
+    [ "$ITS_A_LIVE_USB"  && return 0
+    local dir=$LIVE_MP
+    test -d $dir         || return 1
+    is_writable "$dir"   || return 1
+    ITS_A_LIVE_USB=true
+    return 0
+}
+
 
 #------------------------------------------------------------------------------
 #

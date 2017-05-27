@@ -354,8 +354,10 @@ make_config_menu() {
     add_edit $"X Windows Configuration"         /etc/X11/xorg.conf
     add_edit $"SLiM Graphical login manager"    /etc/slim.conf
     add_edit $"Installed bootloader"            /boot/grub.menu.lst
-    add_edit $"Live usb BIOS bootloader"        /live/boot-dev/boot/syslinux/syslinux.cfg
-    add_edit $"Live usb UEFI bootloader"        /live/boot-dev/boot/grub/grub.cfg
+
+    its_alive_usb && add_edit $"Live usb BIOS bootloader"  /live/boot-dev/boot/syslinux/syslinux.cfg
+    its_alive_usb && add_edit $"Live usb UEFI bootloader"  /live/boot-dev/boot/grub/grub.cfg
+
     add_edit $"Remaster Exclude List"           /usr/local/share/excludes/general-remaster-exclude.list
     add_edit $"Snapshot Exclude List"           /usr/local/share/excludes/iso-snapshot-exclude.list
     add_edit $"Remaster Exclude List 2"         /usr/local/share/excludes/live-remaster-exclude.list
