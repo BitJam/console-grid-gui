@@ -298,6 +298,7 @@ set_colors() {
     local color=${1:-high}
 
     local e=$(printf "\e")
+    clear="$e[2;J"; cursor_off="$e[?25l"; cursor_on="$e[?25h"
 
     box_char="■"
 
@@ -388,14 +389,30 @@ hq()  { echo "$bold_co$*$m_co"    ;}
 cq()  { echo "$hi_co$*$m_co"      ;}
 nq()  { echo "$num_co$*$m_co"     ;}
 
+
+restore_tty() {
+    [ -n "$ORIG_STTY" ] && stty $ORIG_STTY
+    printf "$nc$clear$cursor_on"
+    printf "\e[1;1H"
+}
+
+hide_tty() {
+    [ "$ORIG_STTY" ]    || ORIG_STTY=$(stty -g)
+    [ "$SCREEN_IN_VT" ] || trap restart WINCH
+    clear
+    stty cbreak -echo
+    printf $cursor_off
+}
+
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 on_exit() {
-    clear
-    restore_cursor
-    tput rmcup
+    [ -n "$ORIG_STTY" ] || return
+    restore_tty
+    printf "\e[1;1H"
+    printf "$cyan%s exited$nc\n" $ME
 }
-
 
 main "$@"
