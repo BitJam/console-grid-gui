@@ -9,9 +9,10 @@ main() {
 
     local CONTROLLER  CONTROLLER_MAX  CONTROLLER_CUR
     find_controller CONTROLLER
- 
+
     [ -n "$CONTROLLER" ]           || fatal "No controller found"
     test -w $CONTROLLER/brightness || fatal "You need to be root to run this script"
+
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
 
     trap on_exit EXIT
@@ -30,7 +31,7 @@ main() {
     local box_width=$((width - 2 * x_margin))
     local y0=$mid_y
     local box_height=3
-   
+
     local MAX_X=$((box_width - 2))
     local MIN_PERCENT=2
 
@@ -56,7 +57,7 @@ main() {
 
 #==============================================================================
 # Brightness Controller
-# 
+#
 #==============================================================================
 
 find_controller() {
@@ -80,7 +81,7 @@ find_controller() {
 set_brightness() {
     local percent=$1
     local value=$((percent * CONTROLLER_MAX / 100))
-    echo $value > $CONTROLLER/brightness 
+    echo $value > $CONTROLLER/brightness
 }
 
 #==============================================================================
@@ -191,7 +192,7 @@ get_key() {
         $'\x1b\x5b\x5b\x43')     key=f3           ;;
         $'\x1b\x5b\x5b\x44')     key=f4           ;;
         $'\x1b\x5b\x5b\x45')     key=f5           ;;
-        
+
         $'\x1b\x5b\x31\x35\x7e') key=f5           ;;
         $'\x1b\x5b\x31\x37\x7e') key=f6           ;;
         $'\x1b\x5b\x31\x38\x7e') key=f7           ;;
@@ -314,10 +315,10 @@ set_colors() {
         lt_red="$e[1;31m" ; magenta="$e[1;35m" ;   yellow="$e[1;33m" ;   white="$e[1;37m" ;
          nc_co="$e[0m"    ;   brown="$e[0;33m" ;
 
-         bg_black="$e[40m"      ;     bg_blue="$e[44m"              
-         bg_red="$e[41m"        ;     bg_magentaa="$e[45m"          
-         bg_green="$e[42m"      ;     bg_cyan="$e[46m"              
-         bg_yellow="$e[43m"     ;     bg_white="$e[47m"             
+         bg_black="$e[40m"      ;     bg_blue="$e[44m"
+         bg_red="$e[41m"        ;     bg_magentaa="$e[45m"
+         bg_green="$e[42m"      ;     bg_cyan="$e[46m"
+         bg_yellow="$e[43m"     ;     bg_white="$e[47m"
 
     case $color in
         high)
