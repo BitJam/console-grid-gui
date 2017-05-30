@@ -100,10 +100,13 @@ set_brightness() {
 redraw() {
     clear
     box -b $x0 $y0 $box_width $box_height
-    cprintf $((y0 - 2)) "" "Backlight Brightness Control"
+    cprintf "" $((y0 - 2)) "Backlight Brightness Control"
     local box_bot=$((y0 + box_height - 1))
-    cprintf $((box_bot + 1)) "" "Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right arrow)"
-    cprintf $((box_bot + 2)) "" "Press '%s' to quit" "$(bq q)"
+    local text_x=
+    cprintf  ""          $((box_bot + 1)) "Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right-arrow)"
+    xyprintf $CPRINTF_X  $((box_bot + 2)) "Use <%s> and <%s> for smaller steps"        "$(bq up-arrow)" "$(bq down-arrow)"
+    xyprintf $CPRINTF_X  $((box_bot + 3)) "Use <%s> and <%s> for bigger steps"         "$(bq page-up)" "$(bq page-down)"
+    xyprintf $CPRINTF_X  $((box_bot + 4)) "Press '%s' to quit" "$(bq q)"
     draw_bar
 }
 
@@ -232,20 +235,21 @@ get_key() {
 xyprintf() {
     local x=$1  y=$2  fmt=$3
     shift 3
-    local msg=$(printf "$fmt" "$@")
-    printf "$color\e[$y;${x}H$msg$nc_co"
+    #local msg=$(printf "$fmt" "$@")
+    printf "$m_co\e[$y;${x}H$fmt$nc_co" "$@"
 }
 
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 cprintf() {
-    local y=$1  x0=${2:-$((SCREEN_RAW_WIDTH / 2))}  fmt=$3
+    local x0=${1:-$((SCREEN_RAW_WIDTH / 2))}  y=$2  fmt=$3
     shift 3
     local msg=$(printf "$fmt" "$@")
     local len=$(str_len "$msg")
     local x=$((1 + x0 - len/2))
     printf "$m_co$color\e[$y;${x}H$msg$nc_co"
+    CPRINTF_X=$x
 }
 
 #------------------------------------------------------------------------------
