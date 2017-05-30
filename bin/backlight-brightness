@@ -10,16 +10,20 @@ main() {
     local CONTROLLER  CONTROLLER_MAX  CONTROLLER_CUR
     find_controller CONTROLLER
 
+    if [ "$TEST" -a -z "$CONTROLLER" ]; then
+        echo 50 > ./brightness
+        CONTROLLER_MAX=100
+        CONTROLLER_CUR=50
+        CONTROLLER=./
+    fi
+
     [ -n "$CONTROLLER" ]           || fatal "No controller found"
     test -w $CONTROLLER/brightness || fatal "You need to be root to run this script"
 
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
 
     trap on_exit EXIT
-
-    tput smcup
-    hide_cursor
-    clear
+    hide_tty
 
     local x_margin=5
     local height=$(screen_height)
