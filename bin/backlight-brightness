@@ -101,6 +101,8 @@ redraw() {
     clear
     box -b $x0 $y0 $box_width $box_height
     cprintf "" $((y0 - 2)) "Backlight Brightness Control"
+    cprintf "" $((y0 - 1)) "$yellow$(basename $CONTROLLER)"
+
     local box_bot=$((y0 + box_height - 1))
     local text_x=
     cprintf  ""          $((box_bot + 1)) "Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right-arrow)"
