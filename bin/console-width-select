@@ -12,12 +12,17 @@ test -e $loc_lib/lib-screen.sh && lib_dir=$loc_lib
 . $lib_dir/lib-screen.sh
 . $lib_dir/lib-grid.sh
 
-    FONT_DIR="/usr/share/consolefonts"
-   FONT_EXTS=".psf.gz"
-  FONT_SIZES="16 14 12 11 10 8 6"
-   DUMMY_TTY="tty2"
+ACTIVE_CONSOLES="/dev/tty[1-6]"
+       FONT_DIR="/usr/share/consolefonts"
+      FONT_EXTS=".psf.gz"
+     FONT_SIZES="16 14 12 11 10 8 6"
+      DUMMY_TTY="tty2"
+       NEW_FONT=
+      CONF_FILE=/etc/default/console-setup
 
 main() {
+
+    [ -n "$SCREEN_IN_VT" -a $UID -ne 0 ] && fatal "This program must be run as root"
 
     local tty_arg
     [ "$SCREEN_IN_VT" ] || tty_arg="-tty=${DUMMY_TTY#tty}"
@@ -31,6 +36,8 @@ main() {
     [ ${#CODESET} -eq 0 ] && CODESET=$(lang_to_codeset $LANG)
     WIDTH_MENU="$(width_menu $pixel_width)"
     [ ${#WIDTH_MENU} -eq 0 ] && fatal "No fonts found"
+
+    trap set_font_exit EXIT
 
     set_color_scheme light
 
@@ -73,6 +80,9 @@ restart() {
     redraw
 }
 
+#------------------------------------------------------------------------------
+# We use the "t" key to display information about the current font.
+#------------------------------------------------------------------------------
 key_callback() {
     local key=$1
     [ "$key" = "t" ] || return 1
@@ -86,12 +96,18 @@ key_callback() {
 
     echo "$cyan Press any key to continue$nc"
 
+    local xxx
     read -s -n1 xxx
     clear
     redraw
     return 0
 }
 
+#------------------------------------------------------------------------------
+# This routine runs when the user presses <Enter> on one of the selections.
+# We get the entire label and use sed to get to font width that was near the
+# end of the label.  This version sets the console font for tty1 -- tty6
+#------------------------------------------------------------------------------
 console_width_on_enter() {
     local lab=$1  sel=$3
 
@@ -104,18 +120,26 @@ console_width_on_enter() {
         db_msg "Would set font to %s" "$white$font"
         return
     fi
-    local term=$(fgconsole)
 
-    setfont $font
+    local tty
+    for tty in $ACTIVE_CONSOLES; do
+        setfont $font -C $tty
+    done
+
     local cur_width=$(get_current_width)
     screen_set title3="Current width is $cur_width"
 
-    log "term=$term  font=$font"
+    log "font=$font"
     clear
 
     restart
 }
 
+#------------------------------------------------------------------------------
+# Given a font-width specification and a language, we try to find a font file
+# that works.  We try a few options but usually the first one works so this is
+# pretty fast.
+#------------------------------------------------------------------------------
 get_console_font() {
     local cmd_size=$1
     local lang=${3:-$LANG}  fdir=${4:-$FONT_DIR}
@@ -148,6 +172,9 @@ get_console_font() {
     esac
 
     # Now try to find an existing font file that matches what we want
+    # Save the face and size in globals for setting the default font
+    # in our exit routine.
+    THE_FONT_SIZE=$size
 
     local try font face font_file ext
     for face in ${name}Bold VGA $name; do
@@ -158,14 +185,18 @@ get_console_font() {
             #echo $font_file
             test -e $font_file || continue
             font=$try
+            THE_FONT_FACE=$face
             break
         done
         [ -n "$font" ] && break
     done
     echo $font
 }
+
 #------------------------------------------------------------------------------
-#
+# A simple menu showing options for width of the screen in chars and the width
+# of the char.  We don't provide options if the number of columns would end up
+# less than 80.
 #------------------------------------------------------------------------------
 width_menu() {
     local pixel_width=$1  font_width  num_cols
@@ -179,7 +210,11 @@ width_menu() {
 }
 
 #------------------------------------------------------------------------------
-#
+# This version uses the program "fbcondecor_ctl" or fbcondecor_ctl.static" to
+# find out the width of the active text area of the current theme in pixels.
+# This is the best way to do it but it requires that program which is not in
+# initrd ATM.  So similar code in the initrd assumes the default theme is
+# being used.
 #------------------------------------------------------------------------------
 get_fbcondecor_width() {
     local tty_arg=$1  res
@@ -200,18 +235,14 @@ get_fbcondecor_width() {
 }
 
 #------------------------------------------------------------------------------
-#
+# Convenience routine to give the width of the screen in CHARACTERS
 #------------------------------------------------------------------------------
-get_current_width() {
-    stty size | cut -d" " -f2
-}
+get_current_width() { stty size | cut -d" " -f2; }
 
-fatal() {
-    local fmt=$1 ; shift
-    printf "Error: $fmt\n" "$@"
-    exit 7
-}
 
+#------------------------------------------------------------------------------
+# Convert the two-character language code to the corresponding font code-set.
+#------------------------------------------------------------------------------
 lang_to_codeset() {
     local lang=$1
     case ${lang%%_*} in
@@ -227,13 +258,82 @@ lang_to_codeset() {
     esac
 }
 
+#------------------------------------------------------------------------------
+# Edit /etc/default/console-setup so it will use the selected font on the
+# next (installed) boot.  It doesn't make sense to do this on the live
+# system , even with persistence, becauese it will be overwriting these entries
+# anyway.
+#------------------------------------------------------------------------------
+set_default_font() {
+    local size=$THE_FONT_SIZE  face=$THE_FONT_FACE  conf_file=$CONF_FILE
+
+    its_alive           && return
+    [ "$SCREEN_IN_VT" ] || return
+    [ "$NEW_FONT"     ] || return
+    [ "$size"         ] || return
+    [ "$face"         ] || return
+    test -w $conf_file  || return
+
+    # See if both lines already exist in the file (usual case)
+    # We try to minimize the number of times we write to the file
+    if grep -q "^\s*FONTFACE=" $conf_file && grep -q "^\s*FONTSIZE=" $conf_file; then
+        # if so then only edit the conf_file at most once
+        local expr
+        grep -q "^\s*FONTFACE=\"$face\"" $conf_file \
+            || expr="$expr -e s/^\s*(FONTFACE=).*/\1\"$face\"/"
+
+        grep -q "^\s*FONTSIZE=\"$size\""  $conf_file \
+            || expr="$expr -e s/^\s*(FONTSIZE=).*/\1\"$size\"/"
+
+        [ ${#expr} -gt 0 ] && sed -r -i $expr $conf_file
+    else
+        add_or_replace  "^\s*FONTFACE="  "FONTFACE=\"$face\""  $conf_file create
+        add_or_replace  "^\s*FONTSIZE="  "FONTSIZE=\"$size\""  $conf_file create
+    fi
+}
+
+#------------------------------------------------------------------------------
+# Either replace an existing line or add a new line if an existing line that
+# sets the variable we want to set is missing.  If the "create" flag is given
+# then we will create the file if it doesn't already exist.
+#------------------------------------------------------------------------------
+add_or_replace() {
+    local where=$1  line=$2  file=$3  create=$4
+
+    if ! test -e "$file"; then
+        [ "$create" ] || return
+        mkdir -p $(basename $file)
+        echo "$line" > $file
+        return
+    fi
+
+    if grep -q "$where" "$file"; then
+        # Don't over-write the same string
+        grep -q "^$line" "$file" && return
+        # Edit the existing line
+        sed -i -r "/$where/ s|.*|$line|" $file
+    else
+        # Add it under the top line of the file
+         sed -i "1 a$line" $file
+    fi
+}
+
+#------------------------------------------------------------------------------
+# When we exit, set the default font to be the last font selected by the user.
+# Should we ask first?
+#------------------------------------------------------------------------------
+set_font_exit() {
+
+    set_default_font "$NEW_FONT"
+
+    # Chain to exit routine in lib-screen
+    on_exit
+}
+
 my_dir=$(readlink -f "$(dirname "$0")")
 
-HELP_PAGE=console-font-select
+HELP_PAGE=console-width-select
 
 [ "$DEBUG" ] || log_file=/dev/null
 
 main "$@" 2>> $log_file
-
-
-
