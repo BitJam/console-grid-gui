@@ -122,6 +122,7 @@ step_percent() {
     [ $PERCENT -lt $MIN_PERCENT ] && PERCENT=$MIN_PERCENT
     set_brightness $PERCENT
     draw_bar
+    xyprintf 1 $height "%4s: %-20s" "$step" "$PERCENT%"
 }
 
 #------------------------------------------------------------------------------
