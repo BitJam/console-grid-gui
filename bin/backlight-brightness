@@ -33,7 +33,7 @@ main() {
 
     local x0=$x_margin
     local box_width=$((width - 2 * x_margin))
-    local y0=$mid_y
+    local y0=$((mid_y - 5))
     local box_height=3
 
     local MAX_X=$((box_width - 2))
