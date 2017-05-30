@@ -128,19 +128,24 @@
 .rm #[ #] #H #V #F C
 .\" ========================================================================
 .\"
-.IX Title "CONSOLE-FONT-SELECT 1"
-.TH CONSOLE-FONT-SELECT 1 "2017-05-29" "Version 2.0.0" "antiX Documentation"
+.IX Title "CONSOLE-WIDTH-SELECT 1"
+.TH CONSOLE-WIDTH-SELECT 1 "2017-05-29" "Version 2.0.0" "antiX Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
 .nh
 .SH "NAME"
-console\-font\-select \-\- choose a font for the virtual console
+console\-width\-select \-\- choose a font for the virtual console
+based on how many characters wide the screen will become.
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
-This program displays a variety of sizes for the console in
-a grid.  Use the arrow keys and [Home] and [End] to
-select a font.  Then press [Enter].
+This program displays a list of font widths along with the number
+of characters wide the screen will become when that font is
+selected.  Using \*(L"screen width\*(R" (technically, number of columns) 
+provides a more consistent display across console resolutions.
+.PP
+On installed systems, on exit we set the default font to be 
+the last font select.
 .SH "KEYS"
 .IX Header "KEYS"
 .IP "\fBA\fR" 4
