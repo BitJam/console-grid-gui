@@ -43,7 +43,7 @@ main() {
 
     screen_set title1="Select a Console Font"
     screen_set title2="Press: <Enter> to select a font <q> to quit, <h> for help"
-    screen_set title3="Current width is $cur_width"
+    screen_set title3="Current width is $cur_width characters"
     screen_set border=0
 
     init
@@ -127,7 +127,8 @@ console_width_on_enter() {
     done
 
     local cur_width=$(get_current_width)
-    screen_set title3="Current width is $cur_width"
+
+    screen_set title3="Current width is $yellow$cur_width$magenta, current font is $yellow$font"
 
     log "font=$font"
     clear
