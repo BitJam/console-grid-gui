@@ -79,7 +79,10 @@ key_callback() {
     return 0
 }
 
-
+#------------------------------------------------------------------------------
+# Set the selected font on the current display then restart so we rebuild the
+# menu based on the new screen size.
+#------------------------------------------------------------------------------
 console_font_on_enter() {
     local font=$1  sel=$3
     local full=$(expand_font "$font")
@@ -113,6 +116,11 @@ console_font_on_enter() {
     fi
 }
 
+
+#------------------------------------------------------------------------------
+# Gather names of actual font files that we recognize.  Then make short names
+# out of them to be displayed.
+#------------------------------------------------------------------------------
 read_console_fonts() {
     local dir=/usr/share/consolefonts
 
@@ -127,10 +135,13 @@ read_console_fonts() {
                    $CODESET-Fixed[0-9]*) continue                                                 ;;
                                       *) continue                                                 ;;
         esac
+
+        # Sizes without the "x" are all 8 wide (AFAIK)
         case $size in
             8|14|16) size=${size}x8
         esac
 
+        # Sort by width first then height then name
         local width=${size##*[x-]}
         local height=${size%%[x-]*}
         local index=$(printf "%04d%04d" "$width" "$height")
@@ -140,6 +151,10 @@ read_console_fonts() {
     done
 }
 
+#------------------------------------------------------------------------------
+# Undo what was done in read_console_fonts() to get back to the actual font
+# name that can be used by setfont.
+#------------------------------------------------------------------------------
 expand_font() {
     local font=$1
     local name=Terminus  size=${font%%-*}
@@ -160,12 +175,18 @@ expand_font() {
     echo "$CODESET-$name$size"
 }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 fatal() {
     local fmt=$1 ; shift
     printf "Error: $fmt\n" "$@"
     exit 7
 }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 lang_to_codeset() {
     local lang=$1
     case ${lang%%_*} in
