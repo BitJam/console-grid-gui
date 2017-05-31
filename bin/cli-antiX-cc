@@ -263,7 +263,7 @@ make_console_menu() {
     add_cmd 'splash-select'         $"Choose the console background"
     add_cmd 'console-width-select'  $"Choose the console font"
     add_cmd 'console-font-select'   $"Choose the console font"
-    add_cmd 'choose-console-width'  $"Choose the console font"
+    #add_cmd 'choose-console-width'  $"Choose the console font"
     add_cmd 'space-evaders'         $"Arcade type game"
     add_cmd 'tao'                   $"Experts from the Tao of Programming"
 
