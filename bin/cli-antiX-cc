@@ -180,7 +180,7 @@ sys_tool_cc_cmd() {
              sysv-rc-conf)  run_cmd -s  $cmd                     ;;
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
             guess-hwclock)  run_cmd -s  $cmd                     ;;
-                     htop)  run_cmd     $cmd                     ;;
+                     htop)  run_cmd -s  $cmd                     ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
