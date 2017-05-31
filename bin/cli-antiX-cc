@@ -164,10 +164,10 @@ make_sys_tool_menu() {
     start_menu_list
     add_cmd 'cli-package-installer' $"Install new packages (like Synaptic)"
     add_cmd 'testdisk'       $"Check and undelete disk partitions"
-    add_cmd 'sysv-rc-conf'   $"Choose Startup Services"
-    add_cmd 'tzdata'         $"Set Date and Time"  dpkg-reconfigure
+    add_cmd 'sysv-rc-conf'   $"Choose startup services"
+    add_cmd 'tzdata'         $"Set date and time"  dpkg-reconfigure
     #add_cmd 'guess-hwclock'  $"Be prompted to setup the time correctly"
-    add_cmd 'htop'           $"Monitor and Control processes"
+    add_cmd 'htop'           $"Monitor and Control Processes"
     end_menu_list
     back_to_main_entry
 }
@@ -188,9 +188,9 @@ sys_tool_cc_cmd() {
 
 make_sys_info_menu() {
     start_menu_list
-    add_cmd 'htop'                   $"Monitor and Control Processes"
-    add_cmd 'inxi'                   $"Hardware and OS formation"
-    add_cmd 'env-info'               $"Other system Information"
+    add_cmd 'htop'                   $"Monitor and control processes"
+    add_cmd 'inxi'                   $"Hardware and OS information"
+    add_cmd 'env-info'               $"Other system information"
     add_cmd 'ps_mem.py'              $"Show memory usage"
     add_cmd 'df'                     $"Information about mounted partitions"
     add_cmd 'lsblk'                  $"List all block (disk) partitions"
