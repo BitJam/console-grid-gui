@@ -260,10 +260,9 @@ lang_to_codeset() {
 }
 
 #------------------------------------------------------------------------------
-# Edit /etc/default/console-setup so it will use the selected font on the
-# next (installed) boot.  It doesn't make sense to do this on the live
-# system , even with persistence, becauese it will be overwriting these entries
-# anyway.
+# Edit /etc/default/console-setup so it will use the selected font on the next
+# (installed) boot.  It doesn't make sense to do this on the live system, even
+# with persistence, becauese we will be overwriting these entries anyway.
 #------------------------------------------------------------------------------
 set_default_font() {
     local size=$THE_FONT_SIZE  face=$THE_FONT_FACE  conf_file=$CONF_FILE
