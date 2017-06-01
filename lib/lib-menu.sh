@@ -82,11 +82,12 @@ return_to_main_entry() {
 }
 
 back_to_main_entry() {
-    centered_lab "${cyan}Return to main menu"
+    centered_lab "$cyan%s" "Return to main menu"
 }
 
 centered_lab() {
-    local lab=$1
+    local fmt=$1 ; shift
+    local lab=$(printf "$fmt" "$@")
     local len=$(str_len "$lab")
     local pad=$(((MENU_WIDTH - len) / 2))
     printf "\e[${pad}C$lab"
@@ -178,7 +179,7 @@ start_menu_list() {
 end_menu_list() {
     local cmd  blurb
     while read type cmd blurb; do
-        printf "%s: %s\n" "$(lpad_word $((CMD_WIDTH + 1)) "$cmd")" "$blurb"
+        printf "$yellow%s$white: %s\n" "$(lpad_word $((CMD_WIDTH + 1)) "$cmd")" "$blurb"
     done <<Show_cmds
 $(echo -e "$MENU_LIST")
 Show_cmds
