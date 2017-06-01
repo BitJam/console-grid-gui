@@ -70,6 +70,7 @@ key_callback() {
 }
 
 make_main_menu() {
+    start_menu_list
     entry $"Audio/Visual menu"
     entry $"Internet Tools & Apps"
     entry $"System Tools"
@@ -79,7 +80,7 @@ make_main_menu() {
     entry $"Console Utilities"
     entry $"Office and Other"
     entry $"Logout / Install"
-    entry "$(printf "$yellow%s$nc_co" $"Quit")"
+    entry "$(printf "$yellow%s" $"Quit")"
 }
 
 main_cc_on_enter() {
@@ -263,9 +264,9 @@ make_console_menu() {
     add_cmd 'splash-select'         $"Choose the console background"
     add_cmd 'console-width-select'  $"Choose the console font"
     add_cmd 'console-font-select'   $"Choose the console font"
-    #add_cmd 'choose-console-width'  $"Choose the console font"
+    add_cmd 'ansi-colors'           $"Display all possible console text colors"
     add_cmd 'space-evaders'         $"Arcade type game"
-    add_cmd 'tao'                   $"Experts from the Tao of Programming"
+    add_cmd 'tao'                   $"Excerpts from the Tao of Programming"
 
     end_menu_list
     back_to_main_entry
@@ -279,6 +280,7 @@ console_cc_cmd() {
         console-font-select) run_cmd     $cmd  ;;
        console-width-select) run_cmd -s  $cmd  ;;
        choose-console-width) run_cmd -s  $cmd  ;;
+                ansi-colors) view_cmd    $cmd  ;;
               space-evaders) run_cmd     $cmd  ;;
                         tao) run_cmd -p  $cmd  ;;
 
@@ -288,7 +290,6 @@ console_cc_cmd() {
 
 make_net_menu() {
     start_menu_list
-
     add_cmd 'ceni'         $"Setup wireless"
     add_cmd 'ifconfig'     $"Show network status"
     add_cmd 'ping'         $"Test if network is connected"
