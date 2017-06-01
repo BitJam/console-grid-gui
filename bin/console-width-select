@@ -226,15 +226,13 @@ get_fbcondecor_width() {
     read res 2>/dev/null <$fbsize_file
     [ -z "$res" ] && return
     local width
-    local name=fbcondecor_ctl p prog
-    for p in $name $name.static; do
-        which $p &>/dev/null || continue
-        prog=$p
+    local name=fbcondecor_ctl prog
+    for prog in $name $name.static; do
+        which $prog &>/dev/null || continue
+        width=$($prog $tty_arg -c getcfg 2>/dev/null | sed -nr "s/^twidth:\s+//p")
         break
     done
-    [ "$prog" ] && width=$($prog $tty_arg -c getcfg 2>/dev/null | sed -nr "s/^twidth:\s+//p")
-
-    : ${width:=$(echo "$res" | cut -d, -f1)}
+    [ ${width:-0} -eq 0 ] && width=$(echo "$res" | cut -d, -f1)
     printf "%s\n" "$width"
 }
 
