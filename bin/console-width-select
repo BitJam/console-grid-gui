@@ -41,9 +41,13 @@ main() {
 
     set_color_scheme light
 
-    screen_set title1="Select a Console Font"
+    screen_set title1="Select the console width in characters"
     screen_set title2="Press: <Enter> to select a font <q> to quit, <h> for help"
-    screen_set title3="Current width is $cur_width characters"
+    if [ "$SCREEN_IN_VT" ]; then
+        screen_set title3="Screen is $cur_width chars wide"
+    else
+        screen_set title3="$DUMMY_TTY is $cur_width chars wide"
+    fi
     screen_set border=0
 
     init
@@ -131,7 +135,7 @@ console_width_on_enter() {
 
     local cur_width=$(get_current_width)
 
-    screen_set title3="Current width is $yellow$cur_width$magenta, current font is $yellow$font"
+    screen_set title3="Screen is $yellow$cur_width$magenta chars wide, font is $yellow$font"
 
     log "font=$font"
     clear
