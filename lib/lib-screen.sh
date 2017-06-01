@@ -472,7 +472,6 @@ need_root() {
 on_exit() {
     [ -n "$ORIG_STTY" ] || return
     restore_tty
-    printf "\e[1;1H"
     printf "$cyan%s exited$nc\n" $ME
 }
 
