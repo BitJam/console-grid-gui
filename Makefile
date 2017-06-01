@@ -4,6 +4,7 @@ ROOT        := .
 SHELL       := /bin/bash
 
 SCRIPTS     := $(wildcard bin/cli* bin/*-select bin/backlight-brightness)
+SHARE_DIR   := $(ROOT)/user/share/antiX-cli-cc
 LIB_DIR     := $(ROOT)/usr/lib/shell
 BIN_DIR     := $(ROOT)/usr/local/bin
 LOCALE_DIR  := $(ROOT)/usr/share/
@@ -14,9 +15,9 @@ RULES_DIR   := $(ROOT)/etc/udev/rules.d/
 MAN_PAGES   := $(wildcard man/*.1)
 MAN_FINAL   := $(patsubst man/%,$(MAN_DIR)/%.gz,$(MAN_PAGES))
 
-ALL_DIRS   := $(LIB_DIR) $(BIN_DIR) $(LOCALE_DIR) $(MAN_DIR) $(RULES_DIR)
+ALL_DIRS   := $(LIB_DIR) $(BIN_DIR) $(LOCALE_DIR) $(MAN_DIR) $(RULES_DIR) $(SHARE_DIR)
 
-.PHONY: scripts help all lib rules man-pages
+.PHONY: scripts help all lib rules man-pages shared
 
 
 help:
@@ -29,7 +30,7 @@ help:
 	@echo "make man-pages           install man pages"
 	@#echo ""
 
-all: scripts lib rules man-pages
+all: scripts lib rules man-pages shared
 
 lib: | $(LIB_DIR) $(LOCALE_DIR)
 	cp -r lib/* $(LIB_DIR)
@@ -45,6 +46,9 @@ man-pages: $(MAN_FINAL)
 
 $(MAN_FINAL): $(MAN_DIR)/%.gz : man/% | $(MAN_DIR)
 	gzip -c $< > $@
+
+shared: | $(SHARE_DIR)
+	cp -r share/* $(SHARE_DIR)
 
 $(ALL_DIRS):
 	test -d $(ROOT)/
