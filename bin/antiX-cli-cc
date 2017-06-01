@@ -7,6 +7,8 @@ test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
 
 PATH=./bin:$PATH
 
+PLAY_LIST=/usr/share/antiX-cli-cc/demo/Classical.m3u
+
 main() {
     set_color_scheme light
 
@@ -148,13 +150,13 @@ av_cc_cmd() {
     local cmd=$1
     case $cmd in
                  speaker-test) run_cmd     $cmd -c 2 -t wav -l 2 ;;
-        alsa-set-default-card) run_cmd  -p $cmd --cli   ;;
-                    alsamixer) run_cmd     $cmd         ;;
-                         mocp) run_cmd     $cmd         ;;
-                          mpv) run_cmd     $cmd         ;;
-                         pmrp) run_cmd     $cmd         ;;
-                      burniso) run_cmd     $cmd         ;;
-                          cdw) run_cmd     $cmd         ;;
+        alsa-set-default-card) run_cmd  -p $cmd --cli       ;;
+                    alsamixer) run_cmd     $cmd             ;;
+                         mocp) run_cmd     $cmd $PLAY_LIST  ;;
+                          mpv) run_cmd     $cmd             ;;
+                         pmrp) run_cmd     $cmd             ;;
+                      burniso) run_cmd     $cmd             ;;
+                          cdw) run_cmd     $cmd             ;;
 
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
