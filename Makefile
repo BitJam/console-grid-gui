@@ -3,7 +3,7 @@ ROOT        := .
 
 SHELL       := /bin/bash
 
-SCRIPTS     := $(wildcard bin/cli* bin/*-select bin/backlight-brightness)
+SCRIPTS     := $(wildcard bin/antiX-* bin/*-select bin/backlight-brightness)
 SHARE_DIR   := $(ROOT)/user/share/antiX-cli-cc
 LIB_DIR     := $(ROOT)/usr/lib/shell
 BIN_DIR     := $(ROOT)/usr/local/bin
