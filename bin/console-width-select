@@ -107,6 +107,7 @@ key_callback() {
 # This routine runs when the user presses <Enter> on one of the selections.
 # We get the entire label and use sed to get to font width that was near the
 # end of the label.  This version sets the console font for tty1 -- tty6
+# This is a call-back from lib-menu.
 #------------------------------------------------------------------------------
 console_width_on_enter() {
     local lab=$1  sel=$3
@@ -120,6 +121,8 @@ console_width_on_enter() {
         db_msg "Would set font to %s" "$white$font"
         return
     fi
+
+    NEW_FONT=$font
 
     local tty
     for tty in $ACTIVE_CONSOLES; do
@@ -173,9 +176,6 @@ get_console_font() {
     esac
 
     # Now try to find an existing font file that matches what we want
-    # Save the face and size in globals for setting the default font
-    # in our exit routine.
-    THE_FONT_SIZE=$size
 
     local try font face font_file ext
     for face in ${name}Bold VGA $name; do
@@ -186,7 +186,6 @@ get_console_font() {
             #echo $font_file
             test -e $font_file || continue
             font=$try
-            THE_FONT_FACE=$face
             break
         done
         [ -n "$font" ] && break
@@ -265,14 +264,28 @@ lang_to_codeset() {
 # with persistence, becauese we will be overwriting these entries anyway.
 #------------------------------------------------------------------------------
 set_default_font() {
-    local size=$THE_FONT_SIZE  face=$THE_FONT_FACE  conf_file=$CONF_FILE
+    font=${1#*-}  conf_file=${2:-$CONF_FILE}
 
+    # Don't set font on the live system since we will set at boot time
     its_alive           && return
+
     [ "$SCREEN_IN_VT" ] || return
-    [ "$NEW_FONT"     ] || return
+    [ -n "$font" ]      || return
+    [ -n "$conf_file" ] || return
+    test -w $conf_file  || return
+
+    local face=$font
+
+    # Strip off the size from the font face
+    face=${face%%[1-9]*}
+
+    # Get back the size by removing the font face
+    local size=${font#$face}
+
     [ "$size"         ] || return
     [ "$face"         ] || return
-    test -w $conf_file  || return
+
+    say "Setting default font to %s" "$yellow$font$cyan"
 
     # See if both lines already exist in the file (usual case)
     # We try to minimize the number of times we write to the file
@@ -285,13 +298,20 @@ set_default_font() {
         grep -q "^\s*FONTSIZE=\"$size\""  $conf_file \
             || expr="$expr -e s/^\s*(FONTSIZE=).*/\1\"$size\"/"
 
-        [ ${#expr} -gt 0 ] && sed -r -i $expr $conf_file
+        [ ${#expr} -gt 0 ] && xsed -r -i $expr $conf_file
     else
         add_or_replace  "^\s*FONTFACE="  "FONTFACE=\"$face\""  $conf_file create
         add_or_replace  "^\s*FONTSIZE="  "FONTSIZE=\"$size\""  $conf_file create
     fi
 }
 
+#------------------------------------------------------------------------------
+# Routine to see what sed actions get performed
+#------------------------------------------------------------------------------
+xsed() {
+    #echo "sed $*"
+    /bin/sed "$@"
+}
 #------------------------------------------------------------------------------
 # Either replace an existing line or add a new line if an existing line that
 # sets the variable we want to set is missing.  If the "create" flag is given
@@ -311,11 +331,20 @@ add_or_replace() {
         # Don't over-write the same string
         grep -q "^$line" "$file" && return
         # Edit the existing line
-        sed -i -r "/$where/ s|.*|$line|" $file
+        xsed -i -r "/$where/ s|.*|$line|" $file
     else
         # Add it under the top line of the file
-         sed -i "1 a$line" $file
+         xsed -i "1 a$line" $file
     fi
+}
+
+
+#------------------------------------------------------------------------------
+# Send colored text to the console
+#------------------------------------------------------------------------------
+say() {
+    local fmt=$1 ; shift
+    printf "$cyan$fmt$nc\n" "$@"
 }
 
 #------------------------------------------------------------------------------
@@ -323,11 +352,13 @@ add_or_replace() {
 # Should we ask first?
 #------------------------------------------------------------------------------
 set_font_exit() {
+    restore_tty
 
     set_default_font "$NEW_FONT"
+    say "%s exited" "$ME"
 
     # Chain to exit routine in lib-screen
-    on_exit
+    #on_exit
 }
 
 my_dir=$(readlink -f "$(dirname "$0")")
