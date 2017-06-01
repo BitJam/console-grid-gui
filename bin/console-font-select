@@ -214,6 +214,3 @@ HELP_PAGE=console-font-select
 [ "$DEBUG" ] || log_file=/dev/null
 
 main "$@" 2>> $log_file
-
-
-
