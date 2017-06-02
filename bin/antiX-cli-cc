@@ -7,7 +7,7 @@ test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
 
 PATH=./bin:$PATH
 
-PLAY_LIST=/usr/share/antiX-cli-cc/demo/Classical.m3u
+PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 
 main() {
     set_color_scheme light
