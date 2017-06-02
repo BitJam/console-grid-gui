@@ -27,6 +27,8 @@ main() {
 
     screen_set box=-s border=1
 
+    which toram_eject &>/dev/null && toram_eject --cli
+
     start_menu_list  # Just in case I forget elsewhere
 
     local start_str="init took: $(delta_time $start_t) seconds"
