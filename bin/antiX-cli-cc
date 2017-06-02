@@ -133,14 +133,14 @@ logout_cc_cmd() {
 make_av_menu() {
     start_menu_list
 
-    add_cmd 'speaker-test'             $"See if sound is working"
-    add_cmd 'alsa-set-default-card'    $"Select which sound card to use"
-    add_cmd 'alsamixer'                $"simple sound mixer"
-    add_cmd 'mocp'                     $"Audio Player"
+    add_cmd speaker-test             $"See if sound is working"
+    add_cmd alsa-set-default-card    $"Select which sound card to use"
+    add_cmd alsamixer                $"simple sound mixer"
+    add_cmd mocp                     $"Audio Player"
     # add_cmd $"mpv"                      "Video Player"
-    add_cmd $"pmrp"                     "Poor Man's Radio Player"
-    # add_cmd $"burniso"                  "cd/dvd burner"
-    add_cmd 'cdw'                      $"cd/dvd/burner"
+    add_cmd pmrp                     $"Poor Mans Radio Player"
+    # add_cmd burniso                  "cd/dvd burner"
+    add_cmd cdw                      $"cd/dvd/burner"
 
     end_menu_list
     back_to_main_entry
@@ -165,12 +165,12 @@ av_cc_cmd() {
 
 make_sys_tool_menu() {
     start_menu_list
-    add_cmd 'cli-package-installer' $"Install new packages (like Synaptic)"
-    add_cmd 'testdisk'       $"Check and undelete disk partitions"
-    add_cmd 'sysv-rc-conf'   $"Choose startup services"
-    add_cmd 'tzdata'         $"Set date and time"  dpkg-reconfigure
-    #add_cmd 'guess-hwclock'  $"Be prompted to setup the time correctly"
-    add_cmd 'htop'           $"Monitor and Control Processes"
+    add_cmd cli-package-installer $"Install new packages (like Synaptic)"
+    add_cmd testdisk       $"Check and undelete disk partitions"
+    add_cmd sysv-rc-conf   $"Choose startup services"
+    add_cmd tzdata         $"Set date and time"  dpkg-reconfigure
+    #add_cmd guess-hwclock  $"Be prompted to setup the time correctly"
+    add_cmd htop           $"Monitor and Control Processes"
     end_menu_list
     back_to_main_entry
 }
@@ -191,16 +191,16 @@ sys_tool_cc_cmd() {
 
 make_sys_info_menu() {
     start_menu_list
-    add_cmd 'htop'                   $"Monitor and control processes"
-    add_cmd 'inxi'                   $"Hardware and OS information"
-    add_cmd 'env-info'               $"Other system information"
-    add_cmd 'ps_mem.py'              $"Show memory usage"
-    add_cmd 'df'                     $"Information about mounted partitions"
-    add_cmd 'lsblk'                  $"List all block (disk) partitions"
-    add_cmd 'lsmod'                  $"List currently installed kernel modules"
-    add_cmd 'lspci'                  $"List major system components"
-    add_cmd 'lsusb'                  $"List attached USB devices"
-    add_cmd 'dmesg'                  $"Display messages from the kernel"
+    add_cmd htop                   $"Monitor and control processes"
+    add_cmd inxi                   $"Hardware and OS information"
+    add_cmd env-info               $"Other system information"
+    add_cmd ps_mem.py              $"Show memory usage"
+    add_cmd df                     $"Information about mounted partitions"
+    add_cmd lsblk                  $"List all block (disk) partitions"
+    add_cmd lsmod                  $"List currently installed kernel modules"
+    add_cmd lspci                  $"List major system components"
+    add_cmd lsusb                  $"List attached USB devices"
+    add_cmd dmesg                  $"Display messages from the kernel"
 
     add_view $"X Server Log File"    /var/log/Xorg.0.log
     add_view $"Live Boot Log File"   /var/log/live/initrd.log.color
@@ -234,12 +234,12 @@ sys_info_cc_cmd() {
 
 make_live_menu() {
     start_menu_list
-    add_cmd 'live-usb-maker'       $"Make a live-usb"
-    add_cmd 'live-kernel-updater'  $"Update live kernel"
-    add_cmd 'live-remaster'        $"Remaster live system"
-    add_cmd 'persist_save'         $"Save dynamic root persistence"
-    add_cmd 'persist-makefs'       $"Configure dynamic root persistence"
-    add_cmd 'persist-config'       $"Create live persistence files"
+    add_cmd live-usb-maker       $"Make a live-usb"
+    add_cmd live-kernel-updater  $"Update live kernel"
+    add_cmd live-remaster        $"Remaster live system"
+    add_cmd persist_save         $"Save dynamic root persistence"
+    add_cmd persist-makefs       $"Configure dynamic root persistence"
+    add_cmd persist-config       $"Create live persistence files"
     end_menu_list
     back_to_main_entry
 }
@@ -263,12 +263,12 @@ make_console_menu() {
     have_backlight \
         && add_cmd "backlight-brightness"  "Adjust the brightness of the backlight"
 
-    add_cmd 'splash-select'         $"Choose the console background"
-    add_cmd 'console-width-select'  $"Choose the console font"
-    add_cmd 'console-font-select'   $"Choose the console font"
-    add_cmd 'ansi-colors'           $"Display all possible console text colors"
-    add_cmd 'space-evaders'         $"Arcade type game"
-    add_cmd 'tao'                   $"Excerpts from the Tao of Programming"
+    add_cmd splash-select         $"Choose the console background"
+    add_cmd console-width-select  $"Choose the console font"
+    add_cmd console-font-select   $"Choose the console font"
+    add_cmd ansi-colors           $"Display all possible console text colors"
+    add_cmd space-evaders         $"Arcade type game"
+    add_cmd tao                   $"Excerpts from the Tao of Programming"
 
     end_menu_list
     back_to_main_entry
@@ -292,16 +292,16 @@ console_cc_cmd() {
 
 make_net_menu() {
     start_menu_list
-    add_cmd 'ceni'         $"Setup wireless"
-    add_cmd 'ifconfig'     $"Show network status"
-    add_cmd 'ping'         $"Test if network is connected"
-    add_cmd 'netstat'      $"Show all network connections and ports"
-    add_cmd 'netpro'       $"Manage network profiles"
-    add_cmd 'elinks'       $"Web browser"
-    add_cmd 'links2'       $"Web browser"
-    add_cmd 'irrsi'        $"Chat client"
-    add_cmd 'newsbeuter'   $"RSS/Atom feed reader"
-    add_cmd 'rtorrent'     $"Bittorrent client"
+    add_cmd ceni         $"Setup wireless"
+    add_cmd ifconfig     $"Show network status"
+    add_cmd ping         $"Test if network is connected"
+    add_cmd netstat      $"Show all network connections and ports"
+    add_cmd netpro       $"Manage network profiles"
+    add_cmd elinks       $"Web browser"
+    add_cmd links2       $"Web browser"
+    add_cmd irrsi        $"Chat client"
+    add_cmd newsbeuter   $"RSS/Atom feed reader"
+    add_cmd rtorrent     $"Bittorrent client"
 
     end_menu_list
     back_to_main_entry
@@ -329,11 +329,11 @@ net_cc_cmd() {
 make_off_menu() {
     start_menu_list
 
-    add_cmd 'mc'            $"Midnight commander file manager"
-    add_cmd 'wordgrinder'   $"Word Processor"
-    add_cmd 'calcurse'      $"Calendar/Schedule"
-    add_cmd 'nano'          $"Simple text editor"
-    add_cmd 'vim'           $"Advanced text editor"
+    add_cmd mc            $"Midnight commander file manager"
+    add_cmd wordgrinder   $"Word Processor"
+    add_cmd calcurse      $"Calendar/Schedule"
+    add_cmd nano          $"Simple text editor"
+    add_cmd vim           $"Advanced text editor"
 
     end_menu_list
     back_to_main_entry
