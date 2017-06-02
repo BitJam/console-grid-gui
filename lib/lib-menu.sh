@@ -128,12 +128,14 @@ add_cmd() {
     local cmd=$1  blurb=$2  real_cmd=${3:-$1}
     [ -z "$cmd" ] && return
 
+    real_cmd=${real_cmd%% *}
+
     if ! which $real_cmd &>/dev/null; then
         echo "command not found: $real_cmd" >> $log_file
         return
     fi
 
-    cmd=$(basename $cmd)
+    #cmd=$(basename $cmd)
     local cwidth=${#cmd}
     [ $CMD_WIDTH -lt $cwidth ] && CMD_WIDTH=$cwidth
     local mwidth=$((cwidth + $(str_len "$blurb") + 2))
@@ -179,6 +181,12 @@ start_menu_list() {
 end_menu_list() {
     local cmd  blurb
     while read type cmd blurb; do
+
+        # move command line args out of blurb and into cmd
+        while [ -n "$blurb" -a -z "${blurb##-*}" ]; do
+            cmd="$cmd ${blurb%% *}"
+            blurb=${blurb#* }
+        done
         printf "$yellow%s$white: %s\n" "$(lpad_word $((CMD_WIDTH + 1)) "$cmd")" "$blurb"
     done <<Show_cmds
 $(echo -e "$MENU_LIST")
