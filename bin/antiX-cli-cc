@@ -9,6 +9,8 @@ PATH=./bin:$PATH
 
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 
+WALLPAPER_DIR=/usr/share/wallpaper
+
 main() {
     set_color_scheme light
 
@@ -133,6 +135,8 @@ logout_cc_cmd() {
 make_av_menu() {
     start_menu_list
 
+    local wallpaper=$(wallpaper)
+
     add_cmd speaker-test             $"See if sound is working"
     add_cmd alsa-set-default-card    $"Select which sound card to use"
     add_cmd alsamixer                $"simple sound mixer"
@@ -140,6 +144,9 @@ make_av_menu() {
     # add_cmd $"mpv"                      "Video Player"
     add_cmd pmrp                     $"Poor Mans Radio Player"
     # add_cmd burniso                  "cd/dvd burner"
+    [ ${#wallpaper} -gt 0 ] \
+        && add_cmd fbi               $"Image viewer"
+    add_cmd fbgs                     $"Pdf viewer"
     add_cmd cdw                      $"cd/dvd/burner"
 
     end_menu_list
@@ -148,20 +155,28 @@ make_av_menu() {
 
 av_cc_cmd() {
     local cmd=$1
+
+
     case $cmd in
                  speaker-test) run_cmd     $cmd -c 2 -t wav -l 2 ;;
-        alsa-set-default-card) run_cmd  -p $cmd --cli       ;;
-                    alsamixer) run_cmd     $cmd             ;;
-                         mocp) run_cmd     $cmd $PLAY_LIST  ;;
-                          mpv) run_cmd     $cmd             ;;
-                         pmrp) run_cmd     $cmd             ;;
-                      burniso) run_cmd     $cmd             ;;
-                          cdw) run_cmd     $cmd             ;;
+        alsa-set-default-card) run_cmd  -p $cmd --cli            ;;
+                    alsamixer) run_cmd     $cmd                  ;;
+                         mocp) run_cmd     $cmd $PLAY_LIST       ;;
+                          mpv) run_cmd     $cmd                  ;;
+                         pmrp) run_cmd     $cmd                  ;;
+                          fbi) run_cmd     $cmd -a $(wallpaper)  ;;
+                         fbgs) run_cmd     $cmd $(pdf_file)      ;;
+                      burniso) run_cmd     $cmd                  ;;
+                          cdw) run_cmd     $cmd                  ;;
 
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
 }
+
+# we could search more if ever needed
+wallpaper() { ls $WALLPAPER_DIR/*.jpg 2>/dev/null ; }
+pdf_file()  { ls /usr/share/cups/data/default-testpage.pdf 2>/dev/null ; }
 
 make_sys_tool_menu() {
     start_menu_list
