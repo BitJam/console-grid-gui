@@ -197,7 +197,7 @@ Show_cmds
 #
 #------------------------------------------------------------------------------
 run_cmd() {
-    local pause sudo exec check opts reset
+    local pause sudo exec check opts reset need_gpm stop_gpm
 
     local orig_size=$(stty size)
 
@@ -208,10 +208,16 @@ run_cmd() {
         [ -z "${opts##-*s*}" ] && sudo=$SUDO
         [ -z "${opts##-*c*}" ] && check=true
         [ -z "${opts##-*r*}" ] && reset=true
+        [ -z "${opts##-*g*}" ] && need_gpm=true
         [ -z "${opts##-*e*}" ] && exec='exec '
     fi
 
     restore_tty
+
+    if [ "$need_gpm" ] && ! pgrep --full /usr/bin/gpm &>/dev/null; then
+        $SUDO service gpm start
+        stop_gpm=true
+    fi
 
     printf "\e[0;0H$cyan$exec$sudo $*$nc\n" | tee -a $log_file
 
@@ -239,6 +245,8 @@ run_cmd() {
 
     [ $ret -eq 0 ] || pause=true
     [ "$pause" ] && pause
+
+    [ "$stop_gpm" ] && $SUDO service stop gpm
 
     hide_tty
     [ "$(stty size)" != "$orig_size" ] && reset=true
