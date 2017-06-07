@@ -8,6 +8,7 @@ test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
 PATH=./bin:$PATH
 
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
+BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
 WALLPAPER_DIR=/usr/share/wallpaper
 
@@ -183,11 +184,11 @@ pdf_file()  { ls /usr/share/cups/data/default-testpage.pdf 2>/dev/null ; }
 make_sys_tool_menu() {
     start_menu_list
     add_cmd cli-package-installer $"Install new packages (like Synaptic)"
-    add_cmd testdisk       $"Check and undelete disk partitions"
-    add_cmd sysv-rc-conf   $"Choose startup services"
-    add_cmd tzdata         $"Set date and time"  dpkg-reconfigure
-    #add_cmd guess-hwclock  $"Be prompted to setup the time correctly"
-    add_cmd htop           $"Monitor and Control Processes"
+    add_cmd testdisk              $"Check and undelete disk partitions"
+    add_cmd sysv-rc-conf          $"Choose startup services"
+    add_cmd tzdata                $"Set date and time"  dpkg-reconfigure
+    #add_cmd guess-hwclock         $"Be prompted to setup the time correctly"
+    add_cmd htop                  $"Monitor and Control Processes"
     end_menu_list
     back_to_main_entry
 }
@@ -309,20 +310,21 @@ console_cc_cmd() {
 
 make_net_menu() {
     start_menu_list
-    add_cmd ceni         $"Setup wireless"
-    add_cmd ifconfig     $"Show network status"
-    add_cmd ping         $"Test if network is connected"
-    add_cmd netstat      $"Show all network connections and ports"
-    add_cmd netpro       $"Manage network profiles"
-    add_cmd mutt         $"Email client"
-    add_cmd alpine       $"Email client"
-    add_cmd elinks       $"Web browser"
-    add_cmd links2       $"Web browser (text mode)"
-    add_cmd 'links2 -g'  $"Web browser (graphics mode)"
+    add_cmd ceni             $"Setup wireless"
+    add_cmd ifconfig         $"Show network status"
+    add_cmd ping             $"Test if network is connected"
+    add_cmd netstat          $"Show all network connections and ports"
+    add_cmd netpro           $"Manage network profiles"
+    add_cmd curl             $"Weather forcast"
+    add_cmd mutt             $"Email client"
+    add_cmd alpine           $"Email client"
+    add_cmd elinks           $"Web browser (graphics mode)"
+    add_cmd links2           $"Web browser (text mode)"
+    @add_cmd 'links2 -g'     $"Web browser (graphics mode)"
 
-    add_cmd irrsi        $"Chat client"
-    add_cmd newsbeuter   $"RSS/Atom feed reader"
-    add_cmd rtorrent     $"Bittorrent client"
+    add_cmd irrsi            $"Chat client"
+    add_cmd newsbeuter       $"RSS/Atom feed reader"
+    add_cmd rtorrent         $"Bittorrent client"
 
     end_menu_list
     back_to_main_entry
@@ -337,9 +339,10 @@ net_cc_cmd() {
                ceni) run_cmd -s  $cmd                 ;;
         wicd-curses) run_cmd -s  $cmd                 ;;
              netpro) run_cmd -s  $cmd                 ;;
-             elinks) run_cmd     $cmd                 ;;
-             links2) run_cmd     $cmd  antixlinux.org ;;
-        "links2 -g") run_cmd     $cmd  antixlinux.org ;;
+             elinks) run_cmd -g  $cmd $BOOKMARKS      ;;
+             links2) run_cmd     $cmd $BOOKMARKS      ;;
+        "links2 -g") run_cmd     $cmd $BOOKMARKS      ;;
+               curl) $cmd wttr.in | less -SR          ;;
                mutt) run_cmd     $cmd                 ;;
              alpine) run_cmd     $cmd                 ;;
               irrsi) run_cmd     $cmd                 ;;
