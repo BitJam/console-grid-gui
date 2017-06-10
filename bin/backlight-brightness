@@ -22,25 +22,15 @@ main() {
 
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
 
+    case $(tty) in
+        */pts/*) SCREEN_IN_VT=     ;;
+              *) SCREEN_IN_VT=true ;;
+    esac
+
     trap on_exit EXIT
     hide_tty
 
-    local x_margin=5
-    local height=$(screen_height)
-    local mid_y=$((height / 2))
-    SCREEN_RAW_WIDTH=$(screen_width)
-    local width=$(screen_width)
-
-    local x0=$x_margin
-    local box_width=$((width - 2 * x_margin))
-    local y0=$((mid_y - 5))
-    local box_height=3
-
-    local MAX_X=$((box_width - 2))
-    local MIN_PERCENT=2
-
-    redraw
-
+    restart
     while true; do
         local key=$(get_key)
         case $key in
@@ -57,6 +47,24 @@ main() {
         esac
     done
 }
+
+restart() {
+    local x_margin=5
+    local height=$(screen_height)
+    local mid_y=$((height / 2))
+    SCREEN_RAW_WIDTH=$(screen_width)
+    local width=$(screen_width)
+
+    local x0=$x_margin
+    local box_width=$((width - 2 * x_margin))
+    local y0=$((mid_y - 5))
+    local box_height=3
+
+    local MAX_X=$((box_width - 2))
+    local MIN_PERCENT=2
+    redraw
+}
+
 
 
 #==============================================================================
