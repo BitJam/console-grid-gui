@@ -21,7 +21,6 @@ main() {
     test -w $CONTROLLER/brightness || fatal "You need to be root to run this script"
 
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
-
     case $(tty) in
         */pts/*) SCREEN_IN_VT=     ;;
               *) SCREEN_IN_VT=true ;;
@@ -43,25 +42,25 @@ main() {
              page-up) step_percent +20 ;;
            page-down) step_percent -20 ;;
                 [rR]) redraw           ;;
-                   *) xyprintf 1 $height "%-20s" "$key" ;;
+                   *) xyprintf 1 $HEIGHT "%-20s" "$key" ;;
         esac
     done
 }
 
 restart() {
     local x_margin=5
-    local height=$(screen_height)
-    local mid_y=$((height / 2))
+    HEIGHT=$(screen_height)
+    local mid_y=$((HEIGHT / 2))
     SCREEN_RAW_WIDTH=$(screen_width)
     local width=$(screen_width)
 
-    local x0=$x_margin
+    X0=$x_margin
     local box_width=$((width - 2 * x_margin))
-    local y0=$((mid_y - 5))
+    Y0=$((mid_y - 5))
     local box_height=3
 
-    local MAX_X=$((box_width - 2))
-    local MIN_PERCENT=2
+    MAX_X=$((box_width - 2))
+    MIN_PERCENT=2
     redraw
 }
 
@@ -107,11 +106,11 @@ set_brightness() {
 #------------------------------------------------------------------------------
 redraw() {
     clear
-    box -b $x0 $y0 $box_width $box_height
-    cprintf "" $((y0 - 2)) "Backlight Brightness Control"
-    cprintf "" $((y0 - 1)) "$yellow$(basename $CONTROLLER)"
+    box -b $X0 $Y0 $box_width $box_height
+    cprintf "" $((Y0 - 2)) "Backlight Brightness Control"
+    cprintf "" $((Y0 - 1)) "$yellow$(basename $CONTROLLER)"
 
-    local box_bot=$((y0 + box_height - 1))
+    local box_bot=$((Y0 + box_height - 1))
     local text_x=
     cprintf  ""          $((box_bot + 1)) "Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right-arrow)"
     xyprintf $CPRINTF_X  $((box_bot + 2)) "Use <%s> and <%s> for smaller steps"        "$(bq up-arrow)" "$(bq down-arrow)"
@@ -130,7 +129,7 @@ step_percent() {
     [ $PERCENT -lt $MIN_PERCENT ] && PERCENT=$MIN_PERCENT
     set_brightness $PERCENT
     draw_bar
-    xyprintf 1 $height "%4s: %-20s" "$step" "$PERCENT%"
+    xyprintf 1 $HEIGHT "%4s: %-20s" "$step" "$PERCENT%"
 }
 
 #------------------------------------------------------------------------------
@@ -141,7 +140,7 @@ draw_bar() {
     [ $PERCENT -lt $MIN_PERCENT ] && PERCENT=$MIN_PERCENT
     local x=$((PERCENT * MAX_X / 100))
     local remain=$((MAX_X - x))
-    xyprintf $((x0 + 1))  $((y0 + 1)) "$bg_cyan%${x}s$nc_co%${remain}s" "" ""
+    xyprintf $((X0 + 1))  $((Y0 + 1)) "$bg_cyan%${x}s$nc_co%${remain}s" "" ""
 }
 
 #------------------------------------------------------------------------------
