@@ -240,13 +240,12 @@ run_cmd() {
     [ "$exec" ] && exec $sudo "$@" 2>&1
 
     $sudo "$@" 2>&1
-
     local ret=$?
+
+    [ "$stop_gpm" ] && $SUDO service gpm stop
 
     [ $ret -eq 0 ] || pause=true
     [ "$pause" ] && pause
-
-    [ "$stop_gpm" ] && $SUDO service stop gpm
 
     hide_tty
     [ "$(stty size)" != "$orig_size" ] && reset=true
