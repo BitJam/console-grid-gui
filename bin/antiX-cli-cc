@@ -219,7 +219,7 @@ make_sys_info_menu() {
     add_cmd lspci                  $"List major system components"
     add_cmd lsusb                  $"List attached USB devices"
     add_cmd dmesg                  $"Display messages from the kernel"
-
+    add_cmd pinfo                  $"View information about various commands"
     add_view $"X Server Log File"    /var/log/Xorg.0.log
     add_view $"Live Boot Log File"   /var/log/live/initrd.log.color
 
@@ -236,6 +236,7 @@ sys_info_cc_cmd() {
          env-info)  run_cmd -p  $cmd                     ;;
         ps_mem.py)  run_cmd -ps $cmd                     ;;
                df)  run_cmd -p  $cmd -hTP                ;;
+            pinfo)  run_cmd     $cmd                     ;;
             lsblk) view_cmd -s  $cmd -o name,size,fstype,label,uuid ;;
             lsmod) view_cmd     $cmd                     ;;
             lspci) view_cmd     $cmd                     ;;
