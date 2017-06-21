@@ -225,6 +225,7 @@ make_sys_info_menu() {
     add_cmd lsusb                  $"List attached USB devices"
     add_cmd dmesg                  $"Display messages from the kernel"
     add_cmd pinfo                  $"View information about various commands"
+    add_cmd parted                 $"View and edit disk partitions"
     add_view $"X Server Log File"    /var/log/Xorg.0.log
     add_view $"Live Boot Log File"   /var/log/live/initrd.log.color
 
@@ -246,7 +247,8 @@ sys_info_cc_cmd() {
             lsmod) view_cmd     $cmd                     ;;
             lspci) view_cmd     $cmd                     ;;
             lsusb) view_cmd     $cmd                     ;;
-            dmesg) view_cmd     $cmd  --color=always --ctime  ;;
+            dmesg) view_cmd     $cmd --color=always --ctime  ;;
+           parted) view_cmd -s  $cmd --list              ;;
 
             Xorg.0.log) view_file /var/log/Xorg.0.log ;;
       initrd.log.color) view_file /var/log/live/initrd.log.color ;;
