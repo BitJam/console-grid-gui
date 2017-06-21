@@ -326,9 +326,9 @@ make_net_menu() {
     add_cmd curl             $"Weather forcast"
     add_cmd mutt             $"Email client"
     add_cmd alpine           $"Email client"
-    add_cmd elinks           $"Web browser (graphics mode)"
-    add_cmd links2           $"Web browser (text mode)"
-    @add_cmd 'links2 -g'     $"Web browser (graphics mode)"
+    add_cmd elinks           $"Web browser (text mode)"
+    #add_cmd links2           $"Web browser (text mode)"
+    add_cmd 'links2 -g'     $"Web browser (graphics mode)"
 
     add_cmd irrsi            $"Chat client"
     add_cmd newsbeuter       $"RSS/Atom feed reader"
@@ -349,8 +349,10 @@ net_cc_cmd() {
              netpro) run_cmd -s  $cmd                 ;;
              elinks) run_cmd -g  $cmd $BOOKMARKS      ;;
              links2) run_cmd     $cmd $BOOKMARKS      ;;
-        "links2 -g") run_cmd     $cmd $BOOKMARKS      ;;
+        "links2 -g") run_cmd -g  $cmd -g -driver=fb $BOOKMARKS   ;;
+
                curl) $cmd wttr.in | less -SR          ;;
+
                mutt) run_cmd     $cmd                 ;;
              alpine) run_cmd     $cmd                 ;;
               irrsi) run_cmd     $cmd                 ;;
