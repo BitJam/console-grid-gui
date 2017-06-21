@@ -10,6 +10,7 @@ PATH=./bin:$PATH
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
+YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g"
 WALLPAPER_DIR=/usr/share/wallpaper
 
 main() {
@@ -144,7 +145,7 @@ make_av_menu() {
     add_cmd alsa-set-default-card    $"Select which sound card to use"
     add_cmd alsamixer                $"simple sound mixer"
     add_cmd mocp                     $"Audio Player"
-    # add_cmd $"mpv"                      "Video Player"
+    add_cmd $"mpv"                      "Video Player"
     add_cmd pmrp                     $"Poor Mans Radio Player"
     # add_cmd burniso                  "cd/dvd burner"
     [ ${#wallpaper} -gt 0 ] \
@@ -165,7 +166,7 @@ av_cc_cmd() {
         alsa-set-default-card) run_cmd  -p $cmd --cli            ;;
                     alsamixer) run_cmd     $cmd                  ;;
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
-                          mpv) run_cmd     $cmd                  ;;
+                          mpv) run_cmd     $cmd --vo=drm --ytdl $"YT_DEMO" ;;
                          pmrp) run_cmd     $cmd                  ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
                          fbgs) run_cmd     $cmd $(pdf_file)      ;;
