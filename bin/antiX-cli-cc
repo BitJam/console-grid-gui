@@ -294,7 +294,8 @@ make_console_menu() {
     add_cmd console-font-select   $"Choose the console font"
     add_cmd ansi-colors           $"Display all possible console text colors"
     add_cmd space-evaders         $"Arcade type game"
-    #add_cmd tao                   $"Excerpts from the Tao of Programming"
+    [ $UID -eq 0 ] \
+        && add_cmd tao            $"Excerpts from the Tao of Programming"
 
     end_menu_list
     back_to_main_entry
