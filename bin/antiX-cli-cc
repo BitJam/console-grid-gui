@@ -205,8 +205,8 @@ sys_tool_cc_cmd() {
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
             guess-hwclock)  run_cmd -s  $cmd                     ;;
                      htop)  run_cmd -s  $cmd                     ;;
-                     smxi)  run_cmd -s  $cmd                     ;;
-                    sgfxi)  run_cmd -s  $cmd                     ;;
+                     smxi)  run_cmd     $cmd -G                  ;;
+                    sgfxi)  run_cmd     $cmd -G                  ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
