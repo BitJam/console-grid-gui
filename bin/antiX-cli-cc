@@ -191,7 +191,7 @@ make_sys_tool_menu() {
     add_cmd sysv-rc-conf          $"Choose startup services"
     add_cmd tzdata                $"Set date and time"  dpkg-reconfigure
     #add_cmd guess-hwclock         $"Be prompted to setup the time correctly"
-    add_cmd htop                  $"Monitor and Control Processes"
+    #add_cmd htop                  $"Monitor and Control Processes"
     end_menu_list
     back_to_main_entry
 }
