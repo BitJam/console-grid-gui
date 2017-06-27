@@ -10,7 +10,6 @@ PATH=./bin:$PATH
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
-YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g"
 WALLPAPER_DIR=/usr/share/wallpaper
 
 main() {
@@ -145,9 +144,8 @@ make_av_menu() {
     add_cmd alsa-set-default-card    $"Select which sound card to use"
     add_cmd alsamixer                $"simple sound mixer"
     add_cmd mocp                     $"Audio Player"
-    add_cmd $"mpv"                      "Video Player"
+    # add_cmd $"mpv"                      "Video Player"
     add_cmd pmrp                     $"Poor Mans Radio Player"
-    add_cmd mpsyt                    $"Youtube audio/video"
     # add_cmd burniso                  "cd/dvd burner"
     [ ${#wallpaper} -gt 0 ] \
         && add_cmd fbi               $"Image viewer"
@@ -167,9 +165,8 @@ av_cc_cmd() {
         alsa-set-default-card) run_cmd  -p $cmd --cli            ;;
                     alsamixer) run_cmd     $cmd                  ;;
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
-                          mpv) run_cmd     $cmd --vo=drm --ytdl "$YT_DEMO" ;;
+                          mpv) run_cmd     $cmd                  ;;
                          pmrp) run_cmd     $cmd                  ;;
-                        mpsyt) run_cmd     $cmd                  ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
                          fbgs) run_cmd     $cmd $(pdf_file)      ;;
                       burniso) run_cmd     $cmd                  ;;
@@ -186,14 +183,14 @@ pdf_file()  { ls /usr/share/cups/data/default-testpage.pdf 2>/dev/null ; }
 
 make_sys_tool_menu() {
     start_menu_list
-    add_cmd cli-aptiX             $"Install new packages (like Synaptic)"
+    add_cmd cli-package-installer $"Install new packages (like Synaptic)"
     add_cmd smxi                  $"System maintanence tool"
-    add_cmd ddm-mx                $"Install nvidia non-free graphics drivers (for X)"
+    add_cmd sgfxi                 $"Install non-free graphics drivers (for X)"
     add_cmd testdisk              $"Check and undelete disk partitions"
     add_cmd sysv-rc-conf          $"Choose startup services"
     add_cmd tzdata                $"Set date and time"  dpkg-reconfigure
     #add_cmd guess-hwclock         $"Be prompted to setup the time correctly"
-    #add_cmd htop                  $"Monitor and Control Processes"
+    add_cmd htop                  $"Monitor and Control Processes"
     end_menu_list
     back_to_main_entry
 }
@@ -201,14 +198,14 @@ make_sys_tool_menu() {
 sys_tool_cc_cmd() {
     local cmd=$1
     case $cmd in
-    		cli-aptiX)  run_cmd -s  $cmd                     ;;
+    cli-package-installer)  run_cmd -s  $cmd                     ;;
                  testdisk)  run_cmd -s  $cmd                     ;;
              sysv-rc-conf)  run_cmd -s  $cmd                     ;;
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
             guess-hwclock)  run_cmd -s  $cmd                     ;;
                      htop)  run_cmd -s  $cmd                     ;;
-                     smxi)  run_cmd     $cmd -G                  ;;
-                   ddm-mx)  run_cmd -s  $cmd -i nvidia           ;;
+                     smxi)  run_cmd -s  $cmd                     ;;
+                    sgfxi)  run_cmd -s  $cmd                     ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
@@ -227,7 +224,6 @@ make_sys_info_menu() {
     add_cmd lsusb                  $"List attached USB devices"
     add_cmd dmesg                  $"Display messages from the kernel"
     add_cmd pinfo                  $"View information about various commands"
-    add_cmd parted                 $"View and edit disk partitions"
     add_view $"X Server Log File"    /var/log/Xorg.0.log
     add_view $"Live Boot Log File"   /var/log/live/initrd.log.color
 
@@ -249,8 +245,7 @@ sys_info_cc_cmd() {
             lsmod) view_cmd     $cmd                     ;;
             lspci) view_cmd     $cmd                     ;;
             lsusb) view_cmd     $cmd                     ;;
-            dmesg) view_cmd     $cmd --color=always --ctime  ;;
-           parted) view_cmd -s  $cmd --list              ;;
+            dmesg) view_cmd     $cmd  --color=always --ctime  ;;
 
             Xorg.0.log) view_file /var/log/Xorg.0.log ;;
       initrd.log.color) view_file /var/log/live/initrd.log.color ;;
@@ -296,8 +291,7 @@ make_console_menu() {
     add_cmd console-font-select   $"Choose the console font"
     add_cmd ansi-colors           $"Display all possible console text colors"
     add_cmd space-evaders         $"Arcade type game"
-    [ $UID -eq 0 ] \
-        && add_cmd tao            $"Excerpts from the Tao of Programming"
+    add_cmd tao                   $"Excerpts from the Tao of Programming"
 
     end_menu_list
     back_to_main_entry
@@ -321,17 +315,17 @@ console_cc_cmd() {
 
 make_net_menu() {
     start_menu_list
-    add_cmd ceni             $"Setup wired/wireless"
+    add_cmd ceni             $"Setup wireless"
     add_cmd ifconfig         $"Show network status"
     add_cmd ping             $"Test if network is connected"
     add_cmd netstat          $"Show all network connections and ports"
     add_cmd netpro           $"Manage network profiles"
-    add_cmd curl             $"Weather forecast"
+    add_cmd curl             $"Weather forcast"
     add_cmd mutt             $"Email client"
     add_cmd alpine           $"Email client"
-    add_cmd elinks           $"Web browser (text mode)"
-    #add_cmd links2           $"Web browser (text mode)"
-    add_cmd 'links2 -g'     $"Web browser (graphics mode)"
+    add_cmd elinks           $"Web browser (graphics mode)"
+    add_cmd links2           $"Web browser (text mode)"
+    @add_cmd 'links2 -g'     $"Web browser (graphics mode)"
 
     add_cmd irrsi            $"Chat client"
     add_cmd newsbeuter       $"RSS/Atom feed reader"
@@ -352,10 +346,8 @@ net_cc_cmd() {
              netpro) run_cmd -s  $cmd                 ;;
              elinks) run_cmd -g  $cmd $BOOKMARKS      ;;
              links2) run_cmd     $cmd $BOOKMARKS      ;;
-        "links2 -g") run_cmd $cmd $BOOKMARKS      ;;
-
+        "links2 -g") run_cmd     $cmd $BOOKMARKS      ;;
                curl) $cmd wttr.in | less -SR          ;;
-
                mutt) run_cmd     $cmd                 ;;
              alpine) run_cmd     $cmd                 ;;
               irrsi) run_cmd     $cmd                 ;;
