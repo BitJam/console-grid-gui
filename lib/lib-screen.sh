@@ -469,6 +469,11 @@ need_root() {
     exec sudo -p "$ME: Enter password for user %u: " "$0" "$@"
 }
 
+in_vt() {
+    [ "$SCREEN_IN_VT" ]
+    return $?
+}
+
 on_exit() {
     [ -n "$ORIG_STTY" ] || return
     restore_tty

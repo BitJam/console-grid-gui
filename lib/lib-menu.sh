@@ -214,7 +214,8 @@ run_cmd() {
 
     restore_tty
 
-    if [ "$need_gpm" ] && ! pgrep --full /usr/bin/gpm &>/dev/null; then
+    if [ "$need_gpm" ] && in_vt && ! pgrep --full /usr/bin/gpm &>/dev/null; then
+        printf "cyan%s$nc\n" "Starting gpm service"
         $SUDO service gpm start
         stop_gpm=true
     fi
