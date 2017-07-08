@@ -85,7 +85,9 @@ make_main_menu() {
     entry $"System Information"
     entry $"Configuration Files"
     entry $"Live System Centre"
-    entry $"Console Utilities"
+
+    in_vt && entry $"Console Utilities"
+
     entry $"Office and Other"
     entry $"Logout / Install"
     entry "$(printf "$yellow%s" $"Quit")"
@@ -148,11 +150,10 @@ make_av_menu() {
     add_cmd mpv                      $"Video Player"
     add_cmd mpsyt                    $"Youtube video jukebox"
     add_cmd pmrp                     $"Poor Mans Radio Player"
-    add_cmd mpsyt                    $"Youtube audio/video"
     # add_cmd burniso                  "cd/dvd burner"
-    [ ${#wallpaper} -gt 0 ] \
+    in_vt && [ ${#wallpaper} -gt 0 ] \
         && add_cmd fbi               $"Image viewer"
-    add_cmd fbgs                     $"Pdf viewer"
+    in_vt && add_cmd fbgs            $"Pdf viewer"
     add_cmd cdw                      $"cd/dvd/burner"
 
     end_menu_list
@@ -168,7 +169,6 @@ av_cc_cmd() {
                     alsamixer) run_cmd     $cmd                  ;;
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
                           mpv) run_cmd     $cmd --vo=drm --ytdl $"YT_DEMO" ;;
-                        mpsyt) run_cmd     $cmd                  ;;
                          pmrp) run_cmd     $cmd                  ;;
                         mpsyt) run_cmd     $cmd                  ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
@@ -290,7 +290,7 @@ make_console_menu() {
     start_menu_list
 
     have_backlight \
-        && add_cmd "backlight-brightness"  "Adjust the brightness of the backlight"
+        && add_cmd "backlight-brightness"  $"Adjust the brightness of the backlight"
 
     add_cmd splash-select         $"Choose the console background"
     add_cmd console-width-select  $"Choose the console font"
