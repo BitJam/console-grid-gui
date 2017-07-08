@@ -17,8 +17,8 @@ main() {
         CONTROLLER=./
     fi
 
-    [ -n "$CONTROLLER" ]           || fatal "No controller found"
-    test -w $CONTROLLER/brightness || fatal "You need to be root to run this script"
+    [ -n "$CONTROLLER" ]           || fatal $"No controller found"
+    test -w $CONTROLLER/brightness || fatal $"You need to be root to run this script"
 
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
     case $(tty) in
@@ -107,15 +107,15 @@ set_brightness() {
 redraw() {
     clear
     box -b $X0 $Y0 $box_width $box_height
-    cprintf "" $((Y0 - 2)) "Backlight Brightness Control"
+    cprintf "" $((Y0 - 2)) $"Backlight Brightness Control"
     cprintf "" $((Y0 - 1)) "$yellow$(basename $CONTROLLER)"
 
     local box_bot=$((Y0 + box_height - 1))
     local text_x=
-    cprintf  ""          $((box_bot + 1)) "Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right-arrow)"
-    xyprintf $CPRINTF_X  $((box_bot + 2)) "Use <%s> and <%s> for smaller steps"        "$(bq up-arrow)" "$(bq down-arrow)"
-    xyprintf $CPRINTF_X  $((box_bot + 3)) "Use <%s> and <%s> for bigger steps"         "$(bq page-up)" "$(bq page-down)"
-    xyprintf $CPRINTF_X  $((box_bot + 4)) "Press '%s' to quit" "$(bq q)"
+    cprintf  ""          $((box_bot + 1)) $"Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right-arrow)"
+    xyprintf $CPRINTF_X  $((box_bot + 2)) $"Use <%s> and <%s> for smaller steps"        "$(bq up-arrow)" "$(bq down-arrow)"
+    xyprintf $CPRINTF_X  $((box_bot + 3)) $"Use <%s> and <%s> for bigger steps"         "$(bq page-up)" "$(bq page-down)"
+    xyprintf $CPRINTF_X  $((box_bot + 4)) $"Press '%s' to quit" "$(bq q)"
     draw_bar
 }
 

@@ -78,11 +78,11 @@ in_main_cc() {
 #
 #------------------------------------------------------------------------------
 return_to_main_entry() {
-    under_main_cc && echo "${cyan}Return to main menu"
+    under_main_cc && printf "${cyan}%s\n" $"Return to main menu"
 }
 
 back_to_main_entry() {
-    centered_lab "$cyan%s" "Return to main menu"
+    centered_lab "$cyan%s" $"Return to main menu"
 }
 
 centered_lab() {
@@ -215,7 +215,7 @@ run_cmd() {
     restore_tty
 
     if [ "$need_gpm" ] && in_vt && ! pgrep --full /usr/bin/gpm &>/dev/null; then
-        printf "cyan%s$nc\n" "Starting gpm service"
+        printf "cyan%s$nc\n" $"Starting gpm service"
         $SUDO service gpm start
         stop_gpm=true
     fi

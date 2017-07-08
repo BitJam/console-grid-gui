@@ -22,31 +22,31 @@ ACTIVE_CONSOLES="/dev/tty[1-6]"
 
 main() {
 
-    [ -n "$SCREEN_IN_VT" -a $UID -ne 0 ] && fatal "This program must be run as root"
+    [ -n "$SCREEN_IN_VT" -a $UID -ne 0 ] && fatal $"This program must be run as root"
 
     local tty_arg
     [ "$SCREEN_IN_VT" ] || tty_arg="-tty=${DUMMY_TTY#tty}"
     local pixel_width=$(get_fbcondecor_width $tty_arg)
 
     [ -z "$pixel_width" ] \
-        && fatal "Could not get console width. Is the framebuffer enabled?"
+        && fatal $"Could not get console width. Is the framebuffer enabled?"
 
     local cur_width=$(get_current_width)
 
     [ ${#CODESET} -eq 0 ] && CODESET=$(lang_to_codeset $LANG)
     WIDTH_MENU="$(width_menu $pixel_width)"
-    [ ${#WIDTH_MENU} -eq 0 ] && fatal "No fonts found"
+    [ ${#WIDTH_MENU} -eq 0 ] && fatal $"No fonts found"
 
     trap set_font_exit EXIT
 
     set_color_scheme light
 
-    screen_set title1="Select the console width in characters"
-    screen_set title2="Press: <Enter> to select a font <q> to quit, <h> for help"
+    screen_set title1=$"Select the console width in characters"
+    screen_set title2=$"Press: <Enter> to select a font <q> to quit, <h> for help"
     if [ "$SCREEN_IN_VT" ]; then
-        screen_set title3="Screen is $cur_width chars wide"
+        screen_set title3="$(printf $"Screen is %s chars wide" "$cur_width")"
     else
-        screen_set title3="$DUMMY_TTY is $cur_width chars wide"
+        screen_set title3="$(printf $"%s is %s chars wide" "$DUMMY_TTY" "$cur_width")"
     fi
     screen_set border=0
 
@@ -63,7 +63,7 @@ main() {
 init() {
     screen_init
     grid_read_new console_width "$WIDTH_MENU"
-    grid_narrow y=5 title="Select Console Width"
+    grid_narrow y=5 title=$"Select Console Width"
     grid_center_x
     grid_fill_y 15
     grid_finalize
@@ -135,7 +135,7 @@ console_width_on_enter() {
 
     local cur_width=$(get_current_width)
 
-    screen_set title3="Screen is $yellow$cur_width$magenta chars wide, font is $yellow$font"
+    screen_set title3="$(printf $"Screen is %s chars wide, font is %s" "$yellow$cur_width$magenta" "$yellow$font")"
 
     log "font=$font"
     clear
@@ -287,7 +287,7 @@ set_default_font() {
     [ "$size"         ] || return
     [ "$face"         ] || return
 
-    say "Setting default font to %s" "$yellow$font$cyan"
+    say $"Setting default font to %s" "$yellow$font$cyan"
 
     # See if both lines already exist in the file (usual case)
     # We try to minimize the number of times we write to the file
