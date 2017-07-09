@@ -201,7 +201,7 @@ make_sys_tool_menu() {
 sys_tool_cc_cmd() {
     local cmd=$1
     case $cmd in
-    		cli-aptiX)  run_cmd -s  $cmd                     ;;
+                cli-aptiX)  run_cmd -s  $cmd                     ;;
                  testdisk)  run_cmd -s  $cmd                     ;;
              sysv-rc-conf)  run_cmd -s  $cmd                     ;;
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
