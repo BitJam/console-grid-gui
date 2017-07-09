@@ -331,7 +331,7 @@ make_net_menu() {
     add_cmd alpine           $"Email client"
     add_cmd elinks           $"Web browser (text mode)"
     #add_cmd links2           $"Web browser (text mode)"
-    add_cmd 'links2 -g'     $"Web browser (graphics mode)"
+    in_vt && add_cmd 'links2 -g'     $"Web browser (graphics mode)"
 
     add_cmd irrsi            $"Chat client"
     add_cmd newsbeuter       $"RSS/Atom feed reader"
