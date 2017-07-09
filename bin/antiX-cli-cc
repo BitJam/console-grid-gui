@@ -169,7 +169,7 @@ av_cc_cmd() {
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
                           mpv) run_cmd     $cmd --ytdl "$YT_DEMO";;
                          pmrp) run_cmd     $cmd                  ;;
-                        mpsyt) run_cmd     $cmd                  ;;
+                        mpsyt) run_cmd     $cmd //antiX Linux    ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
                          fbgs) run_cmd     $cmd $(pdf_file)      ;;
                       burniso) run_cmd     $cmd                  ;;
