@@ -207,7 +207,7 @@ sys_tool_cc_cmd() {
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
             guess-hwclock)  run_cmd -s  $cmd                     ;;
                      htop)  run_cmd -s  $cmd                     ;;
-                     smxi)  run_cmd     $cmd -G                  ;;
+                     smxi)  run_cmd -s  $cmd -G                  ;;
                    ddm-mx)  run_cmd -s  $cmd -i nvidia           ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
