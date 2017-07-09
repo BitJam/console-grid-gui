@@ -162,13 +162,12 @@ make_av_menu() {
 
 av_cc_cmd() {
     local cmd=$1
-
     case $cmd in
                  speaker-test) run_cmd     $cmd -c 2 -t wav -l 2 ;;
         alsa-set-default-card) run_cmd  -p $cmd --cli            ;;
                     alsamixer) run_cmd     $cmd                  ;;
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
-                          mpv) run_cmd     $cmd --vo=drm --ytdl $"YT_DEMO" ;;
+                          mpv) run_cmd     $cmd --ytdl "$YT_DEMO";;
                          pmrp) run_cmd     $cmd                  ;;
                         mpsyt) run_cmd     $cmd                  ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
