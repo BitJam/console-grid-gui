@@ -483,8 +483,8 @@ its_alive() {
 # FIXME: Can this be easily fooled by "toram"?
 #------------------------------------------------------------------------------
 its_alive_usb() {
-    its_alive            || return 1
-    [ "$ITS_A_LIVE_USB"  && return 0
+    its_alive             || return 1
+    [ "$ITS_A_LIVE_USB" ] && return 0
     local dir=$LIVE_MP
     test -d $dir         || return 1
     is_writable "$dir"   || return 1
