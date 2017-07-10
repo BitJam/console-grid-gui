@@ -187,7 +187,7 @@ pdf_file()  { ls /usr/share/cups/data/default-testpage.pdf 2>/dev/null ; }
 make_sys_tool_menu() {
     start_menu_list
     add_cmd cli-aptiX             $"Install new packages (like Synaptic)"
-    add_cmd smxi                  $"System maintanence tool"
+    #add_cmd smxi                  $"System maintenance tool"
     add_cmd ddm-mx                $"Install nvidia non-free graphics drivers (for X)"
     add_cmd testdisk              $"Check and undelete disk partitions"
     add_cmd sysv-rc-conf          $"Choose startup services"
@@ -207,7 +207,7 @@ sys_tool_cc_cmd() {
                    tzdata)  run_cmd -s  dpkg-reconfigure  $cmd   ;;
             guess-hwclock)  run_cmd -s  $cmd                     ;;
                      htop)  run_cmd -s  $cmd                     ;;
-                     smxi)  run_cmd -s  $cmd -G                  ;;
+                     smxi)  sudo su - -c "$cmd -G -! 32"         ;;
                    ddm-mx)  run_cmd -s  $cmd -i nvidia           ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
