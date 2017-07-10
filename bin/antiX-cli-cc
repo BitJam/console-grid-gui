@@ -245,7 +245,7 @@ sys_info_cc_cmd() {
         ps_mem.py)  run_cmd -ps $cmd                     ;;
                df)  run_cmd -p  $cmd -hTP                ;;
             pinfo)  run_cmd     $cmd                     ;;
-            lsblk) view_cmd -s  $cmd -o name,size,fstype,label,uuid ;;
+            lsblk) view_cmd -s  $cmd -o name,size,fstype,label,mountpoint,uuid ;;
             lsmod) view_cmd     $cmd                     ;;
             lspci) view_cmd     $cmd                     ;;
             lsusb) view_cmd     $cmd                     ;;
