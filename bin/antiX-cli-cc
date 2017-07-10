@@ -419,9 +419,9 @@ config_cc_cmd() {
            live-remaster-exclude.list) edit_file -s /usr/local/share/excludes/live-remaster-exclude.list     ;;
             persist-save-exclude.list) edit_file -s /usr/local/share/excludes/persist-save-exclude.list      ;;
 
-               fstab) edit_file -s /etc/fstab ;;
-           xorg.conf) edit_file -s /etc/xorg.conf ;;
-           slim.conf) edit_file -s /etc/slim.conf ;;
+               fstab) edit_file -s /etc/fstab          ;;
+           xorg.conf) edit_file -s /etc/X11/xorg.conf  ;;
+           slim.conf) edit_file -s /etc/slim.conf      ;;
            menu.list) edit_file -s /boot/grub/menu.lst ;;
         syslinux.cfg) edit_file -s /live/boot-dev/boot/syslinux/syslinux.cfg ;;
             grub.cfg) edit_file -s /live/boot-dev/boot/grub/grub.cfg ;;
