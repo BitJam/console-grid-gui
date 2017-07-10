@@ -68,6 +68,8 @@ set_color() {
     medium_SCREEN_MSG_COLOR=$amber
 }
 
+dbq() { echo "$white$*$SCREEN_MSG_COLOR" ;}
+
 set_color
 
 screen_set() {

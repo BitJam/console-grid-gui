@@ -273,12 +273,12 @@ edit_file() {
     local file=$1
 
     if ! sudo test -e $file; then
-        db_msg $"File not file:$white $file"
+        db_msg $"File not found %s" "$(dbq "$file")"
         return
     fi
 
     if ! sudo test -w $file; then
-        db_msg $"Cannot write to file:$white $file"
+        db_msg $"Cannot write to file %s" "$(dbq "$file")"
         return
     fi
 
