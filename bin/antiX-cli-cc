@@ -249,12 +249,12 @@ sys_info_cc_cmd() {
     local cmd=$1
     case $cmd in
              htop)  run_cmd     $cmd                     ;;
-             inxi)  run_cmd -p  $cmd -Fx -c24            ;;
-         env-info)  run_cmd -p  $cmd                     ;;
-        ps_mem.py)  run_cmd -ps $cmd                     ;;
-               df)  run_cmd -p  $cmd -hTP                ;;
-            pinfo)  run_cmd     $cmd                     ;;
-            lsblk) view_cmd -s  $cmd -o name,size,fstype,label,mountpoint,uuid ;;
+             inxi) view_cmd     $cmd -Fx -c24            ;;
+         env-info) view_cmd     $cmd                     ;;
+        ps_mem.py) view_cmd -s  $cmd                     ;;
+               df) view_cmd     $cmd -hTP                ;;
+            pinfo) view_cmd     $cmd                     ;;
+            lsblk) view_cmd -s  $cmd -o name,size,fstype,label,mountpoint ;;
             lsmod) view_cmd     $cmd                     ;;
             lspci) view_cmd     $cmd                     ;;
             lsusb) view_cmd     $cmd                     ;;
