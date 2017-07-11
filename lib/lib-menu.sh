@@ -141,7 +141,7 @@ add_cmd() {
     local mwidth=$((cwidth + $(str_len "$blurb") + 2))
 
     [ $MENU_WIDTH -lt $mwidth ] && MENU_WIDTH=$mwidth
-    MENU_LIST="${MENU_LIST}cmd $cmd $blurb\n"
+    MENU_LIST="${MENU_LIST}cmd $cmd&$blurb\n"
 }
 
 add_view() { _add_file "${yellow}View$white" "$@"; }
@@ -164,7 +164,7 @@ _add_file() {
     local mwidth=$((cwidth + $(str_len "$blurb") + 2))
 
     [ $MENU_WIDTH -lt $mwidth ] && MENU_WIDTH=$mwidth
-    MENU_LIST="${MENU_LIST}file $base $blurb\n"
+    MENU_LIST="${MENU_LIST}file $base&$blurb\n"
 }
 
 #------------------------------------------------------------------------------
@@ -179,14 +179,11 @@ start_menu_list() {
 #
 #------------------------------------------------------------------------------
 end_menu_list() {
-    local cmd  blurb
-    while read type cmd blurb; do
+    local type line cmd blurb
+    while read type line; do
+        cmd=${line%%&*}
+        blurb=${line#*&}
 
-        # move command line args out of blurb and into cmd
-        while [ -n "$blurb" -a -z "${blurb##-*}" ]; do
-            cmd="$cmd ${blurb%% *}"
-            blurb=${blurb#* }
-        done
         printf "$yellow%s$white: %s\n" "$(lpad_word $((CMD_WIDTH + 1)) "$cmd")" "$blurb"
     done <<Show_cmds
 $(echo -e "$MENU_LIST")
@@ -215,8 +212,9 @@ run_cmd() {
     restore_tty
 
     if [ "$need_gpm" ] && in_vt && ! pgrep --full /usr/bin/gpm &>/dev/null; then
-        printf "cyan%s$nc\n" $"Starting gpm service"
+        printf "$cyan%s$nc\n" "$SUDO service gpm start"
         $SUDO service gpm start
+        sleep 4
         stop_gpm=true
     fi
 
@@ -249,6 +247,8 @@ run_cmd() {
     [ "$pause" ] && pause
 
     hide_tty
+
+    set_window_title "$THE_MENU_TITLE"
     [ "$(stty size)" != "$orig_size" ] && reset=true
 
     if [ "$reset" ]; then
@@ -418,6 +418,10 @@ select_menu() {
 
     local new title
     eval new=\$MENU_NEW_$name
+    eval title=\$MENU_TITLE_$name
+    THE_MENU_TITLE=$title
+    set_window_title "$title"
+
     if [ "$new" ]; then
         eval title=\$MENU_TITLE_$name
         grid_read_new $name "$(eval \$MENU_MENU_$name)"
