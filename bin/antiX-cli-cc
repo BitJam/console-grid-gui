@@ -195,6 +195,13 @@ make_sys_tool_menu() {
     add_cmd tzdata                $"Set date and time"  dpkg-reconfigure
     #add_cmd guess-hwclock         $"Be prompted to setup the time correctly"
     #add_cmd htop                  $"Monitor and Control Processes"
+
+    local dev
+
+    for dev in /dev/sd?; do
+        add_cmd "cfdisk $dev"   "$(printf $"Partition block device %s" "${dev##*/}")"
+    done
+
     end_menu_list
     back_to_main_entry
 }
@@ -210,6 +217,7 @@ sys_tool_cc_cmd() {
                      htop)  run_cmd -s  $cmd                     ;;
                      smxi)  sudo su - -c "$cmd -G -! 32"         ;;
                    ddm-mx)  run_cmd -s  $cmd -i nvidia           ;;
+                  cfdisk*)  run_cmd -s  $cmd                     ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
