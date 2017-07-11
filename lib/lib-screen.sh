@@ -476,7 +476,21 @@ in_vt() {
     return $?
 }
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+set_window_title() {
+    local fmt=$1
+    printf "\e]0;$ME: $fmt\a" "$@"
+    SET_WINDOW_TITLE=true
+}
+
+erase_window_title() {
+    printf "\e]0; \a"
+}
+
 on_exit() {
+    [ -n "$SET_WINDOW_TITLE" ] && erase_window_title
     [ -n "$ORIG_STTY" ] || return
     restore_tty
     printf "$cyan%s exited$nc\n" $ME
