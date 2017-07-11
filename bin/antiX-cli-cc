@@ -10,7 +10,8 @@ PATH=./bin:$PATH
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
-YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g"
+YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g" # antiX-16
+YT_DEMO="https://www.youtube.com/watch?v=YJg02ivYzSs" # Hyper-Reality
 WALLPAPER_DIR=/usr/share/wallpaper
 
 main() {
