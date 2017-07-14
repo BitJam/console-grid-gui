@@ -7,6 +7,13 @@ LOG_FILE=$ME.log
 main() {
     set_colors
 
+
+    # Keyboard keys: up-arrow, down-arrow, page-up, page-down
+    local UP_ARROW=$"up-arrow"  DOWN_ARROW=$"down-arrow" PAGE_UP=$"page-up" PAGE_DOWN=$"page-down"
+
+    # Keyboard keys: left-arrow, right-arrow
+    local LEFT_ARROW=$"left-arrow"  RIGHT_ARROW=$"right-arrow"
+
     local CONTROLLER  CONTROLLER_MAX  CONTROLLER_CUR
     find_controller CONTROLLER
 
@@ -112,9 +119,9 @@ redraw() {
 
     local box_bot=$((Y0 + box_height - 1))
     local text_x=
-    cprintf  ""          $((box_bot + 1)) $"Use <%s> and <%s> to adjust the brightness" "$(bq left-arrow)" "$(bq right-arrow)"
-    xyprintf $CPRINTF_X  $((box_bot + 2)) $"Use <%s> and <%s> for smaller steps"        "$(bq up-arrow)" "$(bq down-arrow)"
-    xyprintf $CPRINTF_X  $((box_bot + 3)) $"Use <%s> and <%s> for bigger steps"         "$(bq page-up)" "$(bq page-down)"
+    cprintf  ""          $((box_bot + 1)) $"Use <%s> and <%s> to adjust the brightness" "$(bq $LEFT_ARROW)" "$(bq $RIGHT_ARROW)"
+    xyprintf $CPRINTF_X  $((box_bot + 2)) $"Use <%s> and <%s> for smaller steps"        "$(bq $UP_ARROW)"   "$(bq $DOWN_ARROW)"
+    xyprintf $CPRINTF_X  $((box_bot + 3)) $"Use <%s> and <%s> for bigger steps"         "$(bq $PAGE_UP)"    "$(bq $PAGE_DOWN)"
     xyprintf $CPRINTF_X  $((box_bot + 4)) $"Press '%s' to quit" "$(bq q)"
     draw_bar
 }
