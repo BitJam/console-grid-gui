@@ -150,7 +150,7 @@ make_av_menu() {
     add_cmd mocp                     $"Audio Player"
     add_cmd mpv                      $"Video Player"
     add_cmd mpsyt                    $"Youtube video jukebox"
-    add_cmd pmrp                     $"Poor Mans Radio Player"
+    add_cmd pmrp                     $"Poor Man's Radio Player"
     # add_cmd burniso                  "cd/dvd burner"
     in_vt && [ ${#wallpaper} -gt 0 ] \
         && add_cmd fbi               $"Image viewer"
@@ -193,7 +193,7 @@ make_sys_tool_menu() {
     add_cmd testdisk              $"Check and undelete disk partitions"
     add_cmd sysv-rc-conf          $"Choose startup services"
     add_cmd tzdata                $"Set date and time"  dpkg-reconfigure
-    #add_cmd guess-hwclock         $"Be prompted to setup the time correctly"
+    #add_cmd guess-hwclock         $"Be prompted to set up the time correctly"
     #add_cmd htop                  $"Monitor and Control Processes"
 
     local dev
@@ -330,7 +330,7 @@ console_cc_cmd() {
 
 make_net_menu() {
     start_menu_list
-    add_cmd ceni             $"Setup wired/wireless"
+    add_cmd ceni             $"Set up wired/wireless"
     add_cmd ifconfig         $"Show network status"
     add_cmd ping             $"Test if network is connected"
     add_cmd netstat          $"Show all network connections and ports"
@@ -344,7 +344,7 @@ make_net_menu() {
 
     add_cmd irrsi            $"Chat client"
     add_cmd newsbeuter       $"RSS/Atom feed reader"
-    add_cmd rtorrent         $"Bittorrent client"
+    add_cmd rtorrent         $"BitTorrent client"
 
     end_menu_list
     back_to_main_entry
