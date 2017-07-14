@@ -361,7 +361,7 @@ net_cc_cmd() {
              netpro) run_cmd -s  $cmd                 ;;
              elinks) run_cmd -g  $cmd $BOOKMARKS      ;;
              links2) run_cmd     $cmd $BOOKMARKS      ;;
-        "links2 -g") run_cmd -g  $cmd $BOOKMARKS      ;;
+        "links2 -g") run_cmd -sg $cmd $BOOKMARKS      ;;
 
                curl) $cmd wttr.in | less -SR          ;;
 
