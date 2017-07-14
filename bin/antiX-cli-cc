@@ -149,7 +149,7 @@ make_av_menu() {
     add_cmd alsamixer                $"simple sound mixer"
     add_cmd mocp                     $"Audio Player"
     add_cmd mpv                      $"Video Player"
-    add_cmd mpsyt                    $"Youtube video jukebox"
+    add_cmd mpsyt                    $"YouTube audio-only jukebox"
     add_cmd pmrp                     $"Poor Man's Radio Player"
     # add_cmd burniso                  "cd/dvd burner"
     in_vt && [ ${#wallpaper} -gt 0 ] \
