@@ -298,7 +298,7 @@ make_console_menu() {
     start_menu_list
 
     have_backlight \
-        && add_cmd "backlight-brightness"  $"Adjust the brightness of the backlight"
+        && add_cmd backlight-brightness  $"Adjust the brightness of the backlight"
 
     add_cmd splash-select         $"Choose the console background"
     add_cmd console-width-select  $"Choose the console font"
