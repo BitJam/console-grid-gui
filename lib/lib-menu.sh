@@ -214,7 +214,7 @@ run_cmd() {
     if [ "$need_gpm" ] && in_vt && ! pgrep --full /usr/bin/gpm &>/dev/null; then
         printf "$cyan%s$nc\n" "$SUDO service gpm start"
         $SUDO service gpm start
-        sleep 4
+        sleep .5
         stop_gpm=true
     fi
 
