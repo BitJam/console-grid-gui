@@ -70,7 +70,7 @@ main() {
                 down) step_percent  -1 ;;
              page-up) step_percent +20 ;;
            page-down) step_percent -20 ;;
-                [rR]) redraw           ;;
+                [rR]) restart          ;;
                    *) xyprintf 1 $HEIGHT "%-20s" "$key" ;;
         esac
     done
