@@ -4,9 +4,25 @@ ME=${0##*/}
 
 LOG_FILE=$ME.log
 
+usage() {
+    local ret=${1:-0}
+cat <<Usage
+Usage: $ME [options]
+Interactively adjust the brightness of the backlight from within a terminal.
+
+Options:
+  -g --get            Print out the current brightness percentage then exit
+  -h --help           Show this usage
+  -s --set   <value>  Set the brightness percentage to <value> then exit
+Usage
+
+    exit $ret
+}
+
 main() {
     set_colors
-
+    local SET_PERCENT  GET_PERCENT EARLY_EXIT
+    read_params "$@"
 
     # Keyboard keys: up-arrow, down-arrow, page-up, page-down
     local UP_ARROW=$"up-arrow"  DOWN_ARROW=$"down-arrow" PAGE_UP=$"page-up" PAGE_DOWN=$"page-down"
@@ -28,6 +44,10 @@ main() {
     test -w $CONTROLLER/brightness || fatal $"You need to be root to run this script"
 
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
+    [ -n "$GET_PERCENT" ] && echo $PERCENT
+    [ -n "$SET_PERCENT" ] && cmdline_brightness "$SET_PERCENT"
+    [ -n "$EARLY_EXIT"  ] && exit 0
+
     case $(tty) in
         */pts/*) SCREEN_IN_VT=     ;;
               *) SCREEN_IN_VT=true ;;
@@ -100,6 +120,17 @@ set_brightness() {
     local percent=$1
     local value=$((percent * CONTROLLER_MAX / 100))
     echo $value > $CONTROLLER/brightness
+}
+
+cmdline_brightness() {
+    local percent=$1
+    case $percent in
+        "") return 1          ;;
+        [1-9]|[0-9][0-9]|100) ;;
+        *) fatal "Brightness value must be between 1 and 100" ;;
+    esac
+    set_brightness $percent
+    return 0
 }
 
 #==============================================================================
@@ -421,6 +452,25 @@ hide_tty() {
     printf $cursor_off
 }
 
+read_params() {
+    while [ $# -gt 0 ]; do
+        local arg=$1 ; shift
+        case $arg in
+             -g|--get) GET_PERCENT=true  ; EARLY_EXIT=true ;;
+
+            -h|--help) usage ;;
+
+              --set=*) SET_PERCENT=${arg#*=}
+                       EARLY_EXIT=true ;;
+
+             -s|--set) [ $# -lt 1 ] && fatal "Expected an value after %s" "$arg"
+                       SET_PERCENT=$1 ; shift
+                       EARLY_EXIT=true ;;
+
+                    *) fatal "Unrecognized option %s" "$arg"
+        esac
+    done
+}
 
 #------------------------------------------------------------------------------
 #
