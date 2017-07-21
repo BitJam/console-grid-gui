@@ -442,7 +442,7 @@ set_colors() {
         fname_co=$nc_co      ;     m_co=$cyan      ;     warn_co=$brown   ; ;;
 
         low)
-         bar_bg=$bg_cyan     ;  box_co=$cyan
+         bar_bg=$bg_cyan     ;   box_co=$cyan
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$lt_green   ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$lt_green   ;
