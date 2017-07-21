@@ -11,18 +11,22 @@ Usage: $ME [options]
 Interactively adjust the brightness of the backlight from within a terminal.
 
 Options:
-  -g --get            Print out the current brightness percentage then exit
-  -h --help           Show this usage
-  -s --set   <value>  Set the brightness percentage to <value> then exit
+  -c --color <scheme>  Set color scheme.  Valid schemes:
+                           high, dark, low, low2, bw
+  -g --get             Print out the current brightness percentage then exit
+  -h --help            Show this usage
+  -s --set   <value>   Set the brightness percentage to <value> then exit
 Usage
 
     exit $ret
 }
 
 main() {
-    set_colors
+
+    set_colors $COLOR_SCHEME
     local SET_PERCENT  GET_PERCENT EARLY_EXIT
     read_params "$@"
+    set_colors $COLOR_SCHEME
 
     # Keyboard keys: up-arrow, down-arrow, page-up, page-down
     local UP_ARROW=$"up-arrow"  DOWN_ARROW=$"down-arrow" PAGE_UP=$"page-up" PAGE_DOWN=$"page-down"
@@ -70,11 +74,48 @@ main() {
                 down) step_percent  -1 ;;
              page-up) step_percent +20 ;;
            page-down) step_percent -20 ;;
+                   c) cycle_color      ;;
+                   d) color_cycle      ;;
                 [rR]) restart          ;;
                    *) xyprintf 1 $HEIGHT "%-20s" "$key" ;;
         esac
     done
 }
+
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+cycle_color() {
+    case $COLOR_SCHEME in
+         off)  COLOR_SCHEME=dark   ;;
+        dark)  COLOR_SCHEME=low    ;;
+         low)  COLOR_SCHEME=low2   ;;
+        low2)  COLOR_SCHEME=bw     ;;
+          bw)  COLOR_SCHEME=high   ;;
+           *)  COLOR_SCHEME=dark   ;;
+    esac
+    set_colors $COLOR_SCHEME
+    restart
+    xyprintf 1 $HEIGHT "%-20s" "color scheme: $COLOR_SCHEME"
+}
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+color_cycle() {
+    case $COLOR_SCHEME in
+        dark)  COLOR_SCHEME=high   ;;
+         low)  COLOR_SCHEME=dark   ;;
+        low2)  COLOR_SCHEME=low    ;;
+          bw)  COLOR_SCHEME=low2   ;;
+           *)  COLOR_SCHEME=bw     ;;
+    esac
+    set_colors $COLOR_SCHEME
+    restart
+    xyprintf 1 $HEIGHT "%-20s" "color scheme: $COLOR_SCHEME"
+}
+
 
 restart() {
     local x_margin=5
@@ -146,9 +187,9 @@ cmdline_brightness() {
 #------------------------------------------------------------------------------
 redraw() {
     clear
-    box -b $X0 $Y0 $box_width $box_height
+    box -b $X0 $Y0 $box_width $box_height $box_co
     cprintf "" $((Y0 - 2)) $"Backlight Brightness Control"
-    cprintf "" $((Y0 - 1)) "$yellow$(basename "$CONTROLLER_NAME")"
+    cprintf "" $((Y0 - 1)) "$bold_co$(basename "$CONTROLLER_NAME")"
 
     local box_bot=$((Y0 + box_height - 1))
     local text_x=
@@ -180,7 +221,7 @@ draw_bar() {
     [ $PERCENT -lt $MIN_PERCENT ] && PERCENT=$MIN_PERCENT
     local x=$((PERCENT * MAX_X / 100))
     local remain=$((MAX_X - x))
-    xyprintf $((X0 + 1))  $((Y0 + 1)) "$bg_cyan%${x}s$nc_co%${remain}s" "" ""
+    xyprintf $((X0 + 1))  $((Y0 + 1)) "$bar_bg%${x}s$nc_co%${remain}s" "" ""
 }
 
 #------------------------------------------------------------------------------
@@ -350,7 +391,9 @@ set_colors() {
     local e=$(printf "\e")
     clear="$e[2;J"; cursor_off="$e[?25l"; cursor_on="$e[?25h"
 
-    box_char="■"
+    bar_char="■"
+
+    rev_co="\e[7m"
 
     if [ "$color" = 'off' ]; then
 
@@ -365,6 +408,8 @@ set_colors() {
           dev_co=            ;    hi_co=           ;     quit_co=            ;
           err_co=            ;   lab_co=           ;  version_co=            ;
         fname_co=            ;     m_co=           ;     warn_co=            ;
+
+        nc_co="$e[0m" ; $bar_bg="$e[47m"
          return
      fi
 
@@ -375,12 +420,13 @@ set_colors() {
          nc_co="$e[0m"    ;   brown="$e[0;33m" ;
 
          bg_black="$e[40m"      ;     bg_blue="$e[44m"
-         bg_red="$e[41m"        ;     bg_magentaa="$e[45m"
+         bg_red="$e[41m"        ;     bg_magenta="$e[45m"
          bg_green="$e[42m"      ;     bg_cyan="$e[46m"
          bg_yellow="$e[43m"     ;     bg_white="$e[47m"
 
     case $color in
         high)
+         bar_bg=$bg_cyan     ; box_co=$white
          bold_co=$yellow     ;    fs_co=$lt_blue   ;      num_co=$magenta    ;
          date_co=$lt_cyan    ;  head_co=$white     ;    quest_co=$lt_green   ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$yellow     ;
@@ -388,6 +434,7 @@ set_colors() {
         fname_co=$white      ;     m_co=$lt_cyan   ;     warn_co=$yellow     ; ;;
 
         dark)
+         bar_bg=$bg_blue     ; box_co=$cyan
          bold_co=$brown      ;    fs_co=$lt_blue   ;      num_co=$brown   ;
          date_co=$cyan       ;  head_co=$nc_co     ;    quest_co=$green   ;
           dev_co=$nc_co      ;    hi_co=$nc_co     ;     quit_co=$brown   ;
@@ -395,6 +442,7 @@ set_colors() {
         fname_co=$nc_co      ;     m_co=$cyan      ;     warn_co=$brown   ; ;;
 
         low)
+         bar_bg=$bg_cyan     ; box_co=$cyan
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$lt_green   ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$lt_green   ;
@@ -402,6 +450,7 @@ set_colors() {
         fname_co=$white      ;     m_co=$nc_co     ;     warn_co=$yellow     ; ;;
 
         low2)
+         bar_bg=$bg_white    ; box_co=$cyan
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$green      ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$green      ;
@@ -409,6 +458,7 @@ set_colors() {
         fname_co=$white      ;     m_co=$nc_co     ;     warn_co=$yellow     ; ;;
 
         bw)
+         bar_bg=$bg_white    ; box_co=$white
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$white      ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$white      ;
@@ -458,6 +508,11 @@ read_params() {
     while [ $# -gt 0 ]; do
         local arg=$1 ; shift
         case $arg in
+           -c|--color) [ $# -lt 1 ] && fatal "Expected an value after %s" "$arg"
+                       COLOR_SCHEME=$1 ; shift ;;
+
+            --color=*) COLOR_SCHEME=${arg#*=}  ;;
+
              -g|--get) GET_PERCENT=true  ; EARLY_EXIT=true ;;
 
             -h|--help) usage ;;
