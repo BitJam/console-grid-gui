@@ -426,7 +426,7 @@ set_colors() {
 
     case $color in
         high)
-         bar_bg=$bg_cyan     ; box_co=$white
+         bar_bg=$bg_cyan     ;   box_co=$white
          bold_co=$yellow     ;    fs_co=$lt_blue   ;      num_co=$magenta    ;
          date_co=$lt_cyan    ;  head_co=$white     ;    quest_co=$lt_green   ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$yellow     ;
@@ -434,7 +434,7 @@ set_colors() {
         fname_co=$white      ;     m_co=$lt_cyan   ;     warn_co=$yellow     ; ;;
 
         dark)
-         bar_bg=$bg_blue     ; box_co=$cyan
+         bar_bg=$bg_blue     ;   box_co=$cyan
          bold_co=$brown      ;    fs_co=$lt_blue   ;      num_co=$brown   ;
          date_co=$cyan       ;  head_co=$nc_co     ;    quest_co=$green   ;
           dev_co=$nc_co      ;    hi_co=$nc_co     ;     quit_co=$brown   ;
@@ -442,7 +442,7 @@ set_colors() {
         fname_co=$nc_co      ;     m_co=$cyan      ;     warn_co=$brown   ; ;;
 
         low)
-         bar_bg=$bg_cyan     ; box_co=$cyan
+         bar_bg=$bg_cyan     ;  box_co=$cyan
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$lt_green   ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$lt_green   ;
@@ -450,7 +450,7 @@ set_colors() {
         fname_co=$white      ;     m_co=$nc_co     ;     warn_co=$yellow     ; ;;
 
         low2)
-         bar_bg=$bg_white    ; box_co=$cyan
+         bar_bg=$bg_white    ;   box_co=$cyan
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$green      ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$green      ;
@@ -458,7 +458,7 @@ set_colors() {
         fname_co=$white      ;     m_co=$nc_co     ;     warn_co=$yellow     ; ;;
 
         bw)
-         bar_bg=$bg_white    ; box_co=$white
+         bar_bg=$bg_white    ;   box_co=$white
          bold_co=$white      ;    fs_co=$nc_co     ;      num_co=$white      ;
          date_co=$nc_co      ;  head_co=$white     ;    quest_co=$white      ;
           dev_co=$white      ;    hi_co=$white     ;     quit_co=$white      ;
