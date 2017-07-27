@@ -77,7 +77,7 @@ key_callback() {
         [mM]) db_msg "Main selection: $MAIN_CC_SEL"     ;;
         [bB]) under_main_cc && select_menu $PARENT_MENU ;;
 
-           q) in_main_cc && clear && exit
+    q|escape) in_main_cc && clear && exit
               select_menu $PARENT_MENU $MAIN_CC_SEL     ;;
 
            *) return 1;;
