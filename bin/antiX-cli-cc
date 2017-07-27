@@ -448,6 +448,12 @@ config_cc_cmd() {
     esac
 }
 
+yt_demo() {
+    local demo  i=$(($RANDOM % YT_DEMO_NUM))
+    eval demo=\$YT_DEMO_$i
+    echo $demo
+}
+
 have_backlight() {
     local f
     for f in /sys/class/backlight/*/brightness; do
