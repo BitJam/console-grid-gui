@@ -163,7 +163,7 @@ main_loop() {
                A) clear; redraw                                ;;
                a) redraw                                       ;;
             [kK]) DEBUG_KEYS=$(( (DEBUG_KEYS + 1) % 3))        ;;
-            [qQ]) log "Quiting $ME"; clear; exit               ;;
+     [qQ]|escape) log "Quiting $ME"; clear; exit               ;;
                s) db_msg "Screen size: %dx%d" $(stty size)     ;;
                S) do_bash_shell                                ;; 
             [dD]) grid_deactivate                              ;;
