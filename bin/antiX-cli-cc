@@ -11,7 +11,14 @@ PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
 YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g" # antiX-16
-YT_DEMO="https://www.youtube.com/watch?v=YJg02ivYzSs" # Hyper-Reality
+
+YT_DEMO_0="https://www.youtube.com/watch?v=YJg02ivYzSs" # Hyper-Reality
+YT_DEMO_1="https://www.youtube.com/watch?v=njj6geeCOds" # antiX core install I
+YT_DEMO_2="https://www.youtube.com/watch?v=aAYaF2Hp8Yc" # antiX core install I
+YT_DEMO_3="https://www.youtube.com/watch?v=kTnR90OkNtM" # antiX core install I
+
+YT_DEMO_NUM=4
+
 WALLPAPER_DIR=/usr/share/wallpaper
 
 main() {
@@ -163,12 +170,14 @@ make_av_menu() {
 
 av_cc_cmd() {
     local cmd=$1
+    local mpv_drv
+    in_vt && mpv_drv=--vo=drm
     case $cmd in
                  speaker-test) run_cmd     $cmd -c 2 -t wav -l 2 ;;
         alsa-set-default-card) run_cmd  -p $cmd --cli            ;;
                     alsamixer) run_cmd     $cmd                  ;;
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
-                          mpv) run_cmd     $cmd --ytdl "$YT_DEMO";;
+                          mpv) run_cmd     $cmd $mpv_drv --ytdl "$YT_DEMO_0" ;;
                          pmrp) run_cmd     $cmd                  ;;
                         mpsyt) run_cmd     $cmd //antiX Linux    ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
