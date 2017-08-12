@@ -209,7 +209,7 @@ width_menu() {
 
     # How many columns wide the screen is, and the font width
     local col_lab=$"columns"  fw_lab=$"font width"
-    local fmt=$"%3s $col_lab  ($fw_lab %2s)\n"
+    local fmt="%3s $col_lab  ($fw_lab %2s)\n"
     for font_width in $FONT_SIZES; do
         num_cols=$((pixel_width / font_width + 1))
         [ $num_cols -lt 80 ] && continue
