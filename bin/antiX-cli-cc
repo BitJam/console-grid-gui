@@ -164,7 +164,7 @@ make_av_menu() {
     in_vt && [ ${#wallpaper} -gt 0 ] \
         && add_cmd fbi               $"Image viewer"
     in_vt && add_cmd fbgs            $"Pdf viewer"
-    add_cmd cdw                      $"cd/dvd/burner"
+    add_cmd cdw                      $"cd/dvd burner"
 
     end_menu_list
     back_to_main_entry
