@@ -7,9 +7,7 @@ to_dir="locale"
 
 main() {
     for name in $NAMES; do
-        #local lc_name=$(echo $name | tr 'A-Z' 'a-z')
-        lc_name=$name
-        from_dir="../translations/antix-development.$lc_name"
+        from_dir="../translations/antix-development.$name"
         echo -n "$name:"
 
         local from_file
