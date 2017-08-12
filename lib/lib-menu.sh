@@ -10,6 +10,7 @@ for ed in nano; do
     EDITOR=$ed
     break
 done
+export TEXTDOMAIN="console-lib-menu"
 
 
 PARENT_NAME=$(basename $(ps -o comm= $PPID))
