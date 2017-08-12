@@ -6,6 +6,8 @@
 #  CyrKoi     Lat15    Uni2
 #  CyrSlav    Lat2     Uni3
 
+export TEXTDOMAIN="console-width-select"
+
 lib_dir=/usr/lib/shell
 loc_lib=./lib
 test -e $loc_lib/lib-screen.sh && lib_dir=$loc_lib

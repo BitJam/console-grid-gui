@@ -5,6 +5,8 @@ loc_lib=./lib
 test -e $loc_lib/lib-screen.sh && LIB_DIR=$loc_lib
 . $LIB_DIR/lib-menu.sh
 
+export TEXTDOMAIN="antiX-cli-cc"
+
 PATH=./bin:$PATH
 
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u

@@ -2,6 +2,7 @@
 
 ME=${0##*/}
 
+export TEXTDOMAIN="backlight-brightness"
 LOG_FILE=$ME.log
 
 usage() {
