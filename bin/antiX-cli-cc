@@ -293,7 +293,8 @@ sys_info_cc_cmd() {
 
 make_live_menu() {
     start_menu_list
-    add_cmd live-usb-maker       $"Make a live-usb"
+    add_cmd live-usb-maker       $"Make a full featured antiX or MX live-usb"
+    add_cmd dd-live-usb          $"Make a "dd" live-usb for other distros"
     add_cmd live-kernel-updater  $"Update live kernel"
     add_cmd live-remaster        $"Remaster live system"
     add_cmd persist_save         $"Save dynamic root persistence"
@@ -307,6 +308,7 @@ live_cc_cmd() {
     local cmd=$1
     case $cmd in
              live-usb-maker) run_cmd -sp $cmd         ;;
+                dd-live-usb) run_cmd -sp $cmd         ;;
         live-kernel-updater) run_cmd -sp $cmd         ;;
               live-remaster) run_cmd -sp $cmd --cli   ;;
                persist_save) run_cmd -sp $cmd --cli   ;;
