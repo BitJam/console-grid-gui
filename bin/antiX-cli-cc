@@ -69,7 +69,13 @@ re_init() {
     new_menu      net_cc $"Internet Applications"    make_net_menu
     new_menu      off_cc $"Office Applications"      make_off_menu
     new_menu   config_cc $"Configuration Files"      make_config_menu
-    new_menu   logout_cc $"Logout and Installer"     make_logout_menu
+
+    if its_alive; then
+        new_menu   logout_cc $"Logout / Installer"     make_logout_menu
+    else
+        new_menu   logout_cc $"Logout / Reboot"        make_logout_menu
+    fi
+
 }
 
 key_callback() {
@@ -99,7 +105,11 @@ make_main_menu() {
     in_vt && entry $"Console Utilities"
 
     entry $"Office and Other"
-    entry $"Logout / Install"
+    if its_alive; then
+        entry $"Logout / Install"
+    else
+        entry $"Logout / Reboot"
+    fi
     entry "$(printf "$yellow%s" $"Quit")"
 }
 
@@ -118,6 +128,7 @@ main_cc_on_enter() {
            $"Console Utilities") select_menu console_cc      ;;
             $"Office and Other") select_menu off_cc          ;;
             $"Logout / Install") select_menu logout_cc       ;;
+             $"Logout / Reboot") select_menu logout_cc       ;;
                         $"Quit") clear ; exit 0              ;;
 
       *) db_msg $"Would do action %s" "$white$name" ; return ;;
@@ -128,7 +139,7 @@ main_cc_on_enter() {
 make_logout_menu() {
     start_menu_list
 
-    add_cmd 'cli-installer'     $"Install this distro on a hard drive"
+    its_alive && add_cmd 'cli-installer' $"Install this distro on a hard drive"
     add_cmd 'reboot'            $"Reboot the system"
     add_cmd 'poweroff'          $"Powerdown the system"
 
