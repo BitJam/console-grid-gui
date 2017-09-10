@@ -377,7 +377,7 @@ make_net_menu() {
 net_cc_cmd() {
     local cmd=$1
     case $cmd in
-               ping) run_cmd -p  $cmd -c4 -W2 8.8.8.8 ;;
+               ping) run_cmd -p  $cmd -c3 -W1 8.8.8.8 ;;
            ifconfig) run_cmd -p  $cmd                 ;;
             netstat) run_cmd -ps $cmd -autp           ;;
                ceni) run_cmd -s  $cmd                 ;;
