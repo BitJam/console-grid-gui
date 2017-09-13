@@ -387,7 +387,8 @@ net_cc_cmd() {
              links2) run_cmd     $cmd $BOOKMARKS      ;;
         "links2 -g") run_cmd -sg $cmd $BOOKMARKS      ;;
 
-               curl) $cmd wttr.in | less -SR          ;;
+               curl) $cmd wttr.in | less -SR
+                     echo "$cmd wttr.in" >> $cmd_file ;;
 
                mutt) run_cmd     $cmd                 ;;
              alpine) run_cmd     $cmd                 ;;
@@ -480,6 +481,11 @@ have_backlight() {
 HELP_PAGE=$ME
 
 [ "$DEBUG" ] || log_file=/dev/null
+
+cmd_file=$ME.cmd
+
+test -e $cmd_file && echo >>$cmd_file
+echo -e "$ME started $(date)" >>$cmd_file
 
 main "$@" 2>> $log_file
 

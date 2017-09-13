@@ -219,7 +219,9 @@ run_cmd() {
         stop_gpm=true
     fi
 
-    printf "\e[0;0H$cyan$exec$sudo $*$nc\n" | tee -a $log_file
+    local pre=$exec$sudo
+    echo "$pre${pre:+ }$*" >> $cmd_file
+    printf "\e[0;0H$cyan$exec$sudo $*$nc\n"
 
     if [ "$check" ]; then
         local xxx
@@ -286,7 +288,8 @@ edit_file() {
     restore_tty
 
     local cmd="$EDITOR $file"
-    printf "\e[0;0H$yellow$exec$cmd$nc\n" | tee -a $log_file
+    echo "$cmd" >> $cmd_file
+    printf "\e[0;0H$yellow$exec$cmd$nc\n"
 
     $sudo bash -c "$cmd" 2>&1
 
@@ -308,7 +311,8 @@ view_cmd() {
 
     restore_tty
 
-    printf "\e[0;0H$yellow$exec$sudo $*$nc\n" | tee -a $log_file
+    echo "$sudo${sudo:+ }$*" >> $cmd_file
+    printf "\e[0;0H$yellow$exec$sudo $*$nc\n"
 
     local lines=$($sudo "$@" | wc -l | cut -d" " -f1)
     local height=$(screen_height)
@@ -365,13 +369,15 @@ view_file() {
     local height=$(screen_height)
     if [ $lines -lt $((height - 5)) ]; then
 
-        printf "\e[0;0H${yellow}less -RSE $file$nc\n"  | tee -a $log_file
+        echo "less -RSE $file" >> $cmd_file
+        printf "\e[0;0H${yellow}less -RSE $file$nc\n"
         less -RSE "$file"
         pause
 
     else
 
-        printf "\e[0;0H${yellow}less -RS $file$nc\n"  | tee -a $log_file
+        printf "less -RS $file" >> $cmd_file
+        printf "\e[0;0H${yellow}less -RS $file$nc\n"
         warn_of_less 'file'
         less -RS "$file"
     fi
