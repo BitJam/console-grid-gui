@@ -482,7 +482,7 @@ HELP_PAGE=$ME
 
 [ "$DEBUG" ] || log_file=/dev/null
 
-cmd_file=$ME.cmd
+cmd_file=$HOME/$ME.cmd
 
 test -e $cmd_file && echo >>$cmd_file
 echo -e "$ME started $(date)" >>$cmd_file
