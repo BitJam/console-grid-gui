@@ -12,7 +12,8 @@ PATH=./bin:$PATH
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
-YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g" # antiX-16
+YT_DEMO="https://www.youtube.com/watch?v=G8Aw2zzBE-g"   # antiX-16
+YT_DEMO="https://www.youtube.com/watch?v=SghuUOPRi00"   # Removing the Swastikas
 
 YT_DEMO_0="https://www.youtube.com/watch?v=YJg02ivYzSs" # Hyper-Reality
 YT_DEMO_1="https://www.youtube.com/watch?v=njj6geeCOds" # antiX core install I
