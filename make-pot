@@ -13,6 +13,7 @@ bin/antiX-cli-cc
 bin/backlight-brightness
 bin/console-width-select
 bin/console-font-select
+bin/splash-select
 lib/lib-menu.sh
 "
 
