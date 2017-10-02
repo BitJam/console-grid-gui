@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAMES="antiX-cli-cc  backlight-brightness 
+NAMES="antiX-cli-cc  backlight-brightness splash-select
 console-font-select  console-width-select  console-lib-menu"
 
 to_dir="locale"
