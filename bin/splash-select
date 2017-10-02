@@ -12,8 +12,9 @@ main() {
     FB_THEMES="$(read_splash_themes | sort -f)"
     #grid_color_scheme light
 
-    screen_set title1="Select a Background Theme"
-    screen_set title2="Press: <Enter> to use new theme, <q> to quit, <h> for help"
+    screen_set title1=$"Select a Background Theme"
+    screen_set title2=$"Press: <Enter> to use new theme, <q> to quit, <e> to edit, <h> for help"
+    set_t3
     screen_set box=-s border=1
 
     init
@@ -24,10 +25,15 @@ main() {
     main_loop
 }
 
+set_t3() {
+    local title=$(printf "%s  $white%s" $"Current theme" "$THE_THEME")
+    screen_set title3="$title"
+}
+
 init() {
     screen_init
     grid_read_new fbtheme "$FB_THEMES"
-    grid_large y=3 title="FB Background Themes"
+    grid_large y=3 title=$"FB Background Themes"
     grid_fill_y 50
     grid_finalize
 }
@@ -47,6 +53,38 @@ restart() {
     redraw
 }
 
+key_callback() {
+    case $1 in
+        [eE])  edit_fbcondecor ; return 0 ;;
+           *)                    return 1 ;;
+    esac
+}
+
+edit_fbcondecor() {
+    local res=$FB_RES  theme=$(get_fbdecor_theme)
+    local config=/etc/splash/$theme/$FB_RES.cfg
+
+    if ! test -e "$config"; then
+        db_msg "Config file $config was not found"
+        return
+    fi
+
+    # Make a backup if there isn't one already
+    test -e "$config.orig" || cp "$config" "$config.orig"
+
+    db_msg "$splash_ctl --tty=$tty -c getcfg   $theme"
+    local editor=${EDITOR:-nano}
+    db_msg "$editor $config"
+    restore_tty
+
+    $SUDO $editor "$config"
+
+    hide_tty
+    set_fbdecor "$theme"
+    redraw
+    db_msg "did: $editor $config"
+}
+
 fbtheme_on_enter() {
     local theme=$1 sel=$3
     GRID_DEFAULT_SEL=$sel
@@ -56,9 +94,12 @@ fbtheme_on_enter() {
         return
     fi
 
-    local term=$(fgconsole)
-    
+    set_fbdecor "$theme"
+    set_t3
+}
 
+set_fbdecor() {
+    local theme=$1  term=$(fgconsole)
     log "term=$term  theme=$theme"
 
     clear
@@ -66,14 +107,24 @@ fbtheme_on_enter() {
     $splash_ctl --tty=$term -t "$theme" -c setpic 2>/dev/null
     $splash_ctl --tty=$term -c on
 
+    THE_THEME=$theme
+    set_t3
     restart
+}
+
+get_fbdecor_theme() {
+    if ! in_vt; then
+        echo "unknown"
+        return
+    fi
+    $SUDO $splash_ctl --tty=$(fgconsole) -c getcfg | sed -n "s/^theme:\s*//p"
 }
 
 read_splash_themes() {
     local src=/etc/splash
 
     for theme in $(ls $src); do
-        
+
         if [ -z "$FB_RES" ]; then
             [ -z "${theme##[Ii]mages}" ] || echo $theme
             continue
@@ -94,10 +145,8 @@ HELP_PAGE=splash-select
 [ "$SCREEN_IN_VT" ] && need_root "$@"
 
 FB_RES=$(cat /sys/class/graphics/fb0/virtual_size 2>/dev/null | sed 's/,/x/')
+THE_THEME=$(get_fbdecor_theme)
 
 [ "$DEBUG" ] || log_file=/dev/null
 
 main "$@" 2>> $log_file
-
-
-
