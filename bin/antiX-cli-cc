@@ -191,7 +191,7 @@ av_cc_cmd() {
         alsa-set-default-card) run_cmd  -p $cmd --cli            ;;
                     alsamixer) run_cmd     $cmd                  ;;
                          mocp) run_cmd     $cmd $PLAY_LIST       ;;
-                          mpv) run_cmd     $cmd $mpv_drv --ytdl "$YT_DEMO_0" ;;
+                          mpv) run_cmd     $cmd $mpv_drv --ytdl "$YT_DEMO" ;;
                          pmrp) run_cmd     $cmd                  ;;
                         mpsyt) run_cmd     $cmd //antiX Linux    ;;
                           fbi) run_cmd     $cmd -a $(wallpaper)  ;;
@@ -489,6 +489,3 @@ test -e $cmd_file && echo >>$cmd_file
 echo -e "$ME started $(date)" >>$cmd_file
 
 main "$@" 2>> $log_file
-
-
-
