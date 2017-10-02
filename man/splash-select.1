@@ -129,7 +129,7 @@
 .\" ========================================================================
 .\"
 .IX Title "SPLASH-SELECT 1"
-.TH SPLASH-SELECT 1 "2017-09-13" "Version 2.0.0" "antiX Documentation"
+.TH SPLASH-SELECT 1 "2017-09-29" "Version 2.0.0" "antiX Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -154,6 +154,18 @@ Redraw the screen
 .IP "\fBc\fR" 4
 .IX Item "c"
 (lowercase c) Cycle through color schemes
+.IP "\fBe\fR" 4
+.IX Item "e"
+Edit the current theme.  The current theme may not be the highlighted
+one.  This is mostly useful for changing the size of the text area on
+the screen using these variables:
+.Sp
+.Vb 4
+\&    tx=15     # the left margin in pixels
+\&    ty=17     # the top margin in pixels
+\&    tw=1255   # the width of the text area in pixels
+\&    th=929    # the height of the text area in pixels
+.Ve
 .IP "\fBh,H\fR" 4
 .IX Item "h,H"
 Show some simple help
