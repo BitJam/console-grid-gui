@@ -16,6 +16,7 @@ Options:
                            high, dark, low, low2, bw
   -g --get             Print out the current brightness percentage then exit
   -h --help            Show this usage
+  -p --pause           Pause and wait for <Enter> after an error
   -s --set   <value>   Set the brightness percentage to <value> then exit
 Usage
 
@@ -357,6 +358,7 @@ str_len() {
 fatal() {
     local fmt=$1 ; shift
     printf "$bold_co$ME:$hi_co $fmt$nc_co\n" "$@" >&2
+    [ "$PAUSE_ON_ERROR" ] && pause
     exit 3
 }
 
@@ -511,6 +513,8 @@ read_params() {
            -c|--color) [ $# -lt 1 ] && fatal "Expected an value after %s" "$arg"
                        COLOR_SCHEME=$1 ; shift ;;
 
+            -p|--pause) PAUSE_ON_ERROR=true          ;;
+
             --color=*) COLOR_SCHEME=${arg#*=}  ;;
 
              -g|--get) GET_PERCENT=true  ; EARLY_EXIT=true ;;
@@ -527,6 +531,17 @@ read_params() {
                     *) fatal "Unrecognized option %s" "$arg"
         esac
     done
+}
+
+pause() {
+    local xxx
+    read     -t .01 xxx
+    read -N1 -t .01 xxx
+    read -N1 -t .01 xxx
+    read -N1 -t .01 xxx
+    echo -n "${cyan}Press <Enter> to continue$nc"
+    read -s xxx
+    echo
 }
 
 #------------------------------------------------------------------------------
