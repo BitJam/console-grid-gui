@@ -403,6 +403,7 @@ pause() {
     read -N1 -t .01 xxx
     echo -n "${cyan}Press <Enter> to continue$nc"
     read -s xxx
+    echo
 }
 
 #------------------------------------------------------------------------------
