@@ -335,6 +335,7 @@ make_console_menu() {
     [ $UID -eq 0 ] \
         && add_cmd tao            $"Excerpts from the Tao of Programming"
 
+    add_cmd vlock                 $"Lock the virtual consoles"
     end_menu_list
     back_to_main_entry
 }
@@ -342,14 +343,15 @@ make_console_menu() {
 console_cc_cmd() {
     local cmd=$1
     case $cmd in
-       backlight-brightness) run_cmd     $cmd  ;;
-              splash-select) run_cmd     $cmd  ;;
-        console-font-select) run_cmd     $cmd  ;;
-       console-width-select) run_cmd -s  $cmd  ;;
-       choose-console-width) run_cmd -s  $cmd  ;;
-                ansi-colors) view_cmd    $cmd  ;;
-              space-evaders) run_cmd     $cmd  ;;
-                        tao) run_cmd -p  $cmd  ;;
+       backlight-brightness) run_cmd     $cmd    ;;
+              splash-select) run_cmd     $cmd    ;;
+        console-font-select) run_cmd     $cmd    ;;
+       console-width-select) run_cmd -s  $cmd    ;;
+       choose-console-width) run_cmd -s  $cmd    ;;
+                ansi-colors) view_cmd    $cmd    ;;
+              space-evaders) run_cmd     $cmd    ;;
+                        tao) run_cmd -p  $cmd    ;;
+                      vlock) run_cmd     $cmd -a ;;
 
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
