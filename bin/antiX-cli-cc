@@ -362,6 +362,7 @@ make_net_menu() {
     add_cmd ceni             $"Set up wired/wireless"
     add_cmd ifconfig         $"Show network status"
     add_cmd ping             $"Test if network is connected"
+    add_cmd speedtest-cli    $"Test network bandwidth"
     add_cmd netstat          $"Show all network connections and ports"
     add_cmd netpro           $"Manage network profiles"
     add_cmd curl             $"Weather forecast"
@@ -385,6 +386,7 @@ net_cc_cmd() {
                ping) run_cmd -p  $cmd -c3 -W1 8.8.8.8 ;;
            ifconfig) run_cmd -p  $cmd                 ;;
             netstat) run_cmd -ps $cmd -autp           ;;
+      speedtest-cli) run_cmd -p  $cmd                 ;;
                ceni) run_cmd -s  $cmd                 ;;
         wicd-curses) run_cmd -s  $cmd                 ;;
              netpro) run_cmd -s  $cmd                 ;;
