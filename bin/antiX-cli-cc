@@ -153,8 +153,8 @@ logout_cc_cmd() {
 
     case $name in
             cli-installer) run_cmd -spc  $cmd      ;;
-                   reboot) run_cmd -spce $cmd      ;;
-                 poweroff) run_cmd -spce $cmd      ;;
+                   reboot) run_cmd -sc telinit 6   ;;
+                 poweroff) run_cmd -sc telinit 0   ;;
 
         *) db_msg "Would do logout action %s" "$white$name" ; return ;;
     esac
