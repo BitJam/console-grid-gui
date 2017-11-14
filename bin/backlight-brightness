@@ -2,14 +2,21 @@
 
 ME=${0##*/}
 
+MIN_PERCENT=2
+
 export TEXTDOMAIN="backlight-brightness"
 LOG_FILE=$ME.log
 
 usage() {
     local ret=${1:-0}
 cat <<Usage
-Usage: $ME [options]
+Usage: $ME [options] [step-value]
 Interactively adjust the brightness of the backlight from within a terminal.
+
+Step value:
+
+   +10   increase brightness by 10 percent
+   -17   decrease brightness by 17 percent
 
 Options:
   -c --color <scheme>  Set color scheme.  Valid schemes:
@@ -52,9 +59,10 @@ main() {
     test -w $CONTROLLER/brightness || fatal $"You need to be root to run this script"
 
     local PERCENT=$((100 * CONTROLLER_CUR / CONTROLLER_MAX))
-    [ -n "$GET_PERCENT" ] && echo $PERCENT
-    [ -n "$SET_PERCENT" ] && cmdline_brightness "$SET_PERCENT"
-    [ -n "$EARLY_EXIT"  ] && exit 0
+    [ -n "$GET_PERCENT"  ] && echo $PERCENT
+    [ -n "$SET_PERCENT"  ] && cmdline_brightness "$SET_PERCENT"
+    [ -n "$STEP_PERCENT" ] && step_percent "$STEP_PERCENT" xxxx
+    [ -n "$EARLY_EXIT"   ] && exit 0
 
     case $(tty) in
         */pts/*) SCREEN_IN_VT=     ;;
@@ -131,7 +139,6 @@ restart() {
     local box_height=3
 
     MAX_X=$((box_width - 2))
-    MIN_PERCENT=2
     redraw
 }
 
@@ -205,11 +212,17 @@ redraw() {
 #
 #------------------------------------------------------------------------------
 step_percent() {
-    local step=$1
+    local step=$1  quit=$2
     PERCENT=$((PERCENT + step))
     [ $PERCENT -gt 100 ] && PERCENT=100
     [ $PERCENT -lt $MIN_PERCENT ] && PERCENT=$MIN_PERCENT
     set_brightness $PERCENT
+
+    if [ -n "$quit" ]; then
+        echo $PERCENT
+	return
+    fi
+
     draw_bar
     xyprintf 1 $HEIGHT "%4s: %-20s" "$step" "$PERCENT%"
 }
@@ -510,6 +523,9 @@ read_params() {
     while [ $# -gt 0 ]; do
         local arg=$1 ; shift
         case $arg in
+            [+-][0-9]|[+-][0-9][0-9])   STEP_PERCENT=$arg      ; EARLY_EXIT=true ;;
+            [+-][0-9]%|[+-][0-9][0-9]%) STEP_PERCENT=${arg%%%} ; EARLY_EXIT=true ;;
+
            -c|--color) [ $# -lt 1 ] && fatal "Expected an value after %s" "$arg"
                        COLOR_SCHEME=$1 ; shift ;;
 
