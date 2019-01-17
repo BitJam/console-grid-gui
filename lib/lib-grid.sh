@@ -775,7 +775,7 @@ grid_large() {
 
 on_enter_() {
     grid_grab_data
-    local val=$(printf "%s" "$GRID_VALUE" |sed -r 's/\x1B\[[0-9;]+[mKC]//g')
+    local val=$(printf "%s" "$GRID_VALUE" | sed -r 's/\x1B\[[0-9;]+[mKC]//g')
 
     if type ${GRID_NAME}_cmd &>/dev/null ; then
         local cmd=$(echo "$val" | cut -d: -f1)
