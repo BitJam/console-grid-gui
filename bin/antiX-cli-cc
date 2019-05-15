@@ -360,6 +360,7 @@ console_cc_cmd() {
 make_net_menu() {
     start_menu_list
     add_cmd ceni             $"Set up wired/wireless"
+    add_cmd commanctl        $"Set up wired/wireless"
     add_cmd ifconfig         $"Show network status"
     add_cmd ping             $"Test if network is connected"
     add_cmd speedtest-cli    $"Test network bandwidth"
@@ -388,6 +389,7 @@ net_cc_cmd() {
             netstat) run_cmd -ps $cmd -autp           ;;
       speedtest-cli) run_cmd -p  $cmd                 ;;
                ceni) run_cmd -s  $cmd                 ;;
+          commanctl) run_cmd -s  $cmd                 ;;
         wicd-curses) run_cmd -s  $cmd                 ;;
              netpro) run_cmd -s  $cmd                 ;;
              elinks) run_cmd -g  $cmd $BOOKMARKS      ;;
