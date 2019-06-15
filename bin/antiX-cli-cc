@@ -359,7 +359,9 @@ console_cc_cmd() {
 
 make_net_menu() {
     start_menu_list
-    add_cmd ceni             $"Set up wired/wireless"
+
+    pgrep -x connmand &>/dev/null \
+        || add_cmd ceni      $"Set up wired/wireless"
     add_cmd connmanctl       $"Set up wired/wireless"
     add_cmd ifconfig         $"Show network status"
     add_cmd ping             $"Test if network is connected"
