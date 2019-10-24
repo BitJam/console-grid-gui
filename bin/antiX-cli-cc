@@ -279,7 +279,7 @@ sys_info_cc_cmd() {
         ps_mem.py) view_cmd -s  $cmd                     ;;
                df) view_cmd     $cmd -hTP                ;;
             pinfo) view_cmd     $cmd                     ;;
-            lsblk) view_cmd -s  $cmd -o name,size,fstype,label,mountpoint ;;
+            lsblk) view_cmd -s  $cmd -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT ;;
             lsmod) view_cmd     $cmd                     ;;
             lspci) view_cmd     $cmd                     ;;
             lsusb) view_cmd     $cmd                     ;;
