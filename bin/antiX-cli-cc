@@ -430,6 +430,7 @@ make_off_menu() {
     add_cmd wordgrinder   $"Word Processor"
     add_cmd calcurse      $"Calendar/Schedule"
     add_cmd nano          $"Simple text editor"
+    add_cmd sc            $"Spreadsheet calculator"
     add_cmd vim           $"Advanced text editor"
 
     end_menu_list
@@ -444,7 +445,8 @@ off_cc_cmd() {
                calcurse) run_cmd  $cmd    ;;
                    nano) run_cmd  $cmd    ;;
                     vim) run_cmd  $cmd    ;;
-               *)  db_msg "Would do action %s" "$white$cmd"
+                     sc) run_cmd  $cmd    ;;
+                      *) db_msg "Would do action %s" "$white$cmd" ;;
     esac
 }
 
