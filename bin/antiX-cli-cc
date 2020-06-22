@@ -226,6 +226,7 @@ make_sys_tool_menu() {
     add_cmd testdisk              $"Check and undelete disk partitions"
     add_cmd sysv-rc-conf          $"Choose startup services"
     add_cmd tzdata                $"Set date and time"  dpkg-reconfigure
+    add_cmd chroot-rescue-scan    $"Rescue a system that doesn't boot"
     #add_cmd guess-hwclock         $"Be prompted to set up the time correctly"
     #add_cmd htop                  $"Monitor and Control Processes"
 
@@ -251,6 +252,7 @@ sys_tool_cc_cmd() {
                      smxi)  sudo su - -c "$cmd -G -! 32"         ;;
                    ddm-mx)  run_cmd -s  $cmd -i nvidia           ;;
                   cfdisk*)  run_cmd -s  $cmd                     ;;
+       chroot-rescue-scan)  run_cmd -s  $cmd                     ;;
         *)  db_msg "Would do action %s" "$white$cmd"
     esac
     return
