@@ -9,6 +9,14 @@ export TEXTDOMAIN="antiX-cli-cc"
 
 PATH=./bin:$PATH
 
+ME=${0##*/}
+
+case $ME in
+    mx-*) DISTRO=MX     ; TITLE_1=$"MX Command-Line Control Center"    ;;
+       *) DISTRO=antiX  ; TITLE_1=$"antiX Command-Line Control Centre" ;;
+esac
+
+
 PLAY_LIST=/usr/share/antiX-cli-cc/Audio/Classical.m3u
 BOOKMARKS=/usr/share/antiX-cli-cc/Html/bookmarks.html
 
@@ -34,7 +42,7 @@ main() {
 
     local start_t=$(get_time)
 
-    screen_set title1=$"antiX Command-Line Control Centre"
+    screen_set title1="$TITLE_1"
     screen_set title2=$"Press: <Enter> to select an option, <b> back to main, <q> to quit, <h> for help"
     screen_set title3="$(distro_version)"
 
