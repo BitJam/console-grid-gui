@@ -372,6 +372,7 @@ make_net_menu() {
 
     pgrep -x connmand &>/dev/null \
         || add_cmd ceni      $"Set up wired/wireless"
+    add_cmd nmtui            $"Set up wired/wireless with Network Manager"
     add_cmd connmanctl       $"Set up wired/wireless"
     add_cmd ifconfig         $"Show network status"
     add_cmd ping             $"Test if network is connected"
@@ -401,6 +402,7 @@ net_cc_cmd() {
             netstat) run_cmd -ps $cmd -autp           ;;
       speedtest-cli) run_cmd -p  $cmd                 ;;
                ceni) run_cmd -s  $cmd                 ;;
+              nmtui) run_cmd     $cmd                 ;;
          connmanctl) run_cmd -s  $cmd                 ;;
         wicd-curses) run_cmd -s  $cmd                 ;;
              netpro) run_cmd -s  $cmd                 ;;
